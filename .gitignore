@@ -26,3 +26,6 @@ Results/
 *_results_*
 
 *.pdf
+*.aux
+*.out
+*.synctex.gz
