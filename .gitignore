@@ -29,3 +29,5 @@ Results/
 *.aux
 *.out
 *.synctex.gz
+*.bbl
+*.blg
