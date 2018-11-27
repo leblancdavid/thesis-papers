@@ -16,7 +16,7 @@ The primary goal to reach when analyzing dune field images is to compute and ext
  
  \begin{figure}
  	\centering
- 	\includegraphics[width=0.75\textwidth]{figures/dune_cross_section}
+ 	%\includegraphics[width=0.75\textwidth]{figures/dune_cross_section}
  	\caption{Cross-section of a dune slope with the sun's orientation effect on shaded and sunlit portions of the dune.}
  	\label{fig:dune_cross_section}
  \end{figure}
@@ -27,13 +27,13 @@ The primary goal to reach when analyzing dune field images is to compute and ext
  	\centering
  	\begin{subfigure}{0.48\textwidth}
  		\centering
- 		\includegraphics[width=\linewidth]{figures/kalahari}
+ 		%\includegraphics[width=\linewidth]{figures/kalahari}
  		\caption{Kalahari: Linear dune system}
  		\label{fig:difference_between_dune_field_types_kalahari}
  	\end{subfigure}
  	\begin{subfigure}{0.48\textwidth}
  		\centering
- 		\includegraphics[width=\linewidth]{figures/whitesands}
+ 		%\includegraphics[width=\linewidth]{figures/whitesands}
  		\caption{White Sands: Complex dune system}
  		\label{fig:difference_between_dune_field_types_whitesands}
  	\end{subfigure}
@@ -58,57 +58,57 @@ In Figure \ref{fig:patches}, a plot of the intensity, gradient magnitudes, and g
 	\centering
 	\begin{subfigure}{0.15\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari_patch}
+		%\includegraphics[width=\linewidth]{figures/kalahari_patch}
 		\caption{}
 		\label{fig:kalahari_patch}
 	\end{subfigure}
 	\begin{subfigure}{0.15\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari_patch_arrow}
+		%\includegraphics[width=\linewidth]{figures/kalahari_patch_arrow}
 		\caption{}
 		\label{fig:kalahari_patch_arrow}
 	\end{subfigure}
 	\begin{subfigure}{0.65\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari_patch_plot}
+		%\includegraphics[width=\linewidth]{figures/kalahari_patch_plot}
 		\caption{}
 		\label{fig:kalahari_patch_plot}
 	\end{subfigure}
 	
 	\begin{subfigure}{0.15\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch}
+		%\includegraphics[width=\linewidth]{figures/skeletoncoast_patch}
 		\caption{}
 		\label{fig:skeletoncoast_patch}
 	\end{subfigure}
 	\begin{subfigure}{0.15\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_arrow}
+		%\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_arrow}
 		\caption{}
 		\label{fig:skeletoncoast_patch_arrow}
 	\end{subfigure}
 	\begin{subfigure}{0.65\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_plot}
+		%\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_plot}
 		\caption{}
 		\label{fig:skeletoncoast_patch_plot}
 	\end{subfigure}
 	
 	\begin{subfigure}{0.15\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/wdc_patch}
+		%\includegraphics[width=\linewidth]{figures/wdc_patch}
 		\caption{}
 		\label{fig:wdc_patch}
 	\end{subfigure}
 	\begin{subfigure}{0.15\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/wdc_patch_arrow}
+		%\includegraphics[width=\linewidth]{figures/wdc_patch_arrow}
 		\caption{}
 		\label{fig:wdc_patch_arrow}
 	\end{subfigure}
 	\begin{subfigure}{0.65\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/wdc_patch_plot}
+		%\includegraphics[width=\linewidth]{figures/wdc_patch_plot}
 		\caption{}
 		\label{fig:wdc_patch_plot}
 	\end{subfigure}
@@ -130,7 +130,7 @@ In this research, many different approaches were attempted and compared to extra
 
  \begin{figure}[H]
  	\centering
- 	\includegraphics[width=\linewidth]{figures/flow1}
+ 	%\includegraphics[width=\linewidth]{figures/flow1}
  	\caption{The overall process flow for general dune detection. The five steps include image processing, dominant orientation computation, crest-line candidate detection, calculations of dune metrics, validation of crest-line candidates.}
  	\label{fig:main_flow}
  \end{figure}
@@ -186,7 +186,7 @@ The appearance-based approach uses the pixel intensity values in the image to ex
 
  \begin{figure}[H]
  	\centering
- 	\includegraphics[width=\linewidth]{figures/flow_appearance_based}
+ 	%\includegraphics[width=\linewidth]{figures/flow_appearance_based}
  	\caption{The process flow of the appearance-based approach. The images are first preprocessed, then an adaptive threshold is applied to binarize the image. Contours are extracted from the resulting binary regions. The contour segments are smoothed and filtered by gradient magnitude, resulting in the detected crest-lines.}
  	\label{fig:flow_appearance_based}
  \end{figure}
@@ -201,13 +201,13 @@ Using a fixed threshold may not be sufficient to extract the dunes since the ill
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari}
+		%\includegraphics[width=\linewidth]{figures/kalahari}
 		\caption{Kalahari Image}
 		\label{fig:kalahari_adaptive_threshold_input}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari_adaptive_threshold}
+		%\includegraphics[width=\linewidth]{figures/kalahari_adaptive_threshold}
 		\caption{Adaptive Threshold Binary Image}
 		\label{fig:kalahari_adaptive_threshold}
 	\end{subfigure}
@@ -259,7 +259,7 @@ Unlike the appearance-based method previously presented, the edge-based methods 
 
  \begin{figure}[H]
  	\centering
- 	\includegraphics[width=\linewidth]{figures/flow_gradient_based}
+ 	%\includegraphics[width=\linewidth]{figures/flow_gradient_based}
  	\caption{The process flow of the gradient-based approach. The images are first preprocessed, then the Canny edge detection algorithm is applied to the image. The dominant orientation computation (\ref{subsec:dominant_orientation}), which enables many of the detected Canny edges to be filtered out based on orientation. The remaining edges are linked and post filtered based on length and shape.}
  	\label{fig:flow_gradient_based}
  \end{figure}
@@ -288,7 +288,7 @@ where \emph{q} is a factor which can be determined based on the problem set. Thi
 
  \begin{figure}
  	\centering
- 	\includegraphics[width=0.90\textwidth]{figures/canny_edges}
+ 	%\includegraphics[width=0.90\textwidth]{figures/canny_edges}
  	\caption{Canny edge detector after median and Gaussian filtering of the Kalahari dune image.}
  	\label{fig:canny_edges}
  \end{figure}
@@ -329,7 +329,7 @@ where \emph{q} is a factor which can be determined based on the problem set. Thi
  
  \begin{figure}
  	\centering
- 	\includegraphics[width=0.90\textwidth]{figures/kmeans_results}
+ 	%\includegraphics[width=0.90\textwidth]{figures/kmeans_results}
  	\caption{Results of K-Means clustering algorithm with $K=2$ on the edge gradients detected using Canny, from Kalahari. The blue cluster represents the dune crest-line gradient vectors, and the red points represents all other non-crest-line edges. The cluster centers of blue is $(0.8958, -0.5496)$, and the cluster center of the red is $(-0.4111, 0.2705)$. The cluster centers are used to determine the dominant orientation.}
  	\label{fig:kmeans_results}
  \end{figure}
@@ -338,7 +338,7 @@ where \emph{q} is a factor which can be determined based on the problem set. Thi
  
   \begin{figure}
   	\centering
-  	\includegraphics[width=0.90\textwidth]{figures/kmeans_cluster_results}
+  	%\includegraphics[width=0.90\textwidth]{figures/kmeans_cluster_results}
   	\caption{Results of filtering out edges which are not part of the dominant orientation (in red), while preserving edges which agree (in green) with the dominant orientation computed by the K-Means clustering method.}
   	\label{fig:kmeans_edge_results}
   \end{figure}
@@ -383,19 +383,19 @@ An alternative to the clustering method is to compute a histogram of the gradien
   	\centering
   	\begin{subfigure}{0.48\textwidth}
   		\centering
-  		\includegraphics[width=\linewidth]{figures/dominant_orientation_false}
+  		%\includegraphics[width=\linewidth]{figures/dominant_orientation_false}
   		\caption{Non-Crest-line Edges}
   		\label{fig:false_dominant_orientation_image}
   	\end{subfigure}
   	\begin{subfigure}{0.48\textwidth}
   		\centering
-  		\includegraphics[width=\linewidth]{figures/dominant_orientation_true}
+  		%\includegraphics[width=\linewidth]{figures/dominant_orientation_true}
   		\caption{Crest-line Edges}
   		\label{fig:true_dominant_orientation_image}
   	\end{subfigure}
   	\begin{subfigure}{\textwidth}
   		\centering
-  		\includegraphics[width=0.8\linewidth]{figures/dominant_orientation_histogram}
+  		%\includegraphics[width=0.8\linewidth]{figures/dominant_orientation_histogram}
   		\caption{Histogram of Gradient Orientations}
   		\label{fig:dominant_orientation_histogram}
   	\end{subfigure}
@@ -423,19 +423,19 @@ An alternative to the clustering method is to compute a histogram of the gradien
   	\centering
   	\begin{subfigure}{0.48\textwidth}
   		\centering
-  		\includegraphics[width=\linewidth]{figures/filtered_edges_lines}
+  		%\includegraphics[width=\linewidth]{figures/filtered_edges_lines}
   		\caption{Line fitting to edge segments}
   		\label{fig:filtered_edges_lines}
   	\end{subfigure}
   	\begin{subfigure}{0.48\textwidth}
   		\centering
-  		\includegraphics[width=\linewidth]{figures/filtered_edges}
+  		%\includegraphics[width=\linewidth]{figures/filtered_edges}
   		\caption{Filtered edge segments}
   		\label{fig:filtered_edges}
   	\end{subfigure}
   	\begin{subfigure}{\textwidth}
   		\centering
-  		\includegraphics[width=0.50\linewidth]{figures/linehistogram1}
+  		%\includegraphics[width=0.50\linewidth]{figures/linehistogram1}
   		\caption{Histogram of line orientations}
   		\label{fig:linehistogram}
   	\end{subfigure}
@@ -453,7 +453,7 @@ Similarly to \ref{subsection:appearance_based_approach}, the goal of this approa
 
  \begin{figure}[H]
  	\centering
- 	\includegraphics[width=\linewidth]{figures/flow_watershed}
+ 	%\includegraphics[width=\linewidth]{figures/flow_watershed}
  	\caption{The process flow of the Watershed Transform dune detection approach. The images are first preprocessed, then some illumination normalization is applied to the image in order to improve the results of the Watershed transform. Contours are then extracted from the resulting regions which are filtered using the gradients, based on the dominant orientation. }
  	\label{fig:flow_watershed}
  \end{figure}
@@ -462,7 +462,7 @@ Similarly to \ref{subsection:appearance_based_approach}, the goal of this approa
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.90\textwidth]{figures/normalizedIllumination}
+	%\includegraphics[width=0.90\textwidth]{figures/normalizedIllumination}
 	\caption{Simple illumination normalization algorithm applied to the Skeleton Coast image.}
 	\label{fig:illumination_normalization}
 \end{figure}
@@ -523,25 +523,25 @@ Where the $\rho_{high}$ and $\rho_{low}$ are scalar values determined empiricall
  	\centering
  	\begin{subfigure}{0.48\textwidth}
  		\centering
- 		\includegraphics[width=\linewidth]{figures/watershed_shaded_side}
+ 		%\includegraphics[width=\linewidth]{figures/watershed_shaded_side}
  		\caption{\emph{Shaded} region labels}
  		\label{fig:watershed_shaded_side}
  	\end{subfigure}
  	\begin{subfigure}{0.48\textwidth}
  		\centering
- 		\includegraphics[width=\linewidth]{figures/watershed_sunlit_side}
+ 		%\includegraphics[width=\linewidth]{figures/watershed_sunlit_side}
  		\caption{\emph{Sunlit} region labels}
  		\label{fig:watershed_sunlit_side}
  	\end{subfigure}
  	\begin{subfigure}{0.48\textwidth}
  		\centering
- 		\includegraphics[width=\linewidth]{figures/watershed_segmentation}
+ 		%\includegraphics[width=\linewidth]{figures/watershed_segmentation}
  		\caption{Watershed Transform}
  		\label{fig:watershed_segmentation}
  	\end{subfigure}
  	\begin{subfigure}{0.48\textwidth}
  		\centering
- 		\includegraphics[width=\linewidth]{figures/watershed_dune_detection}
+ 		%\includegraphics[width=\linewidth]{figures/watershed_dune_detection}
  		\caption{Results}
  		\label{fig:watershed_dune_detection}
  	\end{subfigure} 
@@ -575,7 +575,7 @@ In this approach, we take advantage of the fact dune-field patterns seem to to h
 
  \begin{figure}[H]
  	\centering
- 	\includegraphics[width=\linewidth]{figures/flow_dft}
+ 	%\includegraphics[width=\linewidth]{figures/flow_dft}
  	\caption{The process flow of the frequency domain approach. The images are first preprocessed, then translated into the frequency domain using the standard 2D discrete Fourier Transform. A high-pass filter is applied to the frequency domain to extract highest frequencies (which are assumed to contain dune crest-lines), and the inverse DFT is applied to return to the spacial domain. Crest-line detection can then be applied to the resulting image. }
  	\label{fig:flow_dft}
  \end{figure}
@@ -588,37 +588,37 @@ From the frequency domain, dominant frequencies can be extracted by searching fo
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/DFT_spectrum}
+		%\includegraphics[width=\linewidth]{figures/DFT_spectrum}
 		\caption{Skeleton Coast Frequency Domain}
 		\label{fig:dft_spectrum}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/DFT_spectrum_threshold}
+		%\includegraphics[width=\linewidth]{figures/DFT_spectrum_threshold}
 		\caption{High Frequency Threshold}
 		\label{fig:DFT_spectrum_threshold}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/DFT_spectrum_threshold_median}
+		%\includegraphics[width=\linewidth]{figures/DFT_spectrum_threshold_median}
 		\caption{Median Filtering}
 		\label{fig:DFT_spectrum_threshold_median}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/DFT_spectrum_ellipsefit}
+		%\includegraphics[width=\linewidth]{figures/DFT_spectrum_ellipsefit}
 		\caption{Ellipse Fit}
 		\label{fig:DFT_spectrum_ellipsefit}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/DFT_mask}
+		%\includegraphics[width=\linewidth]{figures/DFT_mask}
 		\caption{High-pass Filter Mask}
 		\label{fig:DFT_mask}
 	\end{subfigure} 
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/DFT_HPF}
+		%\includegraphics[width=\linewidth]{figures/DFT_HPF}
 		\caption{Results of HPF on Skeleton Coast} 
 		\label{fig:DFT_HPF}
 	\end{subfigure} 
@@ -644,7 +644,7 @@ In this approach, we used knowledge learned from a previous gradient based appro
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{figures/flow_gradient_orientation}
+	%\includegraphics[width=\linewidth]{figures/flow_gradient_orientation}
 	\caption{The process flow of the gradient orientation-based approach. The image is first preprocessed for optimal gradient computation, and the dominant orientation is computed. The gradient direction map is then computed and thresholded to preserve all gradients which \emph{agree} with the dominant orientation. The resulting binary image is a good candidate for contour extraction, which are subsequently filtered based on gradient orientation and magnitude. The resulting output is the detected crest-lines segments. }
 	\label{fig:flow_gradient_orientation}
 \end{figure}
@@ -675,19 +675,19 @@ Since $\hat{\delta_{ij}}$ and $\hat{\delta_{\mu}}$ are both unit-length vectors,
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/wdc}
+		%\includegraphics[width=\linewidth]{figures/wdc}
 		\caption{WDC}
 		\label{fig:orientation_based_wdc}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/dot_product}
+		%\includegraphics[width=\linewidth]{figures/dot_product}
 		\caption{\emph{D}}
 		\label{fig:orientation_based_dot_product}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/threshold_dot_product}
+		%\includegraphics[width=\linewidth]{figures/threshold_dot_product}
 		\caption{$\begin{cases}
 				1 & D_{ij} > 0\\
 				0 & otherwise
@@ -696,7 +696,7 @@ Since $\hat{\delta_{ij}}$ and $\hat{\delta_{\mu}}$ are both unit-length vectors,
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/method_4_results}
+		%\includegraphics[width=\linewidth]{figures/method_4_results}
 		\caption{Result}
 		\label{fig:orientation_based_results}
 	\end{subfigure}
@@ -724,7 +724,7 @@ Figure \ref{fig:orientation_transition_shift} is the exact same as the plot show
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figures/orientation_transition_shift}
+	%\includegraphics[width=\linewidth]{figures/orientation_transition_shift}
 	\caption{The cause of the shift in localization when computing the gradient direction map. The transition from gradients which \emph{agree} ($D_{ij} > 0$) with the dominant orientation almost always happens after the true crest-line due to the size of the kernel \emph{K}.}
 	\label{fig:orientation_transition_shift}
 \end{figure}
@@ -733,13 +733,13 @@ Figure \ref{fig:orientation_transition_shift} is the exact same as the plot show
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/shift_k_9}
+		%\includegraphics[width=\linewidth]{figures/shift_k_9}
 		\caption{$K=9$}
 		\label{fig:shift_k_9}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/shift_k_21}
+		%\includegraphics[width=\linewidth]{figures/shift_k_21}
 		\caption{$K=21$}
 		\label{fig:shift_k_21}
 	\end{subfigure}
@@ -774,7 +774,7 @@ In the machine learning approach, the goal is to teach a classifier to recognize
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{figures/flow_ml}
+	%\includegraphics[width=\linewidth]{figures/flow_ml}
 	\caption{The process flow of the machine learning approach. The image is first preprocessed, and some training data (samples of crest-lines and non-crest-lines) is reserved to construct the machine learning model. SIFT features are extracted from the training data to train the model to recognize crest-lines. With the model trained, SIFT feature descriptors are computed at each pixel of the remaining test images and are inputted into the trained model to generate the response map. Finally, the local maxima of the response map are detected in order to extract the crest-lines. }
 	\label{fig:flow_ml}
 \end{figure}
@@ -807,7 +807,7 @@ As part of this research, many of those types of features have been investigated
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figures/sift-descriptor}
+	%\includegraphics[width=\linewidth]{figures/sift-descriptor}
 	\caption{The SIFT descriptor explained. The image patch is split into a 4 by 4 grid, where each cell contains a histogram of gradients of eight directions. The result is a single vector of 128 floating point values. Source of the image: \underline{http://www.vlfeat.org/api/sift.html}}
 	\label{fig:sift_descriptor}
 \end{figure}
@@ -847,13 +847,13 @@ The results shown are acceptable but have a tendency to be a bit noisier. There 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/KalahariSVMResponse}
+		%\includegraphics[width=\linewidth]{figures/KalahariSVMResponse}
 		\caption{Kalahari Response Map (SVM)}
 		\label{fig:kalahari_SVM_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/KalahariSVMResults1}
+		%\includegraphics[width=\linewidth]{figures/KalahariSVMResults1}
 		\caption{ Kalahari $R_{i,j} > 0$}
 		\label{fig:kalahari_SVM_response_overlay}
 	\end{subfigure}
@@ -863,13 +863,13 @@ The results shown are acceptable but have a tendency to be a bit noisier. There 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/NamibSVMResponse}
+		%\includegraphics[width=\linewidth]{figures/NamibSVMResponse}
 		\caption{Namib Response Map (SVM)}
 		\label{fig:namib_SVM_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/NamibSVMResults1}
+		%\includegraphics[width=\linewidth]{figures/NamibSVMResults1}
 		\caption{ Namib $R_{i,j} > 0$}
 		\label{fig:namib_SVM_response_overlay}
 	\end{subfigure}
@@ -879,13 +879,13 @@ The results shown are acceptable but have a tendency to be a bit noisier. There 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SimpsonSVMResponse}
+		%\includegraphics[width=\linewidth]{figures/SimpsonSVMResponse}
 		\caption{Simpson Response Map (SVM)}
 		\label{fig:simpson_SVM_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SimpsonSVMResults1}
+		%\includegraphics[width=\linewidth]{figures/SimpsonSVMResults1}
 		\caption{ Simpson $R_{i,j} > 0$}
 		\label{fig:simpson_SVM_response_overlay}
 	\end{subfigure}
@@ -895,13 +895,13 @@ The results shown are acceptable but have a tendency to be a bit noisier. There 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SkeletonCoastSVMResponse}
+		%\includegraphics[width=\linewidth]{figures/SkeletonCoastSVMResponse}
 		\caption{Skeleton Coast Response Map (SVM)}
 		\label{fig:SkeletonCoast_SVM_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SkeletonCoastSVMResults1}
+		%\includegraphics[width=\linewidth]{figures/SkeletonCoastSVMResults1}
 		\caption{ Skeleton Coast $R_{i,j} > 0$}
 		\label{fig:SkeletonCoast_SVM_response_overlay}
 	\end{subfigure}
@@ -911,13 +911,13 @@ The results shown are acceptable but have a tendency to be a bit noisier. There 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WDCSVMResponse}
+		%\includegraphics[width=\linewidth]{figures/WDCSVMResponse}
 		\caption{WDC Response Map (SVM)}
 		\label{fig:WDC_SVM_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WDCSVMResults1}
+		%\includegraphics[width=\linewidth]{figures/WDCSVMResults1}
 		\caption{ WDC $R_{i,j} > 0$}
 		\label{fig:WDC_SVM_response_overlay}
 	\end{subfigure}
@@ -927,13 +927,13 @@ The results shown are acceptable but have a tendency to be a bit noisier. There 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WhiteSandsSVMResponse}
+		%\includegraphics[width=\linewidth]{figures/WhiteSandsSVMResponse}
 		\caption{White Sands Response Map (SVM)}
 		\label{fig:WhiteSands_SVM_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WhiteSandsSVMResults1}
+		%\includegraphics[width=\linewidth]{figures/WhiteSandsSVMResults1}
 		\caption{ White Sands $R_{i,j} > 0$}
 		\label{fig:WhiteSands_SVM_response_overlay}
 	\end{subfigure}
@@ -947,13 +947,13 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/KalahariGBTResponse}
+		%\includegraphics[width=\linewidth]{figures/KalahariGBTResponse}
 		\caption{Kalahari Response Map (GBT)}
 		\label{fig:kalahari_gbt_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/KalahariGBTResults1}
+		%\includegraphics[width=\linewidth]{figures/KalahariGBTResults1}
 		\caption{ Kalahari $R_{i,j} > 0$}
 		\label{fig:kalahari_gbt_response_overlay}
 	\end{subfigure}
@@ -963,13 +963,13 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/NamibGBTResponse}
+		%\includegraphics[width=\linewidth]{figures/NamibGBTResponse}
 		\caption{Namib Response Map (GBT)}
 		\label{fig:namib_gbt_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/NamibGBTResults1}
+		%\includegraphics[width=\linewidth]{figures/NamibGBTResults1}
 		\caption{ Namib $R_{i,j} > 0$}
 		\label{fig:namib_gbt_response_overlay}
 	\end{subfigure}
@@ -979,13 +979,13 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SimpsonGBTResponse}
+		%\includegraphics[width=\linewidth]{figures/SimpsonGBTResponse}
 		\caption{Simpson Response Map (GBT)}
 		\label{fig:simpson_gbt_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SimpsonGBTResults1}
+		%\includegraphics[width=\linewidth]{figures/SimpsonGBTResults1}
 		\caption{ Simpson $R_{i,j} > 0$}
 		\label{fig:simpson_gbt_response_overlay}
 	\end{subfigure}
@@ -995,13 +995,13 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SkeletonCoastGBTResponse}
+		%\includegraphics[width=\linewidth]{figures/SkeletonCoastGBTResponse}
 		\caption{Skeleton Coast Response Map (GBT)}
 		\label{fig:SkeletonCoast_gbt_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SkeletonCoastGBTResults1}
+		%\includegraphics[width=\linewidth]{figures/SkeletonCoastGBTResults1}
 		\caption{ Skeleton Coast $R_{i,j} > 0$}
 		\label{fig:SkeletonCoast_gbt_response_overlay}
 	\end{subfigure}
@@ -1011,13 +1011,13 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WDCGBTResponse}
+		%\includegraphics[width=\linewidth]{figures/WDCGBTResponse}
 		\caption{WDC Response Map (GBT)}
 		\label{fig:WDC_gbt_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WDCGBTResults1}
+		%\includegraphics[width=\linewidth]{figures/WDCGBTResults1}
 		\caption{ WDC $R_{i,j} > 0$}
 		\label{fig:WDC_gbt_response_overlay}
 	\end{subfigure}
@@ -1027,13 +1027,13 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WhiteSandsGBTResponse}
+		%\includegraphics[width=\linewidth]{figures/WhiteSandsGBTResponse}
 		\caption{White Sands Response Map (GBT)}
 		\label{fig:WhiteSands_gbt_response}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/WhiteSandsGBTResults1}
+		%\includegraphics[width=\linewidth]{figures/WhiteSandsGBTResults1}
 		\caption{ White Sands $R_{i,j} > 0$}
 		\label{fig:WhiteSands_gbt_response_overlay}
 	\end{subfigure}
@@ -1055,7 +1055,7 @@ The response map should have very large values where dune crest-lines are locate
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figures/SkeletonizationAlgorithm}
+	%\includegraphics[width=\linewidth]{figures/SkeletonizationAlgorithm}
 	\caption{A recursive algorithm for ridge following: On the first iteration, the algorithm is initialized using the detected anchor pixels, and begin search for each neighbor. Neighbors which are peaks along the ridge are used as anchors for the iteration. This algorithm recursively follows the ridge of the response images.}
 	\label{fig:recursive_ridge_follow}
 \end{figure}
@@ -1066,25 +1066,25 @@ The first step in the algorithm is to find \emph{anchor} points, which are start
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari}
+		%\includegraphics[width=\linewidth]{figures/kalahari}
 		\caption{Kalahari Image}
 		\label{fig:thinning_kalahari}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/thinning_kalahari_response}
+		%\includegraphics[width=\linewidth]{figures/thinning_kalahari_response}
 		\caption{ Response Map (SIFT-GBT) }
 		\label{fig:thinning_kalahari_response}
 	\end{subfigure}
 	\begin{subfigure}{0.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/thinning1_kalahari}
+		%\includegraphics[width=\linewidth]{figures/thinning1_kalahari}
 		\caption{ Ridge Following Thinning Algorithm }
 		\label{fig:thinning1_kalahari}
 	\end{subfigure}
 	\begin{subfigure}{0.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/thinning1_kalahari_smooth}
+		%\includegraphics[width=\linewidth]{figures/thinning1_kalahari_smooth}
 		\caption{ Ridge Following with smoothing applied }
 		\label{fig:thinning1_kalahari_smooth}
 	\end{subfigure}
@@ -1102,25 +1102,25 @@ The algorithm chosen to perform the thinning was the Zhang/Suen thinning algorit
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari}
+		%\includegraphics[width=\linewidth]{figures/kalahari}
 		\caption{Kalahari Image}
 		\label{fig:thinning2_kalahari_input}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/thinning_kalahari_response}
+		%\includegraphics[width=\linewidth]{figures/thinning_kalahari_response}
 		\caption{ Response Map (SIFT-GBT) }
 		\label{fig:thinning2_kalahari_response}
 	\end{subfigure}
 	\begin{subfigure}{0.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/thinning2_kalahari_threshold}
+		%\includegraphics[width=\linewidth]{figures/thinning2_kalahari_threshold}
 		\caption{ Response Map Threshold $R_{i,j} > 0$ }
 		\label{fig:thinning2_kalahari_threshold}
 	\end{subfigure}
 	\begin{subfigure}{0.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/thinning2_kalahari}
+		%\includegraphics[width=\linewidth]{figures/thinning2_kalahari}
 		\caption{ Zhang/Suen Thinning \cite{fast-parallel-algorithm-thinning} }
 		\label{fig:thinning2_kalahari}
 	\end{subfigure}
@@ -1140,7 +1140,7 @@ The final approach which was studied as part of this research seeks to combine t
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{figures/flow_mixed}
+	%\includegraphics[width=\linewidth]{figures/flow_mixed}
 	\caption{The process flow of the machine learning and gradient-based mixed approach. The image is first preprocessed, and the machine learning model training is identical to the approach presented in \ref{subsec:machine_learning_approach}. Simultaneously, the dominant orientation is computed on the images, the gradient direction map is extracted, which is thresholded based on the dot product, and contours are extracted (in similar fashion to the approach explained in \ref{subsec:gradient_orientation_based}). Finally, the contours are filtered based on the response map, resulting in the detected crest-lines. }
 	\label{fig:flow_mixed}
 \end{figure}
@@ -1155,19 +1155,19 @@ In this process, extracting crest-line candidates is done using the method prese
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari}
+		%\includegraphics[width=\linewidth]{figures/kalahari}
 		\caption{Kalahari Image}
 		\label{fig:gradient_orientation_kalahari_input}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/gradient_direction_image}
+		%\includegraphics[width=\linewidth]{figures/gradient_direction_image}
 		\caption{ Gradient Orientation Map ($D_{i,j}$) }
 		\label{fig:gradient_orientation_map_kalahari}
 	\end{subfigure}
 	\begin{subfigure}{0.8\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/gradient_direction_thresholded_image}
+		%\includegraphics[width=\linewidth]{figures/gradient_direction_thresholded_image}
 		\caption{ Threshold for $D_{ij} > 0$ }
 		\label{fig:threshold_gradient_orientation_map_kalahari}
 	\end{subfigure}
@@ -1187,13 +1187,13 @@ As stated previously, the localization of the candidate crest-line contours do n
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/contour_binary_overlap}
+		%\includegraphics[width=\linewidth]{figures/contour_binary_overlap}
 		\caption{Kalahari Overlapped with Figure \ref{fig:threshold_gradient_orientation_map_kalahari}}
 		\label{fig:kalahari_shift_overlap}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/contour_location_shift}
+		%\includegraphics[width=\linewidth]{figures/contour_location_shift}
 		\caption{ Contour Shift }
 		\label{fig:contour_location_shift}
 	\end{subfigure}
@@ -1209,25 +1209,25 @@ Because of the way the gradient orientation map was computed, an appropriate shi
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/kalahari}
+		%\includegraphics[width=\linewidth]{figures/kalahari}
 		\caption{Kalahari Image}
 		\label{fig:kalahari_image_2}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/gradient_direction_results_no_shift_no_filter}
+		%\includegraphics[width=\linewidth]{figures/gradient_direction_results_no_shift_no_filter}
 		\caption{Contours Extracted from Binary Image}
 		\label{fig:gradient_direction_results_no_shift_no_filter}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/gradient_direction_results_no_filter}
+		%\includegraphics[width=\linewidth]{figures/gradient_direction_results_no_filter}
 		\caption{ After Applying Shift }
 		\label{fig:gradient_direction_results_no_filter}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/gradient_direction_shift_results}
+		%\includegraphics[width=\linewidth]{figures/gradient_direction_shift_results}
 		\caption{ Filtering Based on Responses }
 		\label{fig:gradient_direction_shift_results}
 	\end{subfigure}
@@ -1262,13 +1262,13 @@ An alternative method is the Ramer-Douglas-Peucker algorithm, proposed in \cite{
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SegmentationTestImage}
+		%\includegraphics[width=\linewidth]{figures/SegmentationTestImage}
 		\caption{Sample Test Image}
 		\label{fig:connected_component_test_image}
 	\end{subfigure}
 	\begin{subfigure}{0.48\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{figures/SegmentationTestResult}
+		%\includegraphics[width=\linewidth]{figures/SegmentationTestResult}
 		\caption{Connected Components Labeling}
 		\label{fig:connected_component_test_results}
 	\end{subfigure}
@@ -1290,7 +1290,7 @@ Computing the distance between crest-lines is a feature interesting to many rese
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{figures/DuneMetrics}
+	%\includegraphics[width=\linewidth]{figures/DuneMetrics}
 	\caption{ Computing the inter-dune distance using the average orientation. Once the average orientation has been computed, the inter-dune distance can be computed by measuring the distance between segments along an orthogonal axis to the average orientation.}
 	\label{fig:inter-dune-distance-computation}
 \end{figure}
