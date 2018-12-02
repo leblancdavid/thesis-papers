@@ -6,22 +6,15 @@ The primary goal to reach when analyzing dune field images is to compute and ext
  	\item [Inter dune spacing] The distance between crest-lines also provides valuable information about structure of the dune field.
  \end{description}
  
- There are many potential methods to extract such features, but in this research, a crucial first step is to detect crest-lines in the dune field. Crest-lines are the main prominent features in any dune fields. The are characterized by a distinguishable peaks along a ridge of dunes. Extracting the dune crest-lines is a challenging problem in itself, which is explained in \ref{subsec:challenges}. In this research, a many different approaches have been attempted, which include an appearance-based approach in \ref{subsection:appearance_based_approach}, an edge-based approach in \ref{subsec:edge_based_detection}, using the Watershed Transform in \ref{subsec:watershed_transform_segmentation_approach}, a gradient orientation based method in \ref{subsec:gradient_orientation_based}, a machine learning approach in \ref{subsec:machine_learning_approach}, and ultimately the mixed gradient and machine learning approach which is explained in \ref{subsec:mixed_ml_gradient_approach}. Finally, the computation of the dune field morphology metrics is explained in section \ref{subsec:dune-field-metrics}.
+ There are many potential methods to extract such features, but in this research, a crucial first step is to detect crest-lines in the dune field. Crest-lines are the main prominent features in any dune fields. The are characterized by a distinguishable peaks along a ridge of dunes. Extracting the dune crest-lines is a challenging problem in itself, which is explained in \ref{subsec:challenges}. 
+
+ %In this research, a many different approaches have been attempted, which include an appearance-based approach in \ref{subsection:appearance_based_approach}, an edge-based approach in \ref{subsec:edge_based_detection}, using the Watershed Transform in \ref{subsec:watershed_transform_segmentation_approach}, a gradient orientation based method in \ref{subsec:gradient_orientation_based}, a machine learning approach in \ref{subsec:machine_learning_approach}, and ultimately the mixed gradient and machine learning approach which is explained in \ref{subsec:mixed_ml_gradient_approach}. Finally, the computation of the dune field morphology metrics is explained in section \ref{subsec:dune-field-metrics}.
  
  \subsection{Challenges} \label{subsec:challenges}
  
  Automated detection of crest-lines from satellite images poses many problems. Finding and labeling crest-lines in images in most cases may be a straight forward task for an expert researcher in this field, but quickly becomes a tedious task as the amount of data increases. The need for automated detection of such features is very apparent. However, there are regions where dune fields are complex and dense, making automated dune detection a much more difficult task.
  
- Generally, a crest-line is visible by the fact that it has a sunlit side, and a shaded side. Areas in the image where a bright region meets with a darker region are typically good candidates for potential crest-lines. In Figure \ref{fig:dune_cross_section}, a cross-section of a sample dune ridge illustrates the effects of the sun's orientation on the illumination of the dune field.
- 
- \begin{figure}
- 	\centering
- 	%\includegraphics[width=0.75\textwidth]{figures/dune_cross_section}
- 	\caption{Cross-section of a dune slope with the sun's orientation effect on shaded and sunlit portions of the dune.}
- 	\label{fig:dune_cross_section}
- \end{figure}
- 
- This important criteria assumes that the sun's orientation is roughly perpendicular to the dune ridges. When ridges approach a parallel orientation to the sun's orientation, the crest-lines become less pronounced. The problem is evident as shown in Figure \ref{fig:difference_between_dune_field_types}, from linear dunes in the Kalarahi (\ref{fig:difference_between_dune_field_types_kalahari}) to the complex structure of the White Sands dune field (\ref{fig:difference_between_dune_field_types_whitesands}).
+ Generally, a crest-line is visible by the fact that it has a sunlit side, and a shaded side. Areas in the image where a bright region meets with a darker region are typically good candidates for potential crest-lines. This important criteria assumes that the sun's orientation is roughly perpendicular to the dune ridges. When ridges approach a parallel orientation to the sun's orientation, the crest-lines become less pronounced. The problem is evident as shown in Figure \ref{fig:difference_between_dune_field_types}, from linear dunes in the Kalarahi (\ref{fig:difference_between_dune_field_types_kalahari}) to the complex structure of the White Sands dune field (\ref{fig:difference_between_dune_field_types_whitesands}).
  
  \begin{figure}
  	\centering
@@ -122,7 +115,7 @@ In \cite{2015_automated_mapping_of_linear_dunefield}, the assumption was made th
 
 Another interesting challenge is found in the images themselves. The correct crest-line cannot easily be determined by simple observation. A person presented with the image patch shown in \ref{fig:skeletoncoast_patch} would most likely not be able to determine with certainty which one of the edges represents the true crest-line. The obvious solution is to know the orientation of the sun relative to the dune field, but that may not always be possible.
 
-All the challenges listed above need to be addressed in order to accurately and reliably detection dune crest-lines. In the next section, the overall process flow of the crest-line detection application is presented. Following sections will discuss the various approaches to solving the problems are presented as part of the research.
+All the challenges listed above need to be addressed in order to accurately and reliably detection dune crest-lines. In the next section, the overall process flow of the crest-line detection application is presented.
 
 \subsection{Overall Process Flow}
 
@@ -181,120 +174,6 @@ The next section presents the first approach which is an appearance-based method
 
 
 
-\subsection{Appearance-Based Approach} \label{subsection:appearance_based_approach}
-The appearance-based approach uses the pixel intensity values in the image to extract object regions. The process flow for this approach is shown in Figure \ref{fig:flow_appearance_based}. The goal of this approach is to extract the contours of bright regions in the images which are assumed to be the sunlit side of the dunes. The contours are then smoothed and filtered using the gradient magnitudes.
-
- \begin{figure}[H]
- 	\centering
- 	%\includegraphics[width=\linewidth]{figures/flow_appearance_based}
- 	\caption{The process flow of the appearance-based approach. The images are first preprocessed, then an adaptive threshold is applied to binarize the image. Contours are extracted from the resulting binary regions. The contour segments are smoothed and filtered by gradient magnitude, resulting in the detected crest-lines.}
- 	\label{fig:flow_appearance_based}
- \end{figure}
-
-As stated previously, dunes typically have a shaded and a sunlit side, and depending on the conditions and image quality, the actual edge or dune crest line may not be clearly defined. Image processing typically improves the quality and allow the extraction of the dune crest lines. The preprocessing step uses a simple low-pass filter to remove noise and median filter to remove additional noise and insignificant features.
-
-Under the assumption that the sunlit side of the dunes are the relatively brightest regions in the image, a thresholding method can be applied to extract the light side of a dune. The process of thresholding (\cite{digital_image_processing_book}) is a common practice in image processing and computer vision. The process transforms the image into a binary (black and white) image for which regions can be extracted. The simplest thresholding method is to choose a fixed threshold value, and all pixels with intensity values greater than the threshold are set to 1 (white), and all others are set to 0 (black).
-
-Using a fixed threshold may not be sufficient to extract the dunes since the illumination across an image is usually not uniform, and there may be poor contrast in intensity values. An adaptive threshold can be a useful tool to threshold an image with non-uniform illumination (\cite{1990_comparative_performance_study_thresholding,1979_threshold_selection_method_gray_level_histogram,2004_survey_over_image_thresholding_techniques}) An example of this type of thresholding is shown in Figure \ref{fig:adaptive_threshold}. 
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari}
-		\caption{Kalahari Image}
-		\label{fig:kalahari_adaptive_threshold_input}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari_adaptive_threshold}
-		\caption{Adaptive Threshold Binary Image}
-		\label{fig:kalahari_adaptive_threshold}
-	\end{subfigure}
-	\caption{Adaptive Threshold applied to the Kalahari dune field satellite image. In \subref{fig:kalahari_adaptive_threshold_input} the Kalahari input image, \subref{fig:kalahari_adaptive_threshold} the adaptive threshold process applied to produce the binary image. }
-	\label{fig:adaptive_threshold}
-\end{figure}
-
-Once the image has been preprocessed, the bright regions are extracted from the dune field image using an adaptive thresholding process, resulting in a binary image. As shown in Figure \ref{fig:adaptive_threshold}, the bright regions shown consist of the sun illuminated side of the dunes along with some noise. 
-
-A region is defined as a contiguous group of pixels. From the regions, contours can be extracted, using a contour extraction algorithm described in \cite{opencv_library}. Each contour can then be filtered by size of the region. Smaller regions are considered as noise, and can be rejected from the dune candidates. The remaining region contours are used as potential candidates for dune crest lines.
-
-The contours extracted should contain both the crest-lines themselves, and the base or valley of each dune, and they should be on opposite sides of the contours. Because the adaptive thresholding process tends to be noisy, the resulting contours will also be noisy. The contours are therefore smoothed using a Gaussian kernel defined as:
-
-\begin{equation}
-G\left(i\right)=\frac{1}{\sqrt{2\pi}\sigma}e^{\frac{-i^{2}}{2\sigma^{2}}}
-\end{equation}
-
-The Gaussian kernel is convolved on the contour, which a collection of two dimensional points $(x,y)$. The result of this convolution is a smoother contour which can be more reliably used as a dune crest line candidate. In order to filter out crest-line segments from non-crest-lines segments in the contours, we use the gradient magnitudes as a guide.
-
-Typically, the assumption of this approach is that the dune crest lines are located on an area in the image where the derivatives are larger, or consistent along the edge of the dune. For each contour, the average magnitude $\mu$ of the derivative $\delta(i)$ of the image in the \emph{x} and \emph{y} directions is computed. Then, for each point within a contour compares its derivative with K neighbor's gradient magnitudes. Dune crest line candidate points will tend to have neighbors with similarly and consistently high gradients. To determine if a point $P(i)$ on a contour belongs on the dune crest line, we use the following criteria
-
-\begin{equation}
-P\left(i\right)=\begin{cases}
-	1 & \phi(i)\geq r\\
-	0 & otherwise
-\end{cases}
-\end{equation}
-
-where
-
-\begin{equation}
-\phi(i)=\frac{\sum_{k=0}^{K}\begin{cases}
-		1 & \delta\left(k\right)\geq\mu\\
-		0 & \delta\left(k\right)<\mu
-	\end{cases}}{K}
-\end{equation}
-
-and $0 < r \leq1$, which is the ratio of how many strong consistent edges to neighbors around a point i on the contour. Typically, \emph{r} would be larger than 0.5, which means most of the neighbors of a point most have strong edges for a point to be considered a dune crest line candidate. The parameter \emph{r} can be fine tune to allow more or less points to fit the criteria. This method will group common contour points based on gradient magnitude.
-
-Once the dune crest line candidates on the contour have been extracted, the contour can be split into contiguous crest line segments. Some further processing can be applied to the segments, such as filtering out smaller or less significant segments (potential false positives). Overall, the approach does provide some valuable information, even though the results shown in Table \ref{tab:appearance_approach_results} of section \ref{subsec:results-and-discussion} are quite poor. The main problem with the approach is that there is too much variability in the input images causing the method to work well on some images, and quite poorly on others. The amount of parameters to tune for each specific dune region makes this method not a desirable approach for automated dune detection.
-
-The next section presents an edge-based approach which relies on the gradients in the image to extract candidate crest-lines.
-
-
-
-\subsection{Edge-based Approach} \label{subsec:edge_based_detection}
-
-Unlike the appearance-based method previously presented, the edge-based methods used gradient information exclusively to detect crest-lines. The approach relies strongly on the assumption that crest-lines typically have relatively large gradients. The overall process flow is shown in Figure \ref{fig:flow_gradient_based}, which uses Canny edges and dominant orientation computation to determine which gradients belong to crest-lines. 
-
- \begin{figure}[H]
- 	\centering
- 	%\includegraphics[width=\linewidth]{figures/flow_gradient_based}
- 	\caption{The process flow of the gradient-based approach. The images are first preprocessed, then the Canny edge detection algorithm is applied to the image. The dominant orientation computation (\ref{subsec:dominant_orientation}), which enables many of the detected Canny edges to be filtered out based on orientation. The remaining edges are linked and post filtered based on length and shape.}
- 	\label{fig:flow_gradient_based}
- \end{figure}
-
-As stated previously, there are a few challenges specifically associated with extracting edges from the dune satellite images:
-
-\begin{enumerate}
-	\item Images tend to be noisy and highly textured, which results in many edges of varying orientations and magnitudes.
-	\item Many of the stronger edges may not necessarily be the crest-lines themselves. Generally, dunes cast relatively large shadows which can themselves produce strong edges.
-	\item Determining the appropriate values for the parameters of the edge detector can be difficult and greatly affect detection rates.
-\end{enumerate}
-
-To address the concerns stated above, the popular Canny edge detector (\cite{1986_canny_edge_detection}) is used along side some of the techniques inspired from \cite{Improved_Canny_Edge_Detection} and \cite{Runway_detection_tracking_unmanned}. First, in order to reduce the amount of noise in the images, both median and Gaussian filtering are applied to the image. The median filter removes small speckles (which for dune images may be small bushes or other contrasting features found in the images) while preserving major edge gradients. The Gaussian filter will then smooth out the gradient magnitudes and even out the image.
-
-Once the image has been preprocessed, the Canny edge detector is used to recover the potential crest-line candidates. To overcome the parameter selection of the high and low threshold, the mean gradient $\mu$ and standard deviation $\sigma$ are computed over the entire image. The high and low thresholds are determined as follows:
-
-\begin{equation}
-T_{high}=\mu+q\centerdot\sigma
-\end{equation}
-
-\begin{equation}
-T_{low}=\frac{T_{high}}{2}
-\end{equation}
-
-where \emph{q} is a factor which can be determined based on the problem set. This makes the threshold parameter less sensitive to fixed value threshold problems. The result of the Canny edge detector after filtering are displayed in Figure \ref{fig:canny_edges}. Clearly, the result of the Canny edge detector by itself is insufficient as many of the edges found are false positives. The next step in the process is to filter out the edge segments which do not belong to the dominant crest-lines.
-
- \begin{figure}
- 	\centering
- 	%\includegraphics[width=0.90\textwidth]{figures/canny_edges}
- 	\caption{Canny edge detector after median and Gaussian filtering of the Kalahari dune image.}
- 	\label{fig:canny_edges}
- \end{figure}
- 
- Many of the edges provided in the edge detection step are noise, shadows, and non crest-line textures. However, the crest-lines all have one distinctive feature in common: all of their gradient have relatively similar orientations. Similarly, because of the sun's orientation relative to the dune field, edges generated from the shadows of the dunes will also have similar orientations within themselves. Given these properties, there should be a clear delineation between crest-line edges, and non-crest-line edges. The next task then clearly becomes determining the orientation of the gradients which belong to crest-lines. This is accomplished by computing the dominant orientation of the image.
- 
  \subsubsection*{Dominant Orientation Determination} \label{subsec:dominant_orientation}
  
  Computing the dominant orientation of the dune field is an important step in the process. The dominant orientation is the overall gradient direction of the crest-lines to be detected. This process can help determine the average orientation of the dune field as well. 
@@ -303,51 +182,7 @@ where \emph{q} is a factor which can be determined based on the problem set. Thi
  
  Typically, there exists a gradient peak at the crest-line peak of the dunes (although this may not always be the case for less pronounced dunes). The direction of the gradient should agree with the overall dominant orientation of the dune field. Computing the dominant orientation of the field can be challenging in many cases because dunes typically have two major orientations, which are opposite directions. This phenomenon is clearly illustrated in Figure \ref{fig:computing_dominant_orientation}. The true crest-line peak, where the sunny side meets the shaded side is one gradient (Figure \ref{fig:true_dominant_orientation_image}). At the foot of the dune, where the shaded returns to light, a second gradient will be present, whom has an opposite direction (Figure \ref{fig:false_dominant_orientation_image}).
  
- Two main methods have been implemented to determine the dominant orientation of the dune field.
- 
- \subsubsection{Dominant Orientation From K-Means Clustering}\label{subsec:dominant_orientation_k_means}
- 
- Resolving the dominant orientation can be achieved by grouping similar edges together by clustering the gradients.  The input data for clustering is the gradient vectors themselves. The gradient vectors are simply the first derivatives in the \emph{x} and \emph{y} directions: $\langle \delta_{x_{i}}, \delta_{y_{i}} \rangle$. Derivatives are typically computed by convolution of filters such as the Sobel operator (\cite{2014_history_sobel_operator}).
- 
- There have been many approaches to clustering, but one of the simplest and most common is the K-Means algorithm (\cite{1965_Cluster_analysis_multivariate_data,1982_least_square_quantization_pcm,1967_method_classification_analysis_multivariate_observations}). The primary benefit of using a clustering algorithm is that it is unsupervised, therefore the dominant orientation can be inferred from the gradient vectors themselves.
- 
- Typically, the main parameter that is required for K-Means is the value K, which is simply the number of clusters. In this problem set, the goal is to separate the crest-line group from all other non-crest-line edges. Therefore, clustering is computed using two clusters, by setting $K=2$. There may be some value in trying different number of clusters, but this was not investigated as part of this research. Some of the benefits include better separability of gradients.
- 
- In order to get normalized results for the clustering algorithm, the gradients themselves are normalized. To normalize the gradients, the average gradient magnitude of the detected edges is computed as:
- 
- \begin{equation}
-  \bar{\delta_{\mu}}=\frac{\sum_{i=0}^{P}\sqrt{\delta_{x_{i}}^{2}+\delta_{y_{i}}^{2}}}{P}
- \end{equation}
-
- where P is the total number of detected edges from the Canny edge detector, $\delta_{x_{i}}$ and $\delta_{y_{i}}$ are the \emph{x} and \emph{y} gradient component of the \emph{i\textsuperscript{th}} point. Each gradient is then normalized by dividing by the average magnitude $\bar{\delta_{\mu}}$. This process is commonly called \emph{L2 normalization}.  
-
- \begin{equation}
- \dot{\delta}\left(x_{i},y_{i}\right)=\left(\frac{\delta_{x_{i}}}{\bar{\delta_{\mu}}},\frac{\delta_{y_{i}}}{\bar{\delta_{\mu}}}\right)
- \end{equation}
-
- The set of normalized gradient vectors are then clustered using the K-Means algorithm with $K=2$. In Figure \ref{fig:kmeans_results}, the results of the clustering method are shown. The blue points are gradient vectors which potentially belong to the dune crest-line. Studying the points, we notice that there is a skew towards the stronger edges in the blue cluster, which we will call the dominant cluster. This is determined by computing the centroids of each cluster. The cluster with the larger overall gradient magnitude is therefore assumed to be the dominant orientation and the set which contains the crest-line points.
- 
- \begin{figure}
- 	\centering
- 	%\includegraphics[width=0.90\textwidth]{figures/kmeans_results}
- 	\caption{Results of K-Means clustering algorithm with $K=2$ on the edge gradients detected using Canny, from Kalahari. The blue cluster represents the dune crest-line gradient vectors, and the red points represents all other non-crest-line edges. The cluster centers of blue is $(0.8958, -0.5496)$, and the cluster center of the red is $(-0.4111, 0.2705)$. The cluster centers are used to determine the dominant orientation.}
- 	\label{fig:kmeans_results}
- \end{figure}
- 
- Once the clusters have been determined, all edges that agree (below to the dominant orientation cluster) are then assumed to be crest-line candidates. All other edges are filtered out. A sample of the filtering method is shown in Figure \ref{fig:kmeans_edge_results}.
- 
-  \begin{figure}
-  	\centering
-  	%\includegraphics[width=0.90\textwidth]{figures/kmeans_cluster_results}
-  	\caption{Results of filtering out edges which are not part of the dominant orientation (in red), while preserving edges which agree (in green) with the dominant orientation computed by the K-Means clustering method.}
-  	\label{fig:kmeans_edge_results}
-  \end{figure}
-  
-  Once the weak edges have been filtered out, the remaining edges are used as crest-line candidates. The K-Means cluster removes a majority of false positives, but does preserve some small edge segments which are most likely noise. By using a connected components technique, these smaller less significant edge segments can be removed, keeping only longer contiguous segments.
-  
-  \subsubsection{Dominant Orientation From Histogram of Gradients} \label{subsec:dominant_orientation_histogram_of_gradients}
-  
-An alternative to the clustering method is to compute a histogram of the gradients based on orientation. Histograms of gradient directions can be used to determine the true orientation. Histograms have been used for many processes and applications including \cite{lowe_sift_paper, dalal_histogram_oriented_gradients_human_detection, hu_gradient_field_descriptor}. Quantizing the space allows us to split edges according to their orientation, where each bin in the histogram represents an edge orientation. Each bin then covers an angle of $\frac{2\pi}{N}$radians, where \emph{N} is the number of bins. Each bin of the histogram is weighed by the magnitude of edges. Once the histogram is constructed, peaks in the magnitude will help determine the dominant orientation ($\varPhi$) of the dune crest-lines. The approach poses three main problems:
+ Histograms of gradient directions can be used to determine the true orientation. Histograms have been used for many processes and applications including \cite{lowe_sift_paper, dalal_histogram_oriented_gradients_human_detection, hu_gradient_field_descriptor}. Quantizing the space allows us to split edges according to their orientation, where each bin in the histogram represents an edge orientation. Each bin then covers an angle of $\frac{2\pi}{N}$radians, where \emph{N} is the number of bins. Each bin of the histogram is weighed by the magnitude of edges. Once the histogram is constructed, peaks in the magnitude will help determine the dominant orientation ($\varPhi$) of the dune crest-lines. The approach poses three main problems:
   
   \begin{enumerate}
   	\item Determining \emph{N}: In practice, a larger value for \emph{N} has shown to provide finer grain resolution which improves dominant orientation determination. In Figure \ref{fig:computing_dominant_orientation}, a value of $N=18$ is used (resulting in bins of $20\degree$ width).
@@ -407,236 +242,6 @@ An alternative to the clustering method is to compute a histogram of the gradien
   
   Once the histogram is computed and normalized, the dominant orientation vector $\hat{\theta_{dom}}$ is determined by averaging the gradients belonging to the histogram bin with the highest value. With the dominant orientation knowledge acquired, candidate crest-line dunes can be detected.
   
-  \subsubsection{Dune Segment Linking}
-  
-  With the dominant orientation computed, many false positives have been rejected. The next step of the process is to group segments which link together. Since each crest-line candidate segments is a collections of two dimensional points, an intuitive step is to fit a line to the candidate segments. The line fitting algorithm used is from the OpenCV library \cite{opencv_library}, which aims to minimize:
-  
-  \begin{equation}
-  \sum_{i}\rho\left(r_{i}\right)
-  \end{equation}
-  
-  where $r_{i}$ is the distance between a point an the line, and $\rho\left(r_{i}\right)$ is the function used. We use the simplest least square method, $\rho\left(r\right)=\frac{r^{2}}{2}$. The result of the line fitting produces a vector of four values $\left\langle x,y,v_{x},v_{y}\right\rangle$, where the $(x, y)$ components are the position of the line, and $(v_{x},v_{y})$ is the normalized vector which is collinear to the line, encoding the orientation of the line.
-  
-  Once all segments are fit with a line, we can filter the segments based on the orientations of the lines. To get a general view of the distribution of the orientation of the lines, a histogram of the line orientations can help determine dominant lines. The histogram can be constructed based on the orientation of the lines, weighed by segment length. As shown in figure \ref{fig:linehistogram}, the histogram appears to have a unimodal distribution. When choosing all lines which belong to the peak bin in the histogram, the resulting in the output image \ref{fig:filtered_edges_lines} The results show that many of the false positives have been filtered out.
-  
-  \begin{figure}
-  	\centering
-  	\begin{subfigure}{0.48\textwidth}
-  		\centering
-  		%\includegraphics[width=\linewidth]{figures/filtered_edges_lines}
-  		\caption{Line fitting to edge segments}
-  		\label{fig:filtered_edges_lines}
-  	\end{subfigure}
-  	\begin{subfigure}{0.48\textwidth}
-  		\centering
-  		%\includegraphics[width=\linewidth]{figures/filtered_edges}
-  		\caption{Filtered edge segments}
-  		\label{fig:filtered_edges}
-  	\end{subfigure}
-  	\begin{subfigure}{\textwidth}
-  		\centering
-  		%\includegraphics[width=0.50\linewidth]{figures/linehistogram1}
-  		\caption{Histogram of line orientations}
-  		\label{fig:linehistogram}
-  	\end{subfigure}
-  	\caption{Results of filtering based on the line orientation fitting, and choosing the peak in the histogram. In  \subref{fig:filtered_edges_lines} the fitted lines from the dune segments, \subref{fig:filtered_edges} segments which have orientation matching the peak in the histogram, \subref{fig:linehistogram}  the histogram of line orientations weighed by segment length. }
-  	\label{fig:dune_segment_linking_line_fitting}
-  \end{figure}
-  
-Since the shown distribution appears to be unimodal, a better approach may be to simply compute the mean and standard deviation of the line orientations. Choosing the appropriate sigma value to filter out the noise and false positives depends on the distribution. In some cases, such as images with crest-lines which are more curved, the variation orientations may be more significant. In order to avoid the filtering of true positives, a linking algorithm should be used to link segments which belong to the same crest-line.
-
-The next section presents another appearance-based approach which utilizes the Watershed Transform to detect dune crest-lines.
-
-\subsection{Watershed Transform Segmentation Approach} \label{subsec:watershed_transform_segmentation_approach}
-
-Similarly to \ref{subsection:appearance_based_approach}, the goal of this approach is to segment out the brighter region of the image, which represents the sunny side of the dune, using the watershed transform. The overall process of this approach is shown in Figure \ref{fig:flow_watershed}.
-
- \begin{figure}[H]
- 	\centering
- 	%\includegraphics[width=\linewidth]{figures/flow_watershed}
- 	\caption{The process flow of the Watershed Transform dune detection approach. The images are first preprocessed, then some illumination normalization is applied to the image in order to improve the results of the Watershed transform. Contours are then extracted from the resulting regions which are filtered using the gradients, based on the dominant orientation. }
- 	\label{fig:flow_watershed}
- \end{figure}
- 
-  The watershed transform (\cite{2014_priority_flood,1979_workshop_image_processing,1994_watershed_continuous_function}) is a powerful segmentation tool, which in this approach is used to determine the boundary of the bright dune region. Typically, this approach can produce better results than a simple thresholding method. In order to extract reliable regions, image illumination normalization is applied, as shown in Figure \ref{fig:illumination_normalization}, to make the illumination more evenly distributed across an image. After applying some preprocessing to the image (again, median and Gaussian blurring to remove as much noise as possible), the illumination normalization presented is very basic, and better normalization schemes should be tried.
-
-\begin{figure}
-	\centering
-	%\includegraphics[width=0.90\textwidth]{figures/normalizedIllumination}
-	\caption{Simple illumination normalization algorithm applied to the Skeleton Coast image.}
-	\label{fig:illumination_normalization}
-\end{figure}
-
-The normalization process is done in a fairly simple and efficient way, using integral images. The integral image concept was originally proposed in \cite{Summed-area-tables-for-texture-mapping}, and was popularized for computer vision applications by \cite{Robust-real-time-Object-Detection}. The integral image representation allows rectangular features to be computed very efficiently. Each pixel $(x,y)$ of the integral image is the sum of the pixels above and to the left of it, as described in \cite{Robust-real-time-Object-Detection}:
-
-\begin{equation}
-ii\left(x,y\right)=\sum_{x'\leq x,y'\leq y}i\left(x',y'\right)
-\end{equation}
-
-To normalize using integral images, the mean $\mu_{i}$ of the image, which can be done efficiently once the integral images is computed, given an $N\times M$ image.
-
-\begin{equation}
-\mu_{i}=\frac{ii\left(M,N\right)}{M\cdot N}
-\end{equation}
-
-The goal of the illumination normalization is to bring pixel intensities value closer to the mean intensity of the image for a more even distribution of intensities. To accomplish this, we simply compute a ratio multiplier of the mean intensity $\mu_{i}$ over the square local area $(w\times w)$ mean intensity centered around a pixel $(x,y)$. The mean of a local area can be computed efficiently using the integral image theory:
-
-\begin{equation}
-\mu_{l}\left(x,y\right)=D-C-B+A
-\end{equation}
-
-\begin{equation}
-A=ii\left(x-\frac{w}{2},y-\frac{w}{2}\right)
-\end{equation}
-
-\begin{equation}
-B=ii\left(x+\frac{w}{2},y-\frac{w}{2}\right)
-\end{equation}
-
-\begin{equation}
-C=ii\left(x-\frac{w}{2},y+\frac{w}{2}\right)
-\end{equation}
-
-\begin{equation}
-D=ii\left(x+\frac{w}{2},y+\frac{w}{2}\right)
-\end{equation}
-
-Then, the ratio of image intensity to local mean intensity simply is $r_{\mu_{l}\left(x,y\right)}=\frac{\mu_{i}}{\mu_{l}\left(x,y\right)}$. The pixel intensity value at that location is then multiplied by this ratio to get the normalized value:
-
-\begin{equation}
-\tilde{i}\left(x,y\right)=r_{\mu_{l}\left(x,y\right)}\cdot i\left(x,y\right)
-\end{equation}
-
-With the image illumination normalized, the watershed transform can be used to segment out the brighter regions of the image which will be the dune sunny sides. The watershed implementation used is provided by the OpenCV library, and is a variant of the implementation proposed in \cite{Color-image-segmentation}. The watershed uses an initial seed rough image of the desired locations to segment out, which in this application is the brighter regions of the image. The desired regions to extract are the bright and shaded areas. The threshold values for these can be determined from the image's mean and standard deviation intensity values:
-
-\begin{equation}
-T_{high}=\mu_{i}+\rho_{high}\cdot\sigma_{i}
-\end{equation}
-
-\begin{equation}
-T_{low}=\mu_{i}+\rho_{low}\cdot\sigma_{i}
-\end{equation}
-
-Where the $\rho_{high}$ and $\rho_{low}$ are scalar values determined empirically. All pixels above the high threshold are labeled as the desired region to segment (in white) as shown in Figure \ref{fig:watershed_sunlit_side}, and all pixels below the lower threshold are set to the non-desired region (in gray), shown in \ref{fig:watershed_shaded_side}. A morphological eroding operation is applied to better separate the regions for the watershed transform. Using the labeled image and normalized illumination image, the watershed algorithm is able to segment out the dune regions reliably, as shown in \ref{fig:watershed_segmentation}. 
-
- \begin{figure}
- 	\centering
- 	\begin{subfigure}{0.48\textwidth}
- 		\centering
- 		%\includegraphics[width=\linewidth]{figures/watershed_shaded_side}
- 		\caption{\emph{Shaded} region labels}
- 		\label{fig:watershed_shaded_side}
- 	\end{subfigure}
- 	\begin{subfigure}{0.48\textwidth}
- 		\centering
- 		%\includegraphics[width=\linewidth]{figures/watershed_sunlit_side}
- 		\caption{\emph{Sunlit} region labels}
- 		\label{fig:watershed_sunlit_side}
- 	\end{subfigure}
- 	\begin{subfigure}{0.48\textwidth}
- 		\centering
- 		%\includegraphics[width=\linewidth]{figures/watershed_segmentation}
- 		\caption{Watershed Transform}
- 		\label{fig:watershed_segmentation}
- 	\end{subfigure}
- 	\begin{subfigure}{0.48\textwidth}
- 		\centering
- 		%\includegraphics[width=\linewidth]{figures/watershed_dune_detection}
- 		\caption{Results}
- 		\label{fig:watershed_dune_detection}
- 	\end{subfigure} 
- 	\caption{Watershed Transform results example applied to the Skeleton Coast. In \subref{fig:watershed_shaded_side}, the pixels labeled as \emph{shaded}, \subref{fig:watershed_sunlit_side} the pixels labeled as \emph{sunlit}, \subref{fig:watershed_segmentation} the output of the Watershed Transform, and \subref{fig:watershed_dune_detection} crest-line detection results from the Watershed Transform. }
- 	\label{fig:watershed_results}
- \end{figure}
-
-After computing the watershed segmentation image, the regions extracted from it can be retrieved using contour detection. The contours retrieved are closed loops where one segment will be along the dune crest line and the other not. To determine which segments of the contour belong to the dune crest-line, we can use what was learned from section \ref{subsec:dominant_orientation_histogram_of_gradients}: Building a histogram of the image gradients, choosing the dominant orientation, and filtering out all contour points which do not agree with the dominant orientation. 
-
-Results can be seen in Figure \ref{fig:watershed_results}. Although the results appear promising, the Watershed transform method has a few drawbacks:
-
-\begin{itemize}
-	\item An assumption that a dune contains a bright side. Not all images (especially the Simpson image), have crest-lines that have a bright edge.
-	\item The edges of the contours appear to be slightly noisier than edge-based approaches.
-	\item Localization of the segments is poor. Some segments do not lie on an actual edge, which may be reported as a false positive.
-\end{itemize}
-
-On the other hand, the watershed approach does appears to have some key benefits:
-
-\begin{itemize}
-	\item Better connectivity of dune crest-line segments. When edges become weak between two connecting segments, the edge based approaches produce gaps, where the watershed is able to fill the gaps.
-	\item Watershed method could be further expanded to include color image processing.
-\end{itemize}
-
-The next section explores another approach which utilizes the frequency domain to extract crest-lines.
-
-
-\subsection{Frequency Domain Approach} \label{subsec:frequency_domain_approach}
-
-In this approach, we take advantage of the fact dune-field patterns seem to to have some periodic pattern, which could possibly be extracted from the frequency domain. Converting the images into the frequency domain using the Discrete Fourier Transform (DFT) (\cite{1988_fast_fourier_transform_applications,1969_finite_fourier_transform}) provides a method for applying some processing on individual frequencies of the image. The process flow for this approach is shown in Figure \ref{fig:flow_dft}.
-
- \begin{figure}[H]
- 	\centering
- 	%\includegraphics[width=\linewidth]{figures/flow_dft}
- 	\caption{The process flow of the frequency domain approach. The images are first preprocessed, then translated into the frequency domain using the standard 2D discrete Fourier Transform. A high-pass filter is applied to the frequency domain to extract highest frequencies (which are assumed to contain dune crest-lines), and the inverse DFT is applied to return to the spacial domain. Crest-line detection can then be applied to the resulting image. }
- 	\label{fig:flow_dft}
- \end{figure}
-
-In this application, the features we desire to extract are the dune crest-lines, which in the spacial domain are edges. In the frequency domain, the crest-lines may belong to some of the higher frequencies (or possibly a subset of the frequency spectrum). The shifted frequency domain output of the DFT is shown in Figure \ref{fig:DFT_processing}.
-
-From the frequency domain, dominant frequencies can be extracted by searching for large magnitudes of frequencies Determining which frequencies to extract will be key for this application. More research needs to be done on how to extract features from the frequency domain. Typically, from the dataset used, it can be shown that a dominant orientation in the frequency appears to be present in the dune-field images. From preliminary observations, the dominant orientation seems to correlate exactly which the orientation of the dune crests.
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/DFT_spectrum}
-		\caption{Skeleton Coast Frequency Domain}
-		\label{fig:dft_spectrum}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/DFT_spectrum_threshold}
-		\caption{High Frequency Threshold}
-		\label{fig:DFT_spectrum_threshold}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/DFT_spectrum_threshold_median}
-		\caption{Median Filtering}
-		\label{fig:DFT_spectrum_threshold_median}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/DFT_spectrum_ellipsefit}
-		\caption{Ellipse Fit}
-		\label{fig:DFT_spectrum_ellipsefit}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/DFT_mask}
-		\caption{High-pass Filter Mask}
-		\label{fig:DFT_mask}
-	\end{subfigure} 
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/DFT_HPF}
-		\caption{Results of HPF on Skeleton Coast} 
-		\label{fig:DFT_HPF}
-	\end{subfigure} 
-	\caption{Frequency spectrum processing results from the Skeleton-Coast image. \subref{fig:dft_spectrum} Log-normalized shifted frequency domain, \subref{fig:DFT_spectrum_threshold} Result of thresholding frequency domain magnitude based on average magnitude and standard deviation of the magnitudes, \subref{fig:DFT_spectrum_threshold_median} Median filtering of the binary image of the frequency domain, \subref{fig:DFT_spectrum_ellipsefit} Result of ellipse fitting of the dominant frequencies region, \subref{fig:DFT_mask} Mask used for high-pass filtering of the frequency domain, \subref{fig:DFT_HPF} Result inverse DFT of the high pass filter applied on the frequency domain. }
-	\label{fig:DFT_processing}
-\end{figure}
-
-In order to determine this dominant orientation, the frequency domain magnitude image is thresholded based on the mean and standard deviation of the frequency magnitudes, as shown in Figure \ref{fig:DFT_spectrum_threshold}. Because output of this threshold is somewhat noisy, a median filter is applied to create a smooth region of for the dominant frequency (\ref{fig:DFT_spectrum_threshold_median}). The contour of the region is then extracted, which is used to fit an ellipse (\ref{fig:DFT_spectrum_ellipsefit}).
-
-The computed ellipse's orientation appears to match the orientation of the dune gradients. The information provided by the ellipse may prove useful Fitting an ellipse is currently mainly used for determining the orientation of the gradients of the dune crests. 
-
-There may be a better approach to extract information from the frequency domain, or other features. Currently, we use this ellipse to generate the mask for high-pass filtering. The mask shown in Figure \ref{fig:DFT_mask}) simply rejects all lower frequencies (close to the center of the spectrum), and allows all higher frequencies to pass through. 
-
-Upon applying the mask to the frequency domain, and taking the inverse discrete Fourier Transform to return to the spacial domain, the result produces a kind of edge detection filter, where lower values could potentially be used to determine locate dune crests. The results can be seen in \ref{fig:DFT_HPF}.
-
-Unfortunately, no further research was done on using the frequency domain. There may be some benefit in exploring this approach further in the future. The next approach presents are gradient orientation-based approach.
-
-
 
 
 \subsection{Gradient Orientation-Based Approach} \label{subsec:gradient_orientation_based}
