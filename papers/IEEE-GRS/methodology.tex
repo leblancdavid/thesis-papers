@@ -6,36 +6,9 @@ The primary goal to reach when analyzing dune field images is to compute and ext
  	\item [Inter dune spacing] The distance between crest-lines also provides valuable information about structure of the dune field.
  \end{description}
  
- There are many potential methods to extract such features, but in this research, a crucial first step is to detect crest-lines in the dune field. Crest-lines are the main prominent features in any dune fields. The are characterized by a distinguishable peaks along a ridge of dunes. Extracting the dune crest-lines is a challenging problem in itself, which is explained in \ref{subsec:challenges}. 
-
- %In this research, a many different approaches have been attempted, which include an appearance-based approach in \ref{subsection:appearance_based_approach}, an edge-based approach in \ref{subsec:edge_based_detection}, using the Watershed Transform in \ref{subsec:watershed_transform_segmentation_approach}, a gradient orientation based method in \ref{subsec:gradient_orientation_based}, a machine learning approach in \ref{subsec:machine_learning_approach}, and ultimately the mixed gradient and machine learning approach which is explained in \ref{subsec:mixed_ml_gradient_approach}. Finally, the computation of the dune field morphology metrics is explained in section \ref{subsec:dune-field-metrics}.
+ There are many potential methods to extract such features, but in this research, a crucial first step is to detect crest-lines in the dune field. Crest-lines are the main prominent features in any dune fields. The are characterized by a distinguishable peaks along a ridge of dunes. The need for automated detection of such features is very apparent. However, there are regions where dune fields are complex and dense, making automated dune detection a much more difficult task.
  
- \subsection{Challenges} \label{subsec:challenges}
- 
- Automated detection of crest-lines from satellite images poses many problems. Finding and labeling crest-lines in images in most cases may be a straight forward task for an expert researcher in this field, but quickly becomes a tedious task as the amount of data increases. The need for automated detection of such features is very apparent. However, there are regions where dune fields are complex and dense, making automated dune detection a much more difficult task.
- 
- Generally, a crest-line is visible by the fact that it has a sunlit side, and a shaded side. Areas in the image where a bright region meets with a darker region are typically good candidates for potential crest-lines. This important criteria assumes that the sun's orientation is roughly perpendicular to the dune ridges. When ridges approach a parallel orientation to the sun's orientation, the crest-lines become less pronounced. The problem is evident as shown in Figure \ref{fig:difference_between_dune_field_types}, from linear dunes in the Kalarahi (\ref{fig:difference_between_dune_field_types_kalahari}) to the complex structure of the White Sands dune field (\ref{fig:difference_between_dune_field_types_whitesands}).
- 
- \begin{figure}
- 	\centering
- 	\begin{subfigure}{0.48\textwidth}
- 		\centering
- 		%\includegraphics[width=\linewidth]{figures/kalahari}
- 		\caption{Kalahari: Linear dune system}
- 		\label{fig:difference_between_dune_field_types_kalahari}
- 	\end{subfigure}
- 	\begin{subfigure}{0.48\textwidth}
- 		\centering
- 		%\includegraphics[width=\linewidth]{figures/whitesands}
- 		\caption{White Sands: Complex dune system}
- 		\label{fig:difference_between_dune_field_types_whitesands}
- 	\end{subfigure}
- 	
- 	\caption{The variation in dune patterns such as \subref{fig:difference_between_dune_field_types_kalahari} linear, or \subref{fig:difference_between_dune_field_types_whitesands} complex, and the sun orientation and illumination effects on the resulting satellite images.}
- 	\label{fig:difference_between_dune_field_types}
- \end{figure}
- 
- Another important feature present dune crest-lines are the edges between the sunlit side and the shaded side. One assumption is that crest-lines produce relatively stronger edges than other areas of the image. This assumption was the principle guiding criteria in \cite{2015_automated_mapping_of_linear_dunefield}. However, the strength of the edge depends on many factors:
+ Generally, a crest-line is visible by the fact that it has a sunlit side, and a shaded side. Areas in the image where a bright region meets with a darker region are typically good candidates for potential crest-lines. This important criteria assumes that the sun's orientation is roughly perpendicular to the dune ridges. When ridges approach a parallel orientation to the sun's orientation, the crest-lines become less pronounced. One assumption is that crest-lines produce relatively stronger edges than other areas of the image. This assumption was the principle guiding criteria in \cite{2015_automated_mapping_of_linear_dunefield}. However, the strength of the edge depends on many factors:
  
   \begin{enumerate}
 	\item The sharpness of the actual dune ridge: dune which have sharper crest-lines will undoubtedly produce stronger, more defined edges on the satellite images.
@@ -109,50 +82,21 @@ In Figure \ref{fig:patches}, a plot of the intensity, gradient magnitudes, and g
 	\label{fig:patches}
 \end{figure}
 
-Typically, a peak in intensity values of the pixels is present, representing the sunlit side of a dune. Inevitably, this will produce two peaks in the gradient magnitude on both sides of the intensity peak. One of them represents the true crest-line of a dune, while the other can either be the shadow cast by the dune, or the bottom valley of the dune. The main difference between the two peaks, other than their gradient magnitude, is the fact they are almost always in opposite orientations. One peak is going from dark to bright, the other from bright to dark. If the sun's orientation relative to the dune field is known, then choosing the correct peak is trivial. When the orientation is unknown, choosing the correct peak becomes a challenging problem. 
+Typically, a peak in intensity values of the pixels is represents the sunlit side of a dune. Inevitably, this will produce two peaks in the gradient magnitude on both sides of the intensity peak. One of them represents the true crest-line of a dune, while the other can either be the shadow cast by the dune, or the bottom valley of the dune. The main difference between the two peaks, other than their gradient magnitude, is the fact they have opposite orientations. One peak is going from dark to bright, the other from bright to dark. If the sun's orientation relative to the dune field is known, then choosing the correct peak is trivial. When the orientation is unknown, choosing the correct peak becomes a challenging problem. 
 
 In \cite{2015_automated_mapping_of_linear_dunefield}, the assumption was made that the weaker of the two edges can be filtered out, claiming that the larger peak is the crest-line, which is valid in the Kalahari image patch in Figure \ref{fig:kalahari_patch_plot}. However, the gradients produced by crest-lines may or may not be larger than their cast shadows, or the valleys. A clear example is shown in Figure \ref{fig:skeletoncoast_patch_plot}. In this scenario, the true crest-line is actually represented by the first gradient peak. The second peak is in fact produced by the shadow of a different dune.
 
-Another interesting challenge is found in the images themselves. The correct crest-line cannot easily be determined by simple observation. A person presented with the image patch shown in \ref{fig:skeletoncoast_patch} would most likely not be able to determine with certainty which one of the edges represents the true crest-line. The obvious solution is to know the orientation of the sun relative to the dune field, but that may not always be possible.
-
-All the challenges listed above need to be addressed in order to accurately and reliably detection dune crest-lines. In the next section, the overall process flow of the crest-line detection application is presented.
-
-\subsection{Overall Process Flow}
-
-In this research, many different approaches were attempted and compared to extract meaningful features from the images and compute the appropriate morphological properties of the dune fields. The overall process flow of detecting crest-lines can be represented as a five stage process:
-
- \begin{figure}[H]
- 	\centering
- 	%\includegraphics[width=\linewidth]{figures/flow1}
- 	\caption{The overall process flow for general dune detection. The five steps include image processing, dominant orientation computation, crest-line candidate detection, calculations of dune metrics, validation of crest-line candidates.}
- 	\label{fig:main_flow}
- \end{figure}
-
-\subsubsection*{Image Processing}
+\subsection{Process}
 
 The pre-processing stage is an important step to normalize and de-noise the input data. Image processing is typically a low level process which attempts to improve image quality, normalize illumination, or remove unnecessary noise from the image. This type of processing will in turn improve higher level feature extraction.
 
-The first step is to insure that the images have roughly the same scale. To enforce scale normalization, the datasets scales were manually selected for appropriate crest-line detection application, and the image resolutions were resized to roughly 1000 pixel in width. The appropriate resolution is chosen based on a few factors:
+The first step is to insure that the images have roughly the same scale. To enforce scale normalization, the datasets scales were manually selected for appropriate crest-line detection application, and the image resolutions were resized to similar sizes pixel in width. In future work, the dominant scale of the crest-lines could be determined automatically to improve the robustness of the algorithms.
 
-\begin{itemize}
-	\item Source resolution: The selected resolution is limited by the original image's resolution. No extra information can be gained from increasing the source image's resolution.
-	\item Processing time: Higher resolution images require much more processing time overall which could be a limitation in a certain application.
-	\item Scale selection: If the application's domain is found in a higher scale space, a higher resolution may not necessarily be required.
-\end{itemize}
+The next step in the process is to convert the images to gray scale. The images in the terrestrial, and Ganges datasets (described in section \ref{subsec:terrestrial_dataset} and \ref{subsec:mars_dataset}) are color images by default. Although color processing of these images has not extensively been tested as part of this study, it is arguable whether using color information would improve the detection results. By converting the images to gray scale, an added benefit of normalizing the images across many region is implicitly enforced.
 
-In this application, the goal is to detect the major crest-line, which is a higher scale domain, which means a higher resolution image is not a necessity. However, the parameter selection in these processes are dependent on the resolution and scale of the images. In future work, the dominant scale of the crest-lines could be determined automatically to improve the robustness of the algorithms.
+The final preprocessing step is to remove noise in the image using a low-pass filter. Many of the algorithms in this method rely on gradient information. Therefore, to extract the meaningful gradients, removing the highest frequencies (which in typically are responsible for noise), while preserving the lower scale or more desirable gradients. Two main popular filters are utilized. The median filter, introduced in \cite{huang_median_filtering_algorithm}, is applied first to remove grain and salt and pepper noise while preserving important edges. In some cases, median filtering also helps remove some smaller scale objects such as bushes, trees, rocks, and other features which are indistinguishable from satellite images. Following this, the standard Gaussian filter is applied which removes the remaining high frequency noisy signals from the image.
 
-The next step in the process is to convert the images to gray scale. The images in the terrestrial, and Ganges datasets (described in section \ref{subsec:terrestrial_dataset} and \ref{subsec:mars_dataset}) are color images by default. Although color processing of these images has not extensively been tested as part of this study, it is arguable whether using color information would improve the detection results. By converting the images to gray scale, an added benefit of normalizing the images across many region is implicitly enforced. Finally, the conversion process turns the three channel image into a single channel image which improves overall processing performance.
-
-The final preprocessing step is to improve the image quality with low-pass filters. Many of the algorithms in this method rely on gradient information. Therefore, to extract the meaningful gradients, removing the highest frequencies (which in typically are responsible for noise), while preserving the lower scale or more desirable gradients. Two main popular filters are utilized. The median filter, introduced in \cite{huang_median_filtering_algorithm}, is applied first to remove grain and salt and pepper noise while preserving important edges. In some cases, median filtering also helps remove some smaller scale objects such as bushes, trees, rocks, and other features which are indistinguishable from satellite images. Following this, the standard Gaussian filter is applied which removes the remaining high frequency noisy signals from the image.
-
-An important aspect to note is the size of the filter masks, which is heavily dependent on the resolution of the input image. We found that in most cases, for images around 1000 pixels in width, a \emph{sigma} value of approximately 1.5 and mask size of 7 by 7 was sufficient for this application. Once the image has been preprocessed, the gradients can be computed and saved for future use. Gradients can be computed by taking the first derivative of the image, using the popular Sobel operator.
-
-An optional additional step is to apply histogram equalization to the image \cite{digital_image_processing_book}. Poorly illuminated or low contrast images greatly benefit from histogram equalization, because it stretches the contrast of the image in a consistent way. This in turns also helps in the extraction of edges, and improves determination of the dominant gradient orientation.
-
-For the most part, the image processing step is common to most approaches proposed in this section. Some approaches require more or less pre-processing, but typically the processing is applied to each image before any detection is attempted.
-
-\subsubsection*{Computing the Dominant Orientation} 
+\subsection{Computing the Dominant Orientation} 
 The dominant orientation is defined as the orientation of the gradients of crest-lines for the entire dune field. Computing the dominant orientation is an essential process in order to determine which gradients correspond to the actual crest-lines. This determination greatly improves the ability to filter out false positive candidates. In datasets where the sun's azimuth is known, the dominant orientation can be directly calculated using the sun's orientation. However, in cases where this information is not provided, the dominant orientation must be computed automatically. Sections \ref{subsec:dominant_orientation_k_means} and \ref{subsec:dominant_orientation_histogram_of_gradients} offer two main approaches to computing the dominant orientation.
 
 \subsubsection*{Detecting Crest-Line Candidates}
