@@ -11,11 +11,7 @@ The next section discusses the evaluation used for measuring the quality of each
 
 \subsection{Study Areas} \label{subsec:study-areas}
 
-As part of this research project, two datasets were used in order to evaluate the robustness of each method. The datasets include a wide range of dune types with varying morphological properties.
-
-The data provided in each set are satellite images of dune field regions available through Google Earth and NASA datasets. Included with the images is the ground truth which has been manually labeled by experts in the research field. The ground truth consists of crest-lines for each positive dune detection.
-
-In each case, the scales of the satellite images were chosen such that the inter-dune distance appeared roughly normalized across the entire dataset. Scale selection of the images is important process for even comparison of the methods for different regions. The images are resized to an appropriate resolution for processing and even across the entire dataset.
+As part of this research project, two datasets were used in order to evaluate the robustness of each method. The datasets include a wide range of dune types with varying morphological properties. The data provided in each set are satellite images of dune field regions available through Google Earth and NASA datasets. Included with the images is the ground truth which has been manually labeled by experts in the research field. The ground truth consists of crest-lines for each positive dune detection. In each case, the scales of the satellite images were chosen such that the inter-dune distance appeared roughly normalized across the entire dataset. Scale selection of the images is important process for even comparison of the methods for different regions. The images are resized to an appropriate resolution for processing and even across the entire dataset.
 
 The method described in this paper was tested on two distinct datasets: an terrestrial dataset which includes dune fields of various regions on Earth, along with the dataset provided in \cite{vaz_object_based_dune_analysis} which is located on Mars in the Ganges crater region. The same method was applied on both datasets.
 
@@ -117,36 +113,13 @@ The dataset is essentially a CTX mosaic of the Ganges chasma, which spans an are
 
 \subsection{Evaluation}\label{subsec:evaluation}
 
-For each method, a number of metrics were used to evaluate the quality of each dune detector. The results of interest are as follows:
-
-\begin{description}[align=left]
-	\item[True Positives] A true positive (\emph{TP}) is defined as a positively detected crest-lines. A detection is determined to be positive if it contains a ground truth within a radius of $\epsilon$.
-	\item[False Positives] A false positive (\emph{FP}) is defined to be a detection which is not an actual dune crest-line. A false positive occurs when a detection does not have a ground truth crest-line within a radius of $\epsilon$.
-	\item[False Negative] A false negative (\emph{FN}) is an actual ground truth crest-line which was no identified. A false negative occurs when no detection is found within a radius of $\epsilon$.
-	\item[Precision] Precision is the ratio of correct detection to overall detection. It measures how precise the detections are. It can be computed from the true positives and false positives by $P=TP/(TP+FP)$.
-	\item[Recall] Recall is the percentage of crest-lines identified. It can be computed from the true positives and false negatives using $R=TP/(TP+FN)$.
-	\item[Angular Error] The difference between the dune field average orientation computed from the detected crest-lines, and the average orientation computed from the ground truth crest-lines (in degrees), represented by $\Delta_{\theta}$.
-	\item[Inter-Dune Distance Error] The difference between the dune distance computed from the detected crest-lines and the distance computed from the ground truth crest-lines (in pixels), represented by $\Delta_{d}$.
-\end{description}
-
-In order to compute the results, some important considerations must be made in regard of determining what makes a detection a true positive or a false positive. An important point to note is that typically, in applications where objects are detected, each detection is matched to a single ground truth. Normally, each ground truth object is matched to each detection, and the closest match is marked. Once a detection is marked, it cannot be matched to any other ground truth.
-
-In this application and in the results presented, this rule was violated for a few reasons:
-
-\begin{itemize}
-	\item The ground truth and detected crest-lines are segments of 2D points or pixels. In some cases, the ground truth may not be single pixel-wide segments, meaning the expected output is thicker than the detected segments. The output is that some of the ground truth pixels do not get matched with any detections, resulting in inaccurate False Negative rates.
-	\item The detections are also segments of 2D points which form a line which may not match the exact shape of the ground truth. Although it is close to the ground truth, the number of pixels in a given detection segment may not match the number of points found in the ground truth, resulting in loss of accuracy.
-	\item Errors in the ground truth are common in each dataset. Even though the datasets were labeled by experts, they were in fact manually drawn and are not perfect. In many cases, some crest-lines are either missing, or offset by a few pixels from the actual crest-lines.
-\end{itemize}
-
-For all these reasons, the standard approach to generating results is omitted in favor of a simpler way. The approach used is to search in a window of radius $\epsilon$ around each detection and each ground truth points. If a ground truth is found in the window around a detection, that detection is marked as a true positive. On the other hand, if no ground truth is found in that window, it is a false positive. Finally, if no detections are found within the $\epsilon$ window around a ground truth, that ground truth is marked as a false negative.
+For each method, a number of metrics were used to evaluate the quality of each dune detector. A true positive (\emph{TP}) is defined as a positively detected crest-lines. A detection is determined to be positive if it contains a ground truth within a radius of $\epsilon$. A false positive (\emph{FP}) is defined to be a detection which is not an actual dune crest-line. A false positive occurs when a detection does not have a ground truth crest-line within a radius of $\epsilon$. A false negative (\emph{FN}) is an actual ground truth crest-line which was no identified. A false negative occurs when no detection is found within a radius of $\epsilon$.
 
 Determining an appropriate value for $\epsilon$ affects the overall results as well. Based on the datasets used in this research, and accounting for error in labeling and image resolution, an appropriate value was chosen to be $\epsilon=10$ (pixels). If the scale of the image is known (meters per pixel), pixels can be converted to a more meaningful metric scale.
 
-For each method the results are computed using the dataset presented in section \ref{subsec:study-areas}. For the machine learning methods, the terrestrial dataset was extended with test images. Proper evaluation of machine learning method require test images in order to test the model on samples not trained on. 
+\emph{Precision} is the ratio of correct detection to overall detection. It measures how precise the detections are. It can be computed from the true positives and false positives by $P=TP/(TP+FP)$. \emph{Recall} Recall is the percentage of crest-lines identified. It can be computed from the true positives and false negatives using $R=TP/(TP+FN)$. \emph{Angular Error} The difference between the dune field average orientation computed from the detected crest-lines, and the average orientation computed from the ground truth crest-lines (in degrees), represented by $\Delta_{\theta}$. Finally, the \emph{Inter-Dune Distance Error} The difference between the dune distance computed from the detected crest-lines and the distance computed from the ground truth crest-lines (in pixels), represented by $\Delta_{d}$.
 
 Additionally, the terrestrial dataset includes many representative regions with various dune types. There are two options for training models:
-
 \begin{description}
 	\item[Unique Model Per Region] In this approach, a machine learning model is trained for each region. The result are more accurate within each regions, but the solution is not as generalized. 
 	\item[Cross-Region Model] In this approach, a single model is trained using all regions. The results produced are typically less accurate than the unique model per region approach, but provides a more generalized solution.
@@ -155,10 +128,7 @@ Additionally, the terrestrial dataset includes many representative regions with 
 Another dataset evaluated was the Mars dataset from section \ref{subsec:mars_dataset}. Included are the results from the research done in \cite{vaz_object_based_dune_analysis}, which includes the ground truth and results. Our machine learning method was compared side-by-side with the results from \cite{vaz_object_based_dune_analysis} on each of the 16 regions sampled. The 16 regions are split half and half for training and testing respectively, where odd regions were used for training and even regions for testing. 
 
 \subsection{Results} \label{subsec:results-and-discussion}
-
-\subsubsection*{Machine Learning Approach Results}
-
-Finally, the results for the machine learning approaches are presented. To recap, the machine learning approaches require the training of the models using a set of data and the model is then tested on a separate set of data. Therefore, a separate set of data was created to evaluate the performance of the machine learning approach, shown in Figure \ref{fig:terrestrial_test_dataset}.
+To recap, the machine learning approaches require the training of the models using a set of data and the model is then tested on a separate set of data. Therefore, a separate set of data was created to evaluate the performance of the machine learning approach, shown in Figure \ref{fig:terrestrial_test_dataset}.
 
 \begin{figure}
 	\centering
