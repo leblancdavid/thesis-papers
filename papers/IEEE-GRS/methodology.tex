@@ -233,75 +233,21 @@ Using the gradient magnitudes provide more accuracy in localizing the desired cr
 
 The contours detected will inevitably land on the orientation transition. As shown in Figure \ref{fig:effect_k}, the parameter \emph{K} will have a tendency to shift the contour lines towards the dominant orientation. In order to improve localization, the contours must be shifted towards to nearest gradient magnitude peak. Since the shift is simply dependent on the parameter \emph{K}, a fixed shift can be applied in the opposite direction of the dominant orientation. This approach may be adequate if localization is not critical, but results produced are generally less accurate. A better solution is to search in the opposite direction of the dominant orientation for the nearest candidate crest-line. Each point on the contour can then be shifted by the computed distance to each crest-line candidate.
 
-Candidates can be determined using a machine learning model capable of recognizing crest-lines. A similar approach was implemented in \cite{2006_automated_classification_landform_elements,2007_Machine_Learning_tools_automatic_mapping_mars,2013_sar_image_automated_detection_dune_area,BandeiraMarques,2011_neural_network_based_dunal_landform_mapping,vaz_object_based_dune_analysis}. The goal is to train a machine learning model using a training dataset, then generate the response map which is the response of the model at each pixel in a given image. Ideally, the responses are high at pixels which contain crest-lines, and low everywhere else. The response map can be thresholded and local maximums can be traced in order to retrieve the crest-lines. The overall flow is illustrated in Figure \ref{fig:flow_ml}.
+Candidates can be determined using a machine learning model capable of recognizing crest-lines. A similar approach was implemented in \cite{2006_automated_classification_landform_elements,2007_Machine_Learning_tools_automatic_mapping_mars,2013_sar_image_automated_detection_dune_area,BandeiraMarques,2011_neural_network_based_dunal_landform_mapping,vaz_object_based_dune_analysis}. The goal is to train a machine learning model using a training dataset, then generate the response map which is the response of the model at each pixel in a given image. Ideally, the responses are high at pixels which contain crest-lines, and low everywhere else. To improve the localization, the contours are shifted towards the nearest peak in the response map.
 
-\begin{figure}[H]
-	\centering
-	%\includegraphics[width=\linewidth]{figures/flow_ml}
-	\caption{The process flow of the machine learning approach. The image is first preprocessed, and some training data (samples of crest-lines and non-crest-lines) is reserved to construct the machine learning model. SIFT features are extracted from the training data to train the model to recognize crest-lines. With the model trained, SIFT feature descriptors are computed at each pixel of the remaining test images and are inputted into the trained model to generate the response map. Finally, the local maxima of the response map are detected in order to extract the crest-lines. }
-	\label{fig:flow_ml}
-\end{figure}
-
-The first step of the process is to appropriately separate the data into training, validation, and test sets in order accurate report the performance of the method. 
-
-\subsubsection{Dataset Creation} \label{subsubsec:dataset_creation}
-
-Machine learning techniques typically require training data to construct the model in order to reliably solve classification problems. This method of training is called supervised learning (\cite{foundations_machine_learning_book,machine_learning_book}). For crest-line detection, we therefore need to split our data into two classes: crest-lines and non-crest-lines. 
-
-For each class, the data also needs to be separated into three sets for training, validation and testing. 
-
-\begin{description}
-	\item [Training] The training set is used to construct the model to learn the task at hand.
-	\item [Validation] The validation set is used to evaluate the effectiveness of the trained model. Based on the results produced on the validation set, the model parameters can be tuned to produce better results on the validation data.
-	\item [Testing] The test set is an independent set used to report the true performance of the model.
-\end{description}
-
-In order to build the model for crest-line classification, the first step is to collect the data to build each set. In this application, our datasets included the ground truth for each image set. The ground truth is essentially a binary image with the labeled crest-lines. 
+The first step of the model training process is to appropriately separate the data into training, validation, and test sets in order accurate report the performance of the classifier. Machine learning techniques typically require training data to construct the model in order to reliably solve classification problems. This method of training is called supervised learning (\cite{foundations_machine_learning_book,machine_learning_book}). For crest-line detection, we therefore need to split our data into two classes: crest-lines and non-crest-lines. In this application, our datasets included the ground truth for each image set. The ground truth is essentially a binary image with the labeled crest-lines. 
 
 To construct an appropriate dataset for the approach, the set of images is first split into the training/validation and test sets. Half of the images are reserved for testing, and the remaining half is used to training and validation. From the set of training images, the ground truth images are used to extract locations of crest-lines and non-crest-lines. For each image, pixel positions are chosen randomly, if the ground truth at the position contains a crest-line, the pixel location is added to the crest-line set, otherwise it is added to the non-crest-line set. The sampling is optimized so that \emph{N} samples are chosen for each class.
 
 The resulting output is that each training image now has \emph{N} samples of crest-lines, and \emph{N} samples of non-crest-lines. The next step in the process flow is to extract features from each of these samples, which will be used to feed into the model for training and validation.
 
-\subsubsection{Feature Descriptor Extraction} \label{subsubsec:feature_descriptor_extraction}
+Once sample locations of crest-lines and non-crest-lines have been selected, descriptors need to be extracted from each sample location. A descriptor is typically a vector of values which describes the local neighborhood around a pixel location (\cite{lowe_sift_paper,1994_good_features_to_track,1998_feature_detection,2007_invariant_features_survey}). The range of possible descriptor types is almost limitless. Descriptors can range from simple pixel values in an image patch, to gradient information, to more sophisticated descriptors such as HOG (Histogram of Oriented Gradients \cite{2007_hog_human_detection}), LBP (Local Binary Pattern \cite{1994_lbp_paper,1996_lbp_paper}), Haar Features (\cite{2001_viola_jones_paper}), SURF (Speeded Up Robust Features \cite{2006_surf}), SIFT (Scale Invariant Feature Transform \cite{lowe_sift_paper}), and many more. 
 
-Once sample locations of crest-lines and non-crest-lines have been selected, descriptors need to be extracted from each sample location. A descriptor is typically a vector of values which describes the local neighborhood around a pixel location (\cite{lowe_sift_paper,1994_good_features_to_track,1998_feature_detection,2007_invariant_features_survey}). The range of possible descriptor types is almost limitless. Descriptors can range from simple pixel values in an image patch, to gradient information, to more sophisticated descriptors such as HOG (Histogram of Oriented Gradients \cite{2007_hog_human_detection}), LBP (Local Binary Pattern \cite{1994_lbp_paper,1996_lbp_paper}), Haar Features (\cite{2001_viola_jones_paper}), SURF (Speeded Up Robust Features \cite{2006_surf}), SIFT (Scale Invariant Feature Transform \cite{lowe_sift_paper}), and many more.
+The SIFT descriptor has been shown to provide the best overall results. The descriptor is applied to each pixel on the image, therefore there is no need for point of interest detection. To compute the SIFT descriptor, the scale and orientation of the local feature is needed. The scale in our research is ignored and is replaced by using a fixed-size window around every pixel. However, the orientation is calculated using the gradients at the local pixel location. In future work, there could be some improvements to results by computing the local scale and computing the orientation at the computed scale. After computing the descriptor for each crest-line and non-crest-line training/validation and test samples, the classifier model can then be constructed, optimized, and validated.
 
-As part of this research, many of those types of features have been investigated. However, the SIFT descriptor has been shown to provide the best overall results. One downside of the SIFT descriptor is the computational requirements of extracting and matching the descriptors. The main reason is the size of a standard SIFT descriptor, which is a vector of 128 floating point values, and becomes computational significant as the number of data samples increase. Despite this downside, SIFT is still an appropriate option since there are no real-time requirements in this application.
+There are many different kinds of classifiers in machine learning: Bayesian, decision trees, artificial neural networks, Support Vector Machines, and many more (\cite{book_artificial_intelligence_modern_approach,2003_tackling_poor_assumptions_naive_bayes,1987_simplifying_decision_trees,1943_logical_calculus_ideas_immanent_nervous_activity,book_organization_of_behavior,1975_beyond_regression_prediction_analysis,1995_support_vector_networks,1995_support_vector_clustering}). As part of this research, we studied the various classifiers, notably SVM and Gradient Boosted Trees (\cite{1999_gradient_boosting_machine,1999_stochastic_gradient_boosting}) which provided the best performance with the SIFT features for crest-line recognition. Once trainded, the models are capable of recognizing pixels which contain crest-lines. 
 
-\begin{figure}
-	\centering
-	%\includegraphics[width=\linewidth]{figures/sift-descriptor}
-	\caption{The SIFT descriptor explained. The image patch is split into a 4 by 4 grid, where each cell contains a histogram of gradients of eight directions. The result is a single vector of 128 floating point values. Source of the image: \underline{http://www.vlfeat.org/api/sift.html}}
-	\label{fig:sift_descriptor}
-\end{figure}
-
-The SIFT descriptor, originally proposed in \cite{lowe_sift_paper} has been a standard in computer vision applications for over a decade. SIFT features extract a scale and rotation (and possibly affine) invariant region around a point of interest, and applies the descriptor to it. The descriptor is computed by splitting the scale invariant region around the point of interest in a 4 by 4 cell grid. In each cell, the histogram of gradients of 8 directions as shown in Figure \ref{fig:sift_descriptor}. The histogram in each cell is then concatenated into a single vector of 128 floating point values, and \emph{L2} normalization is applied to normalize the vector to unit length.   
-
-In this application, the descriptor is applied to each pixel on the image, therefore there is no need for point of interest detection. To compute the SIFT descriptor, the scale and orientation of the local feature is needed. The scale in our research is ignored and is replaced by using a fixed-size window around every pixel. On the other hand, the orientation is calculated using the gradients at the local pixel location. In future work, there could be some improvements to results by computing the local scale and computing the orientation at the computed scale. Some work was done on this, but no significant improvement was noticed.
-
-After computing the descriptor for each crest-line and non-crest-line training/validation and test samples, the classifier model can then be constructed, optimized, and validated.
-
-\subsubsection{Supervised Learning of the Crest-line Classifier Model} \label{subsubsec:supervised_learning_classifiers}
-
-The supervised learning method to build a classifier requires a dataset of labeled samples. Typically, each training sample is an input vector of values, with an expected output response. In this application, the input vectors are the features extracted, such as SIFT. The output response would either be a crest-line (assigned a response value of 1), or a non-crest-line (assigned a response value of -1).
-
-The dataset of training data and their expected responses are fed into the classifier which attempts to fit a model or estimate an optimal function which separates the classes (crest-line versus non-crest-line) for the given input.
-
-There are many different kinds of classifiers in machine learning: Bayesian, decision trees, artificial neural networks, Support Vector Machines, and many more (\cite{book_artificial_intelligence_modern_approach,2003_tackling_poor_assumptions_naive_bayes,1987_simplifying_decision_trees,1943_logical_calculus_ideas_immanent_nervous_activity,book_organization_of_behavior,1975_beyond_regression_prediction_analysis,1995_support_vector_networks,1995_support_vector_clustering}). As part of this research, we studied the various classifiers, notably SVM and Gradient Boosted Trees (\cite{1999_gradient_boosting_machine,1999_stochastic_gradient_boosting}) which provided the best performance with the SIFT features for crest-line recognition.
-
-To train the classifier, the dataset extracted (explained in section \ref{subsubsec:dataset_creation}) of \emph{N} crest-line samples and \emph{N} non-crest-line samples are used. Many of the classifiers have free parameters to optimize, therefore a \emph{K-Fold} validation is used to construct the optimal classifier. 
-
-\emph{K-Fold} validation is the process of splitting the data into \emph{K} folds, where one fold is used for validation and the remaining are used to train. The validation set is used to analyze results of samples not seen by the trained model, validating the reliability of the model. Typically, the process is repeated for each fold to ensure proper data representation. This process produces an optimal solution for the model while minimizing over-fitting to the training data. Over-fitting is a concept in machine learning which is defined as over learning the training data which results in weaker performance on validation and test examples (\cite{the-problem-of-overfitting,neural-network-studies-overfitting-overtraining,over-fitting-model-selection-bias}).
-
-For this application, four main classifiers were tested: SVM, Normal Bayes, Random Trees, and Gradient Boosted Trees, all provided within the OpenCV framework \cite{opencv_library}. Once the models have been trained, they are tested using a test dataset. The results of the training of these classifiers are shown in section \ref{subsec:results-and-discussion}.
-
-With the models recognizing crest-lines versus non-crest-lines, the next step is to construct a response map at each pixel of the images.
-
-\subsubsection{Response Maps} \label{subsubsec:response_maps}
-
-Response maps are images where each pixel values represent a response to a certain function. In the case of this method, the SIFT descriptor is first computed at each pixel and then used as an input for the trained classifier. Since the classifier was trained to output 1 (for crest-lines) or -1 (for non-crest-lines), the range of response values is then $[-1, 1]$. The resulting image is the response map of candidate crest-line.
-
-The response map therefore produces an image where bright regions are likely crest-line candidates, and darker regions can be filtered out using a simple threshold. The two main classifiers which produced generally better results are the Support Vector Machines and the Gradient Boosted Trees. 
+The next step is to construct a response map at each pixel of the images. Response maps are images where each pixel values represent a response to a certain function. In the case of this method, the SIFT descriptor is first computed at each pixel and then used as an input for the trained classifier. Since the classifier was trained to output 1 (for crest-lines) or -1 (for non-crest-lines), the range of response values is then $[-1, 1]$. The resulting image is the response map of candidate crest-line. The response map therefore produces an image where bright regions are likely crest-line candidates, and darker regions can be filtered out using a simple threshold. 
 
 The results of the SVM classifier are shown in Figure \ref{fig:SVM_response_results}. On the left are shown the response maps for the SVM classifier (defined as \emph{R}), and on the right are the thresholded results overlapped on top of the image. This is accomplished by simply thresholding the response map \emph{R} for all pixels $(i,j)$ which are $R_{i,j} > 0$. 
 
@@ -508,111 +454,6 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 	\label{fig:gbt_response_results}
 \end{figure}
 
-With the classifier model trained and the response maps generated, crest-lines can be extracted from the maps, by finding the peaks in the responses. The desired output for crest-line detection is a single pixel wide line which is smooth and contiguous. The brighter response regions tend to be thick and noisy, requiring some thinning for proper crest-line candidates to be defined. The following section will discuss the methods used to thin the responses.
-
-\subsubsection{Crest-line Extraction: Thinning And Skeletonization}
-
-In order to extract the desired crest-lines, the response map must be thinned. The thinning process is typically a morphological operation which reduces the thickness of a region to a single pixel width. An overview of thinning algorithms is explained in \cite{thinning-algorithms,performance-characterization-thinning,susan-new-approach-low-level-image-processing} and many other publications.
-
-The response map should have very large values where dune crest-lines are located. The goal is to find the local maximum of the responses along ridges. The assumption is that the crest-lines should form a ridge of high response values which can be traced. As a first attempt to solve this, a recursive algorithm was created to trace the crest-lines based on the response values. The algorithm is shown in Figure \ref{fig:recursive_ridge_follow}.
-
-\begin{figure}
-	\centering
-	%\includegraphics[width=\linewidth]{figures/SkeletonizationAlgorithm}
-	\caption{A recursive algorithm for ridge following: On the first iteration, the algorithm is initialized using the detected anchor pixels, and begin search for each neighbor. Neighbors which are peaks along the ridge are used as anchors for the iteration. This algorithm recursively follows the ridge of the response images.}
-	\label{fig:recursive_ridge_follow}
-\end{figure}
-
-The first step in the algorithm is to find \emph{anchor} points, which are starting points for the recursive algorithm. The so-called \emph{anchor} points are pixels for which the response value is larger than a defined threshold, and which have greater value than the eight neighboring pixels. Then, for each neighbor, a comparison in response value is done with their neighbors. If a neighbor has a response value greater than its two neighbors, then it is marked, and inserted into the queue of the recursive algorithm. The process is repeated until all ridge points are marked and the end of the ridge has been reached. Results of this process are shown in Figure \ref{fig:ridge_follow_results}.
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari}
-		\caption{Kalahari Image}
-		\label{fig:thinning_kalahari}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/thinning_kalahari_response}
-		\caption{ Response Map (SIFT-GBT) }
-		\label{fig:thinning_kalahari_response}
-	\end{subfigure}
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/thinning1_kalahari}
-		\caption{ Ridge Following Thinning Algorithm }
-		\label{fig:thinning1_kalahari}
-	\end{subfigure}
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/thinning1_kalahari_smooth}
-		\caption{ Ridge Following with smoothing applied }
-		\label{fig:thinning1_kalahari_smooth}
-	\end{subfigure}
-	\caption{The results of the recursive ridge following algorithm applied on the response map of the Kalahari image trained with the SIFT-GBT classifier. The results produced appear noisy and disjoint even with smoothing applied. }
-	\label{fig:ridge_follow_results}
-\end{figure}
-
-Although the algorithm does thin the response maps, the results have a tendency to be noisy and disjoint. To remove noise, some Gaussian smoothing can be applied, which improves the noisy output, but does not resolve the issue of disjoint segments. Ideally, the crest-line segments should be contiguous segments of a certain specified size. One way to resolve this issue is to apply edge linking techniques such as defined in \cite{1986_canny_edge_detection}. No attempt to apply edge linking was made as part of this project, therefore more research could be done in to resolve the problem.
-
-A better alternative is to use Skeletonization algorithms, such as explained in \cite{segmentation-free-skeletonization-grayscale-volumes,skeleton-pruning-contour-partitioning-discrete-curve-evolution,automatic-medial-axis-pruning-mapping-characteristics,fast-parallel-algorithm-thinning}. Skeletonization is the process of creating a skeleton (often referred to as a \emph{topological skeleton}) of an object or region. The goal of skeletonization is to shrink a region into a thin skeleton of the object or region. It is used in a variety of applications for its geometrical and topological properties. It enables the computation of features such as length, orientation, connectivity, and other features. 
-
-The algorithm chosen to perform the thinning was the Zhang/Suen thinning algorithm from \cite{fast-parallel-algorithm-thinning}, due to it's simplicity and efficiency in implementation. Better algorithms may improve results of the thinning process, but for this application, the Zhang/Suen algorithm is sufficient. Before applying thinning to the response map, regions are created by thresholding the response map for all $R_{i,j} > 0$, as shown in Figure \ref{fig:thinning2_kalahari_threshold}. Then, the Zhang/Suen thinning algorithm can be applied to the binary image, shown in Figure \ref{fig:thinning2_kalahari}.
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari}
-		\caption{Kalahari Image}
-		\label{fig:thinning2_kalahari_input}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/thinning_kalahari_response}
-		\caption{ Response Map (SIFT-GBT) }
-		\label{fig:thinning2_kalahari_response}
-	\end{subfigure}
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/thinning2_kalahari_threshold}
-		\caption{ Response Map Threshold $R_{i,j} > 0$ }
-		\label{fig:thinning2_kalahari_threshold}
-	\end{subfigure}
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/thinning2_kalahari}
-		\caption{ Zhang/Suen Thinning \cite{fast-parallel-algorithm-thinning} }
-		\label{fig:thinning2_kalahari}
-	\end{subfigure}
-	\caption{The results of Zhang/Suen Thinning \cite{fast-parallel-algorithm-thinning} algorithm applied on the response map of the Kalahari image trained with the SIFT-GBT classifier. The output is much smoother and contiguous segments than the recursive ridge following method shown in Figure \ref{fig:recursive_ridge_follow}. }
-	\label{fig:zhang_suen_results}
-\end{figure}
-
-The results shown in Figure \ref{fig:zhang_suen_results} are much better than the recursive algorithm shown in Figure \ref{fig:recursive_ridge_follow}. The skeletonization algorithm produces smooth contiguous segments which closely match the actual crest-lines. The final step of the method is to apply connected components to retrieve each dune segment. The length of each segment is measured and all segments which are shorter than a defined threshold can be filtered out as noise. 
-
-The results of are shown in Table \ref{tab:machine_learning_approach_results}. The next section discusses a mixed approach, which combines elements and algorithms of the machine learning approach and previous approaches.
-
-
-
-\subsection{Machine Learning and Gradient-Based Mixed Approach}\label{subsec:mixed_ml_gradient_approach}
-
-The final approach which was studied as part of this research seeks to combine the concepts discussed in the previous approaches. From section \ref{subsection:appearance_based_approach}, the use of contours to retrieve contiguous segments is used. The dominant orientation calculation, defined in section \ref{subsec:edge_based_detection}, is also a key component in this approach. The use of gradient orientation maps defined in section \ref{subsec:gradient_orientation_based}, and the machine learning concepts presented in \ref{subsec:machine_learning_approach} are also utilized to maximize performance of crest-line detection.
-
-\begin{figure}[H]
-	\centering
-	%\includegraphics[width=\linewidth]{figures/flow_mixed}
-	\caption{The process flow of the machine learning and gradient-based mixed approach. The image is first preprocessed, and the machine learning model training is identical to the approach presented in \ref{subsec:machine_learning_approach}. Simultaneously, the dominant orientation is computed on the images, the gradient direction map is extracted, which is thresholded based on the dot product, and contours are extracted (in similar fashion to the approach explained in \ref{subsec:gradient_orientation_based}). Finally, the contours are filtered based on the response map, resulting in the detected crest-lines. }
-	\label{fig:flow_mixed}
-\end{figure}
-
-As usual, each image is preprocessed to remove noise and enhance the image quality. From the processed images, a set of sample points of crest-lines and non-crest-lines are chosen randomly from a set of training data, as explained in section \ref{subsubsec:dataset_creation}. As we learned in sections \ref{subsubsec:feature_descriptor_extraction}, \ref{subsubsec:supervised_learning_classifiers}, and \ref{subsubsec:response_maps}, the features are extracted (SIFT), the classifier is trained (Gradient Boosted Trees), and the response map is created. The process of creating the response map is identical to the previous section, which is used to improve the localization of crest-lines.
-
-\subsubsection{Gradient Orientation Crest-line Extraction}
-
-In this process, extracting crest-line candidates is done using the method presented in section \ref{subsec:gradient_orientation_based}. To reiterate, the gradient orientation method computes the dominant orientation of the dune field, and computes the dot product of the gradients at each pixel with the computed dominant orientation, as shown in Figure \ref{fig:gradient_orientation_map_kalahari}. This produces an image where each pixels measures the \emph{agreement} with the dominant dune field orientation.  
 
 \begin{figure}
 	\centering
@@ -638,82 +479,12 @@ In this process, extracting crest-line candidates is done using the method prese
 	\label{fig:gradient_orientation_map}
 \end{figure}
 
-The image produced, named the gradient orientation map, is thresholded resulting in a binary image containing regions which crest-line candidates. From the binary image, contours can be extracted from the regions using the same method shown in sections \ref{subsection:appearance_based_approach} and \ref{subsec:gradient_orientation_based}. The contours are typically smooth and contiguous, but result in poor localization. Also, there are two sets of contour around the regions. The goal is to therefore filter out one side of the contours, keeping only segments which land on the crest-line.
-
-An additional step done in this approach is to improve the localization of the crest-lines based on the response map.
-
-\subsubsection{Localization Improvement of Crest-line Segments}
-
-As stated previously, the localization of the candidate crest-line contours do not land exactly on the crest-line ridges. We discussed in section \ref{subsubsec:gradient_magnitude_based_shift} the issue of localization of the contours, the cause of which is illustrated in Figure \ref{fig:orientation_transition_shift}. The shift explained in those sections was even more pronounced with larger values of \emph{K} (the size of the kernel used to compute the gradients), as shown in Figure \ref{fig:effect_k}. 
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/contour_binary_overlap}
-		\caption{Kalahari Overlapped with Figure \ref{fig:threshold_gradient_orientation_map_kalahari}}
-		\label{fig:kalahari_shift_overlap}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/contour_location_shift}
-		\caption{ Contour Shift }
-		\label{fig:contour_location_shift}
-	\end{subfigure}
-	\caption{ Illustration of the issue of poor localization of the extracted contours. In \subref{fig:kalahari_shift_overlap}, the binary image shown in Figure \ref{fig:threshold_gradient_orientation_map_kalahari} is overlapped on top of the Kalahari image \ref{fig:gradient_orientation_kalahari_input}. In \subref{fig:contour_location_shift}, a zoomed in image patch reveals the localization issue with the contours (shown in red) from the actual crest-line (shown in green). In order to improve the localization, the contour segments must be shifted towards crest-line. The shift is applied in the direction opposite to the computed dominant orientation. }
-	\label{fig:shifting_contours_to_crest_lines}
-\end{figure}
-
-To further expand on the problem, Figure \ref{fig:shifting_contours_to_crest_lines} shows the shift created from the binary image contours. In order to improve the localization of the candidate contour segments, each segment needs to be shifted towards the crest-line ridge. The result of the contour segment extraction is shown in Figure \ref{fig:gradient_direction_results_no_shift_no_filter}, clearly showing the localization issue. Two considerations must be made in order to properly shift the candidate crest-lines to the actual crest-line: the direction of the shift, and the algorithm used to shift.
-
-Because of the way the gradient orientation map was computed, an appropriate shifting direction can be in the opposite direction of the dominant orientation, as shown in Figure \ref{fig:contour_location_shift}. There may be better solution for shifting, but using the dominant orientation makes sense in this case and generally produces good results. Since the direction of the shift is known, the next step is to find the actual crest-line ridge along the direction of the shift. The solution proposed in \ref{subsec:gradient_orientation_based} was to find the nearest gradient magnitude peak. Unfortunately, as discussed in \ref{subsec:challenges}, some crest-line gradients may be relatively weak, making localization a difficult task.
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari}
-		\caption{Kalahari Image}
-		\label{fig:kalahari_image_2}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/gradient_direction_results_no_shift_no_filter}
-		\caption{Contours Extracted from Binary Image}
-		\label{fig:gradient_direction_results_no_shift_no_filter}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/gradient_direction_results_no_filter}
-		\caption{ After Applying Shift }
-		\label{fig:gradient_direction_results_no_filter}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/gradient_direction_shift_results}
-		\caption{ Filtering Based on Responses }
-		\label{fig:gradient_direction_shift_results}
-	\end{subfigure}
-	\caption{ The process of extracting candidate crest-lines using the gradient orientation map, and the machine learning approach. The Kalahari input image shown in (a), is processed to extract contours shown in (b). A shift towards the nearest peak in response values is applied (c), and all segments which have low responses are filtered out in (d). The color scheme shown in (b-d) is true positive crest-lines detections (green), the positive identified ground truth (blue), false negatives (yellow), and false positives (red).}
-	\label{fig:shifting_contours_results}
-\end{figure}
-
-Therefore, using the response map computed in the previous approach seems to be an appropriate way to resolve this problem. The response map will have larger values where crest-lines are located. So, the shift can be determined by doing a search along the opposite direction of the dominant orientation, and finding peaks in the response map. The shift can then be applied based on the computed distance, for each point along the contour segments. Smoothing can be applied in order to ensure that segments remain contiguous after the shift is applied. The results of the shift are shown in Figure \ref{fig:gradient_direction_results_no_filter}.
-
-Once the shift has been applied to every contour segments, filtering non-crest-line segments can be done by simply removing all contour segments which fall on weak responses. After all contours have been filtered, the remaining segments can be further filtered by segment length. All segments which are too short are removed from candidate crest-line segments. The output of this process is shown in Figure \ref{fig:gradient_direction_shift_results}.
-
-Overall, the mixed machine learning and gradient orientation based method produced excellent results in most cases but struggled on more complex dune systems. Section \ref{subsec:results-and-discussion} summarizes the results of this approach on both our dataset and the dataset provided by \cite{vaz_object_based_dune_analysis}. The next section discusses the method and metrics computed from the detected crest-lines.
-
+The final step is to improve the localization of the crest-lines using the response map, by translating the detected contours towards the nearest peaks in the response map. The shift can be determined by doing a search along the opposite direction of the dominant orientation. Smoothing can be applied in order to ensure that segments remain contiguous after the translation is applied. The results of the shift are shown in Figure \ref{fig:gradient_direction_results_no_filter}. Once the shift has been applied to every contour segments, filtering non-crest-line segments can be done by simply removing all contour segments which fall on weak responses. After all contours have been filtered, the remaining segments can be further filtered by segment length. All segments which are too short are removed from candidate crest-line segments. The output of this process is shown in Figure \ref{fig:gradient_direction_shift_results}. Once all crest-line candidates have been detected, the dune field's morphological properties can be computed.
 
 \subsection{Dune Field Morphology Metrics} \label{subsec:dune-field-metrics}
-The final step of the process is to extract meaningful features and metrics for researchers to study from the dune fields. This process requires a good set of detected crest-lines. The output crest-line segments extracted in the previous methods are used as input for computing the features.
+The final step of the process is to extract meaningful features and metrics for researchers to study from the dune fields. This process requires a good set of detected crest-lines. The output crest-line segments extracted in the previous methods are used as input for computing the features. There are many features metrics of interests to scientists in this field, including dune spacings, orientation, shape, size, length, bifurcations, and many more. These metrics can be used to study and understand the movements of various patterns of dunes over time in a specific area.
 
-There are many features metrics of interests to scientists in this field, including dune spacings, orientation, shape, size, length, bifurcations, and many more. These metrics can be used to study and understand the movements of various patterns of dunes over time in a specific area.
-
-As part of this research, we focused mainly on orientation and spacing of dunes, and used those metrics as validations for the effectiveness of the dune detection methods. Although these metrics are not a complete evaluation of the dune field, they are sufficiently complex to provide valuable feedback for scientists.
-
-\subsubsection{Dune Field Orientation Computation}
-One may argue that the orientation of the dune field could be simply computed in the same manner as explained in section \ref{subsec:edge_based_detection}. However, a more generalized approach is preferred which computes the metrics from any set of two dimensional points, regardless of the input image. 
+As part of this research, we focused mainly on orientation and spacing of dunes, and used those metrics as validations for the effectiveness of the dune detection methods. Although these metrics are not a complete evaluation of the dune field, they are sufficiently complex to provide valuable feedback for scientists. One may argue that the orientation of the dune field could be simply computed in the same manner as explained in section \ref{subsec:edge_based_detection}. However, a more generalized approach is preferred which computes the metrics from any set of two dimensional points, regardless of the input image. 
 
 In order to compute the average dune field orientation from the detected points, the data must be formated appropriately. The detected crest-lines are typically a set of two dimensional points on the image. These points form lines and segments of various shapes and lengths. The simplest way to compute the orientation is to fit lines to each segments and compute the average orientation of the lines.
 
@@ -746,10 +517,7 @@ Once the segments have been extracted and sorted, the line fitting algorithm pre
 
 As explained in \cite{computing-average-orientation-of-vectors}, computing the average orientation of vectors is not as trivial as simply averaging the orientations. To illustrate the problem, the average of an angle of $350^{\circ}$ and $10^{\circ}$ would be $180^{\circ}$, when in fact a more appropriate average should be $0^{\circ}$. Averaging may produce an adequate approximation, but the von Mises distribution based method proposed in \cite{computing-average-orientation-of-vectors} typically produces much more accurate results. Therefore, this technique is used to compute the average orientation of the lines.
 
-With the orientation of the dune field computed, the average dune distance can then be computed.
-
-\subsubsection{Inter-Dune Distance Computation}
-Computing the distance between crest-lines is a feature interesting to many researchers in the field. For simplicity, the inter-dune spacing is computed for the entire dune field image. The resulting measurement is in pixels in our case, but, if the scale of the satellite image is known (meters per pixels), then the measurement can be easily converted to a real world measurement. There are many ways to compute the inter-dune distance, but in this approach the simplest way was used, shown in Figure \ref{fig:inter-dune-distance-computation}. 
+With the orientation of the dune field computed, the average dune distance can then be computed. Computing the distance between crest-lines is a feature interesting to many researchers in the field. For simplicity, the inter-dune spacing is computed for the entire dune field image. The resulting measurement is in pixels in our case, but, if the scale of the satellite image is known (meters per pixels), then the measurement can be easily converted to a real world measurement. There are many ways to compute the inter-dune distance, but in this approach the simplest way was used, shown in Figure \ref{fig:inter-dune-distance-computation}. 
 
 \begin{figure}
 	\centering
