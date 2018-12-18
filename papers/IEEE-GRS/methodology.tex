@@ -167,28 +167,9 @@ One assumption made is that the bin with the largest value represents the orient
   	\label{fig:computing_dominant_orientation}
   \end{figure}
   
-  To determine which bin the \emph{i}\textsuperscript{th} edge point belongs to, we simply calculate $\left\lceil \frac{\dot{\theta_{i}}\centerdot N}{2\pi}-0.5\right\rceil $,	and increment that bin by the magnitude of the normalized gradient	by $\sqrt{\dot{\delta}_{x_{i}}^{2}+\dot{\delta}_{y_{i}}^{2}}$. In essence, this normalization process removes the uneven skew of the gradients in the overall image. Removing this skew allows true crest-line edges to be fairly compared with other stronger edges. As shown in Figure \ref{fig:computing_dominant_orientation}, the normalization process softens the stronger dominant edge and enhances the true crest-line edges. This process enables true crest-lines to be accurately determined in images where the valleys of dunes are sharp and contain strong edges.
+To determine which bin the \emph{i}\textsuperscript{th} edge point belongs to, we simply calculate $\left\lceil \frac{\dot{\theta_{i}}\centerdot N}{2\pi}-0.5\right\rceil $,	and increment that bin by the magnitude of the normalized gradient	by $\sqrt{\dot{\delta}_{x_{i}}^{2}+\dot{\delta}_{y_{i}}^{2}}$. In essence, this normalization process removes the uneven skew of the gradients in the overall image. Removing this skew allows true crest-line edges to be fairly compared with other stronger edges. As shown in Figure \ref{fig:computing_dominant_orientation}, the normalization process softens the stronger dominant edge and enhances the true crest-line edges. This process enables true crest-lines to be accurately determined in images where the valleys of dunes are sharp and contain strong edges.
   
-  Once the histogram is computed and normalized, the dominant orientation vector $\hat{\theta_{dom}}$ is determined by averaging the gradients belonging to the histogram bin with the highest value. With the dominant orientation knowledge acquired, candidate crest-line dunes can be detected.
-  
-%\subsection{Gradient Orientation-Based Approach} \label{subsec:gradient_orientation_based}
-In this approach, we used knowledge learned from a previous gradient based approach, but focus on the orientation component of the gradients rather than the magnitude. The overall flow of the approach is shown in Figure \ref{fig:flow_gradient_orientation}. 
-
-\begin{figure}[H]
-	\centering
-	%\includegraphics[width=\linewidth]{figures/flow_gradient_orientation}
-	\caption{The process flow of the gradient orientation-based approach. The image is first preprocessed for optimal gradient computation, and the dominant orientation is computed. The gradient direction map is then computed and thresholded to preserve all gradients which \emph{agree} with the dominant orientation. The resulting binary image is a good candidate for contour extraction, which are subsequently filtered based on gradient orientation and magnitude. The resulting output is the detected crest-lines segments. }
-	\label{fig:flow_gradient_orientation}
-\end{figure}
-
-
-%%IM HERE NOW!!!! CONTINUE FROM HERE!!!
-
-In section \ref{subsec:edge_based_detection}, we learned that the dominant orientation of the dune field could be determined based on the derivatives of the image. In that approach, we used the gradient magnitudes to find major crest-line edges, and filtered out edges which do not \emph{agree} with the dominant orientation of the gradients. Using edges provides good localization but is prone to discontinuity of edge segments.
-
-In contrast, this approach uses the gradient orientations of each pixel to find crest-lines. As stated previously, dunes have a bright and shaded side. Gradients in the bright and shaded sides of the dune have a tendency to point towards the crest-line.
-
-The dominant orientation explained in section \ref{subsec:edge_based_detection} is an important feature to consider in this approach. An aspect of the dominant orientation that was not discussed previously is the fact that by definition, the dominant orientation will always point from the shaded area of the dune towards the sunlit area. This phenomenon is due to the gradient operator. Subtracting a dark pixel (lower value) from a bright pixel (larger value), results in a positive value, which in terms means that the gradients of darker pixels always point towards brighter pixels.
+Once the histogram is computed and normalized, the dominant orientation vector $\hat{\theta_{dom}}$ is determined by averaging the gradients belonging to the histogram bin with the highest value. With the dominant orientation knowledge acquired, candidate crest-line dunes can be detected. The dominant orientation will always point from the shaded area of the dune towards the sunlit area. This phenomenon is due to the gradient operator. Subtracting a dark pixel (lower value) from a bright pixel (larger value), results in a positive value, which in terms means that the gradients of darker pixels always point towards brighter pixels.
 
 Given this fact, a case can be made for comparing the gradients of each pixel to the dominant orientation vector. All gradient vectors which \emph{agree} with the dominant orientation are then considered to be the shaded sides of a dune, and all gradients which \emph{disagree} with the dominant orientation are therefore part of the sunlit side of a dune. Finally the transition between areas that \emph{agree} and those that \emph{disagree} must be a good potential crest-line candidate.
 
@@ -239,23 +220,9 @@ Since $\hat{\delta_{ij}}$ and $\hat{\delta_{\mu}}$ are both unit-length vectors,
 	\label{fig:orientation_based_process}
 \end{figure}
 
-The regions produced by the gradient direction map have been shown to be typically smooth and have good continuity in this application. There appears to be a clear separation between regions in \emph{agreement} and other regions. The separation becomes even clearer when the gradient direction map is thresholded based on the dot product values. In Figure \ref{fig:orientation_based_threshold_dot_product}, a binary image of the gradient direction map is computed by thresholding all dot products above 0.
+The regions produced by the gradient direction map have been shown to be typically smooth and have good continuity in this application. There appears to be a clear separation between regions in \emph{agreement} and other regions. The separation becomes even clearer when the gradient direction map is thresholded based on the dot product values. In Figure \ref{fig:orientation_based_threshold_dot_product}, a binary image of the gradient direction map is computed by thresholding all dot products above 0. Once the gradient direction map has been thresholded, the binary image provides well defined regions which allows the use of contours to determine the crest-lines. The contours extracted provide good continuity of the crest-lines, but also contain many elements which are not part of the crest-line. The assumption is that segments of the contour with larger gradients are most likely crest-line candidates. 
 
-Once the gradient direction map has been thresholded, the binary image provides well defined regions which allows the use of contours to determine the crest-lines. Contours are extracted in a similar manner as presented in sections \ref{subsection:appearance_based_approach} and \ref{subsec:edge_based_detection}. The contours extracted provide good continuity of the crest-lines, but also contain many elements which are not part of the crest-line. To reject segments of the contour which are not part of the crest-lines, two techniques have been tried.
-
-\subsubsection*{Intensity Based:}
-
-Region contours contain crest-lines segments and non-crest-line segments. In this approach, the algorithm uses intensity values of the pixels along the contours. Segments of the contour which are on brighter regions of the image are considered to be part of the crest-lines. The use of intensity values to determine which segments of a contour are on the actual crest-line may not be an optimal solution, but has provided adequate means of rejecting many false positives.
-
-The main benefit of this approach is that the resulting regions have sharp and defined edges along the dune crest-line, regardless of how sharp an edge is in actuality. In many cases, dunes in the same image may have some sharp edges along the crest-line while others have less defined crest-lines. Using gradient magnitude in areas with poorly defined crest-lines yields poor results, while the gradient direction maps provides a sharper edge and a better estimate of where a crest-line may be. The downside of this method is that not using the gradient magnitude results in poor localization of the actual crest-line.
-
-\subsubsection*{Gradient Magnitude Based:} \label{subsubsec:gradient_magnitude_based_shift}
-
-This algorithm uses the gradient values of the pixels along the contours. The assumption is that segments of the contour with larger gradients are most likely crest-line candidates. 
-
-Using the gradient magnitudes provide much more accuracy in localizing the desired crest-lines. The gradient orientation based approach has an inherent localization problem do the the computation of the gradient orientation and size of the kernel to compute the gradients. The contours will almost always be shifted slightly away from the true crest-line as shown in Figure \ref{fig:orientation_transition_shift}.
-
-Figure \ref{fig:orientation_transition_shift} is the exact same as the plot shown in Figure \ref{fig:kalahari_patch_plot} with the crest-line plotted, and the shift shown. The shift shown is the transition from gradients which \emph{agree} with the dominant orientation ($D_{ij} > 0$) to those which \emph{disagree} with the dominant orientation {$D_{ij} < 0$}. The shift is heavily dependent on the size of the kernel \emph{K} used to compute the gradients.
+Using the gradient magnitudes provide more accuracy in localizing the desired crest-lines. A drawback of the gradient orientation map is the inherent localization problem do the the computation of the gradient orientation and size of the kernel to compute the gradients. The contours will almost always be shifted slightly away from the true crest-line as shown in Figure \ref{fig:orientation_transition_shift}. Figure \ref{fig:orientation_transition_shift} is the exact same as the plot shown in Figure \ref{fig:kalahari_patch_plot} with the crest-line plotted, and the shift shown. The shift shown is the transition from gradients which \emph{agree} with the dominant orientation ($D_{ij} > 0$) to those which \emph{disagree} with the dominant orientation {$D_{ij} < 0$}. The shift is heavily dependent on the size of the kernel \emph{K} used to compute the gradients.
 
 \begin{figure}
 	\centering
@@ -264,48 +231,9 @@ Figure \ref{fig:orientation_transition_shift} is the exact same as the plot show
 	\label{fig:orientation_transition_shift}
 \end{figure}
 
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/shift_k_9}
-		\caption{$K=9$}
-		\label{fig:shift_k_9}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/shift_k_21}
-		\caption{$K=21$}
-		\label{fig:shift_k_21}
-	\end{subfigure}
-	\caption{Effects of \emph{K} on the orientation-based approach. In \subref{fig:shift_k_9} a \emph{K} value of 9 is used, which results in better localization at the cost of noisier results, \subref{fig:shift_k_21} a \emph{K} value of 21 produces much smoother results but poor localization. }
-	\label{fig:effect_k}
-\end{figure}
+The contours detected will inevitably land on the orientation transition. As shown in Figure \ref{fig:effect_k}, the parameter \emph{K} will have a tendency to shift the contour lines towards the dominant orientation. In order to improve localization, the contours must be shifted towards to nearest gradient magnitude peak. Since the shift is simply dependent on the parameter \emph{K}, a fixed shift can be applied in the opposite direction of the dominant orientation. This approach may be adequate if localization is not critical, but results produced are generally less accurate. A better solution is to search in the opposite direction of the dominant orientation for the nearest candidate crest-line. Each point on the contour can then be shifted by the computed distance to each crest-line candidate.
 
-The contours detected will inevitably land on the orientation transition. As shown in Figure \ref{fig:effect_k}, the parameter \emph{K} will have a tendency to shift the contour lines towards the dominant orientation. In order to improve localization, the contours must be shifted towards to nearest gradient magnitude peak. 
-
-Two methods can be used to shift contours towards the crest-lines. Since the shift is simply dependent on the parameter \emph{K}, a fixed shift can be applied in the opposite direction of the dominant orientation. This approach may be adequate if localization is not critical, but results produced are generally less accurate.
-
-A better solution is to search in the opposite direction of the dominant orientation for the nearest gradient magnitude peak. Each point on the contour can then be shifted by the computed distance to each gradient peak.
-
-\subsubsection*{Parameter Effects}
-
-For this approach, there are relatively few parameters to optimize. The main parameters are:
-
-\begin{enumerate}
-	\item The value of \emph{K}, which determines the size of the kernel which computes the gradients. The effects of varying this parameter are shown in Figure \ref{fig:effect_k}. Choosing the appropriate value for \emph{K} depends largely on the scale of the provided image, size and spacing of the dune crests. Larger kernels typically produce smoother results as shown in \ref{fig:shift_k_21}, but result in poor localization.
-	\item  The value of \emph{R}, which determines the intensity or gradient magnitude value threshold for rejecting false positives. This is the main value used to determine the the appropriate level of detection. Lower threshold values typically increase the detection rates and false positive rates.
-	\item The minimum segment length value, which determines the minimal allowable length for the detected segments. This parameter depends largely on the scale or resolution of the image, and the desired precision of the crest-line detection. Segments which are shorter than the minimum segment length are assumed to be noise, and are filtered out.
-	\item The threshold value for the dot product, which determines how closely edges must match the dominant orientation. A value of 0 appears to be adequate in most cases, but it could be adjusted to suit the needs of the application.
-\end{enumerate}
-
-Overall, using the orientation information has merit and provides valuable information for crest-line detection. The approach is used and further improved in the approach presented in section \ref{subsec:mixed_ml_gradient_approach}. The next approach presents a traditional machine learning centric approach.
-
-
-
-\subsection{Machine Learning Approach} \label{subsec:machine_learning_approach}
-
-In the machine learning approach, the goal is to teach a classifier to recognize crest-lines vs non-crest-lines. A similar approach was implemented in \cite{2006_automated_classification_landform_elements,2007_Machine_Learning_tools_automatic_mapping_mars,2013_sar_image_automated_detection_dune_area,BandeiraMarques,2011_neural_network_based_dunal_landform_mapping,vaz_object_based_dune_analysis}. The goal of this approach is to create a machine learning model using a training dataset, then generate the response map which is the response of the model at each pixel in a given image. Ideally, the responses are high at pixels which contain crest-lines, and low everywhere else. The response map can be thresholded and local maximums can be traced in order to retrieve the crest-lines. The overall flow is illustrated in Figure \ref{fig:flow_ml}.
+Candidates can be determined using a machine learning model capable of recognizing crest-lines. A similar approach was implemented in \cite{2006_automated_classification_landform_elements,2007_Machine_Learning_tools_automatic_mapping_mars,2013_sar_image_automated_detection_dune_area,BandeiraMarques,2011_neural_network_based_dunal_landform_mapping,vaz_object_based_dune_analysis}. The goal is to train a machine learning model using a training dataset, then generate the response map which is the response of the model at each pixel in a given image. Ideally, the responses are high at pixels which contain crest-lines, and low everywhere else. The response map can be thresholded and local maximums can be traced in order to retrieve the crest-lines. The overall flow is illustrated in Figure \ref{fig:flow_ml}.
 
 \begin{figure}[H]
 	\centering
