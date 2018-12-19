@@ -188,9 +188,9 @@ As described in section \ref{subsubsec:feature_descriptor_extraction}, the featu
 
 The next consideration is the type of machine learning classifier to use for the model. Again, as described in section \ref{subsubsec:supervised_learning_classifiers}, there are many classifier options available such as Bayesian, Neural Networks, Decision Trees, Support Vector Machines.
 
-\begin{table}
+\begin{table*}
 	\centering
-	\caption{True positive and false positive rates results of the training process to build the crest-line classifier models as described in section \ref{subsubsec:supervised_learning_classifiers}, using the SIFT descriptors for various classifiers (a) Support Vector Machines, (b) Normal Bayes, (c) Random Trees, (d) Gradient Boosted Trees }
+	\caption{True positive and false positive rates results of the training process to build the crest-line classifier models using the SIFT descriptors for various classifiers (a) Support Vector Machines, (b) Normal Bayes, (c) Random Trees, (d) Gradient Boosted Trees }
 	\label{tab:classifier_training_test_results}
 	\begin{subtable}{0.98\textwidth}
 		\centering
@@ -230,9 +230,9 @@ The next consideration is the type of machine learning classifier to use for the
 		\caption{Normal Bayes Classifier Results}
 		\label{tab:bayes_training_test_results}
 	\end{subtable}
-\end{table}
+\end{table*}
 
-\begin{table}
+\begin{table*}
 	\ContinuedFloat
 	\centering
 	\begin{subtable}{0.98\textwidth}
@@ -273,7 +273,7 @@ The next consideration is the type of machine learning classifier to use for the
 		\caption{Gradient Boosted Trees Results}
 		\label{tab:boosted_trees_training_test_results}
 	\end{subtable}
-\end{table}
+\end{table*}
 
 In Table \ref{tab:classifier_training_test_results} shows the results of the training process. The results show that SVM and the decision trees perform the best. The Normal Bayes classifier has a tendency to over-fit the training data. This is evident by the fact that it learns the training data very well but has poor performance on the test set. Overall, the Gradient Boosted Tree results shown in Table \ref{tab:boosted_trees_training_test_results} has the best results.
 
