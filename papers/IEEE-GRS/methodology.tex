@@ -1,177 +1,90 @@
 \section{Methodology} \label{sec:methodology}
-The primary goal to reach when analyzing dune field images is to compute and extract meaningful features, as discussed in \cite{ewing-kocurek-lake-2006,ewing-peyret-kocurek-bourke-2010}. The two main features extracted in this research are the following:
+The primary goal to reach when analyzing dune field images is to compute and extract meaningful features, as discussed in \cite{ewing-kocurek-lake-2006,ewing-peyret-kocurek-bourke-2010}. The two main features extracted are the \emph{orientation} (local and global) and the \emph{inter dune spacing} (average distance between crest-lines). There are many potential methods to extract such features, but in this research, a crucial first step is to detect crest-lines in the dune field. Crest-lines are the main prominent features in any dune fields. The are characterized by a distinguishable peaks along a ridge of dunes. The need for automated detection of such features is very apparent. However, there are regions where dune fields are complex and dense, making automated dune detection a much more difficult task.
 
- \begin{description}
- 	\item [Orientation] The orientation (both local and global) of a dune field can provide researchers valuable information about climate and wind patterns in the area.
- 	\item [Inter dune spacing] The distance between crest-lines also provides valuable information about structure of the dune field.
- \end{description}
- 
- There are many potential methods to extract such features, but in this research, a crucial first step is to detect crest-lines in the dune field. Crest-lines are the main prominent features in any dune fields. The are characterized by a distinguishable peaks along a ridge of dunes. The need for automated detection of such features is very apparent. However, there are regions where dune fields are complex and dense, making automated dune detection a much more difficult task.
- 
- Generally, a crest-line is visible by the fact that it has a sunlit side, and a shaded side. Areas in the image where a bright region meets with a darker region are typically good candidates for potential crest-lines. This important criteria assumes that the sun's orientation is roughly perpendicular to the dune ridges. When ridges approach a parallel orientation to the sun's orientation, the crest-lines become less pronounced. One assumption is that crest-lines produce relatively stronger edges than other areas of the image. This assumption was the principle guiding criteria in \cite{2015_automated_mapping_of_linear_dunefield}. However, the strength of the edge depends on many factors:
- 
-  \begin{enumerate}
-	\item The sharpness of the actual dune ridge: dune which have sharper crest-lines will undoubtedly produce stronger, more defined edges on the satellite images.
-	\item The sun's orientation and time of day: As the sun approaches the horizon, the sunlit and shaded sides of the dunes become more defined. Inversely, when the sun is higher in the sky, shadows become less pronounced. Also, as discussed previously, the orientation relative to the dune field itself affects the strength of the edges.
-	\item Scale, noise and resolution of the image can all affect the strength of edges.
-  \end{enumerate}
+Generally, a crest-line is visible by the fact that it has a sunlit side, and a shaded side. Areas in the image where a bright region meets with a darker region are typically good candidates for potential crest-lines. This important criteria assumes that the sun's orientation is roughly perpendicular to the dune ridges. When ridges approach a parallel orientation to the sun's orientation, the crest-lines become less pronounced. One assumption is that crest-lines produce relatively stronger edges than other areas of the image. This assumption was the principle guiding criteria in \cite{2015_automated_mapping_of_linear_dunefield}. However, the strength of the edge depends on many factors. The sharpness of the actual dune ridge; sharper crest-lines will undoubtedly produce stronger, more defined edges on the satellite images. The sun's orientation and time of day also plays a role. As the sun approaches the horizon, the sunlit and shaded sides of the dunes become more defined. Inversely, when the sun is higher in the sky, shadows become less pronounced. Also, as discussed previously, the orientation relative to the dune field itself affects the strength of the edges. Finaly, scale, noise and resolution of the image can all affect the strength of edges.
 
-Understanding the issues with the gradients of the key problem of this research. As shown in Figure \ref{fig:patches}, the pixel values and gradient magnitudes (edge strength) can vary greatly in each region. One inclination is to select strong gradients in an image as candidates for crest-lines (as done in \cite{2015_automated_mapping_of_linear_dunefield}). However, the gradients of crest-lines are not always larger than the gradients of valleys or the shadows. 
+Understanding the issues with the gradients of the key problem of this research. As shown in Figure \ref{fig:patches}, the pixel values and gradient magnitudes (edge strength) can vary greatly in each region. One inclination is to select strong gradients in an image as candidates for crest-lines (as done in \cite{2015_automated_mapping_of_linear_dunefield}). However, the gradients of crest-lines are not always larger than the gradients of valleys or the shadows. In Figure \ref{fig:patches}, a plot of the intensity, gradient magnitudes, and gradient orientations along a cross section of a crest-line is shown. In \cite{2015_automated_mapping_of_linear_dunefield}, the assumption was made that the weaker of the two edges can be filtered out, claiming that the larger peak is the crest-line, which is valid in the Kalahari image patch in Figure \ref{fig:kalahari_patch_plot}. However, the gradients produced by crest-lines may or may not be larger than their cast shadows, or the valleys. A clear example is shown in Figure \ref{fig:skeletoncoast_patch_plot}. Determining which peak to use can be accomplished using the gradient orientation, which is computed using the dominant orientation.
 
-In Figure \ref{fig:patches}, a plot of the intensity, gradient magnitudes, and gradient orientations along a cross section of a crest-line is shown. In the sample image patches \ref{fig:kalahari_patch}, \ref{fig:skeletoncoast_patch}, \ref{fig:wdc_patch}, the intensity values of the pixels along the direction shown are plotted in blue in Figures \ref{fig:kalahari_patch_plot}, \ref{fig:skeletoncoast_patch_plot}, \ref{fig:wdc_patch_plot}, the gradients magnitudes are shown in red, and the gradient orientations are shown in a dotted black line. 
-
-\begin{figure}
+\begin{figure*}[htbp]
 	\centering
-	\begin{subfigure}{0.15\textwidth}
+	\begin{subfigure}[b]{0.15\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari_patch}
+		\includegraphics[width=\textwidth]{figures/kalahari_patch}
 		\caption{}
 		\label{fig:kalahari_patch}
 	\end{subfigure}
-	\begin{subfigure}{0.15\textwidth}
+	\begin{subfigure}[b]{0.15\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari_patch_arrow}
+		\includegraphics[width=\textwidth]{figures/kalahari_patch_arrow}
 		\caption{}
 		\label{fig:kalahari_patch_arrow}
 	\end{subfigure}
-	\begin{subfigure}{0.65\textwidth}
+	\begin{subfigure}[b]{0.65\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari_patch_plot}
+		\includegraphics[width=\textwidth]{figures/kalahari_patch_plot}
 		\caption{}
 		\label{fig:kalahari_patch_plot}
 	\end{subfigure}
 	
-	\begin{subfigure}{0.15\textwidth}
+	\begin{subfigure}[b]{0.15\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/skeletoncoast_patch}
+		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch}
 		\caption{}
 		\label{fig:skeletoncoast_patch}
 	\end{subfigure}
-	\begin{subfigure}{0.15\textwidth}
+	\begin{subfigure}[b]{0.15\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_arrow}
+		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_arrow}
 		\caption{}
 		\label{fig:skeletoncoast_patch_arrow}
 	\end{subfigure}
-	\begin{subfigure}{0.65\textwidth}
+	\begin{subfigure}[b]{0.65\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_plot}
+		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_plot}
 		\caption{}
 		\label{fig:skeletoncoast_patch_plot}
 	\end{subfigure}
 	
-	\begin{subfigure}{0.15\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/wdc_patch}
-		\caption{}
-		\label{fig:wdc_patch}
-	\end{subfigure}
-	\begin{subfigure}{0.15\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/wdc_patch_arrow}
-		\caption{}
-		\label{fig:wdc_patch_arrow}
-	\end{subfigure}
-	\begin{subfigure}{0.65\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/wdc_patch_plot}
-		\caption{}
-		\label{fig:wdc_patch_plot}
-	\end{subfigure}
-	\caption{Illustration of the intensity, gradient magnitudes, and gradient orientations, plotted along a path crossing a dune crest-line: \subref{fig:kalahari_patch}, \subref{fig:skeletoncoast_patch},\subref{fig:wdc_patch} a sample image patch from Kalahari, Skeleton Coast, and White Sands regions, \subref{fig:kalahari_patch_arrow}, \subref{fig:skeletoncoast_patch_arrow}, \subref{fig:wdc_patch_arrow} the direction of the pixel samples plotted in \subref{fig:kalahari_patch_plot}, \subref{fig:skeletoncoast_patch_plot}, \subref{fig:wdc_patch_plot} containing the intensity, gradient magnitude and orientations values along the sampled direction. }
+	\caption{Illustration of the intensity, gradient magnitudes, and gradient orientations, plotted along a path crossing a dune crest-line: \subref{fig:kalahari_patch}, \subref{fig:skeletoncoast_patch} a sample image patch from Kalahari and Skeleton Coast, \subref{fig:kalahari_patch_arrow} and \subref{fig:skeletoncoast_patch_arrow} the direction of the pixel samples plotted in \subref{fig:kalahari_patch_plot} and \subref{fig:skeletoncoast_patch_plot} containing the intensity, gradient magnitude and orientations values along the sampled direction. }
 	\label{fig:patches}
-\end{figure}
-
-Typically, a peak in intensity values of the pixels is represents the sunlit side of a dune. Inevitably, this will produce two peaks in the gradient magnitude on both sides of the intensity peak. One of them represents the true crest-line of a dune, while the other can either be the shadow cast by the dune, or the bottom valley of the dune. The main difference between the two peaks, other than their gradient magnitude, is the fact they have opposite orientations. One peak is going from dark to bright, the other from bright to dark. If the sun's orientation relative to the dune field is known, then choosing the correct peak is trivial. When the orientation is unknown, choosing the correct peak becomes a challenging problem. 
-
-In \cite{2015_automated_mapping_of_linear_dunefield}, the assumption was made that the weaker of the two edges can be filtered out, claiming that the larger peak is the crest-line, which is valid in the Kalahari image patch in Figure \ref{fig:kalahari_patch_plot}. However, the gradients produced by crest-lines may or may not be larger than their cast shadows, or the valleys. A clear example is shown in Figure \ref{fig:skeletoncoast_patch_plot}. In this scenario, the true crest-line is actually represented by the first gradient peak. The second peak is in fact produced by the shadow of a different dune.
+\end{figure*}
 
 \subsection{Process}
 
-The pre-processing stage is an important step to normalize and de-noise the input data. Image processing is typically a low level process which attempts to improve image quality, normalize illumination, or remove unnecessary noise from the image. This type of processing will in turn improve higher level feature extraction.
+The processing stage is an important step to normalize and de-noise the input data. Images should have roughly the same scale. To enforce scale normalization, the data sets scales were manually selected for appropriate crest-line detection application, and the image resolutions were resized to similar sizes pixel in width. In future work, the dominant scale of the crest-lines could be determined automatically to improve the robustness of the algorithms. Images are also converted to gray scale, which improves processing performance and reduces the variability of illumination between different data sets. The final pre-processing step is to remove noise in the image using a low-pass filter. Many of the algorithms in this method rely on gradient information. Therefore, to extract the meaningful gradients, removing the highest frequencies (which in typically are responsible for noise), while preserving the lower scale or more desirable gradients. Two main popular filters are utilized. The median filter, introduced in \cite{huang_median_filtering_algorithm}, is applied first to remove grain and salt and pepper noise while preserving important edges. In some cases, median filtering also helps remove some smaller scale objects such as bushes, trees, rocks, and other features which are indistinguishable from satellite images. Following this, the standard Gaussian filter is applied which removes the remaining high frequency noisy signals from the image.
 
-The first step is to insure that the images have roughly the same scale. To enforce scale normalization, the datasets scales were manually selected for appropriate crest-line detection application, and the image resolutions were resized to similar sizes pixel in width. In future work, the dominant scale of the crest-lines could be determined automatically to improve the robustness of the algorithms.
+\subsection{Dominant Orientation} \label{subsec:dominant_orientation}
+The dominant orientation is defined as the orientation of the gradients of crest-lines for the entire dune field. In datasets where the sun's azimuth is known, the dominant orientation can be directly calculated using the sun's orientation. However, in cases where this information is not provided, the dominant orientation must be computed automatically. Computing the dominant orientation of the dune field is an important step in the process. The dominant orientation is the overall gradient direction of the crest-lines to be detected. This process can help determine the average orientation of the dune field as well.
 
-The next step in the preprocessing of the images, is to convert them to gray scale. The images in the terrestrial, and Ganges datasets (described in section \ref{subsec:terrestrial_dataset} and \ref{subsec:mars_dataset}) are color images by default. Although color processing of these images has not extensively been tested as part of this study, it is arguable whether using color information would improve the detection results. By converting the images to gray scale, an added benefit of normalizing the images across many region is implicitly enforced.
+The direction of the gradient should agree with the overall dominant orientation of the dune field. Dunes typically have two major orientations, which are opposite directions. This phenomenon is clearly illustrated in Figure \ref{fig:patches}. Histograms of gradient directions can be used to determine the true orientation. Histograms have been used for many applications including \cite{lowe_sift_paper, dalal_histogram_oriented_gradients_human_detection, hu_gradient_field_descriptor}. Quantizing the space allows us to split edges according to their orientation, where each bin in the histogram represents an edge orientation. Each bin then covers an angle of $\frac{2\pi}{N}$radians, where \emph{N} is the number of bins. Each bin of the histogram is weighed by the magnitude of edges. Once the histogram is constructed, peaks in the magnitude will help determine the dominant orientation ($\varPhi$) of the dune crest-lines. In practice, a larger value for \emph{N} has shown to provide finer grain resolution which improves dominant orientation determination. 
 
-The final preprocessing step is to remove noise in the image using a low-pass filter. Many of the algorithms in this method rely on gradient information. Therefore, to extract the meaningful gradients, removing the highest frequencies (which in typically are responsible for noise), while preserving the lower scale or more desirable gradients. Two main popular filters are utilized. The median filter, introduced in \cite{huang_median_filtering_algorithm}, is applied first to remove grain and salt and pepper noise while preserving important edges. In some cases, median filtering also helps remove some smaller scale objects such as bushes, trees, rocks, and other features which are indistinguishable from satellite images. Following this, the standard Gaussian filter is applied which removes the remaining high frequency noisy signals from the image.
+As noted in \cite{2015_automated_mapping_of_linear_dunefield}, the histograms typically have a strong bimodal distribution. In some cases, the dominant peak of the histogram is not the part of the crest-line edge group, and the weaker one is. In that situation, choosing the higher peak will cause invalid crest-lines to be chosen. Histogram normalization can be applied to determine which peak best represents the crest-line edge group. The normalization process begins by computing the mean vector of the gradients from the edge image as follows:
 
-%\subsection{Computing the Dominant Orientation} 
-The dominant orientation is defined as the orientation of the gradients of crest-lines for the entire dune field. Computing the dominant orientation is an essential process in order to determine which gradients correspond to the actual crest-lines. This determination greatly improves the ability to filter out false positive candidates. In datasets where the sun's azimuth is known, the dominant orientation can be directly calculated using the sun's orientation. However, in cases where this information is not provided, the dominant orientation must be computed automatically.
-
-%\subsubsection*{Detecting Crest-Line Candidates}
-The general crest-line candidate detection step extracts candidate segments which are most likely candidates for crest-lines. In this research, many approaches were tried including appearance and gradient based approach along with machine learning-based methods. The final proposed solution is a fusion of the different approaches.
-
-In summary, appearance-based approaches seek to segment bright and dark regions of the image using standard thresholding methods and classify the borders around the regions as crest-lines. The drawback of these kinds of methods is they rely on parameter optimization and fail to make meaningful crest-lines and other bright features. Poor or uneven illumination cause problems for appearance-based approaches. However, gradient-based approaches use the image's gradients to find peaks in magnitude which represent either crest-lines or shadows. Gradients are less sensitive to illumination changes but filtering out gradient edges which are not crest-lines becomes challenging. Machine learning methods can learn the features specific to crest-lines versus other gradients, therefore the filtering of gradients can be achieved using a trained machine learning model.
-
-Once candidate crest-lines have been extracted, some post-processing is often applied to reject some segments which do not fit the criteria of dune crest-lines. Rejected segments are typically filtered by length (too short), shape (too much curvature), weakness of gradients, or other factors. The remaining segments can also be smoothed in order to provide less noisy segments.
-
-%\subsubsection*{Dune Metrics Calculations}
-Once segments have been extracted, metrics can be computed. Computing the dune metrics is the process of extracting the various geomorphological properties of the dune fields from the detected crest-lines. The two main metrics computed in this research are the orientation and inter-dune spacing. The reason these are the main important features is because they actually provide a large amount of information for researchers on the behavior of the dune fields. Additionally, they are fairly trivial to compute once dune crest-line segments have been extracted. Within the framework of this research, they can serve also as a proof of concept and validation of each crest-line detection method. In future work, other metrics, features, and properties could be computed, depending the specific research needs. The process of computing these metrics is discussed in detail in section \ref{subsec:dune-field-metrics}.
-
-Finally, the validation process evaluates the quality of each crest-line detector. In order to perform the validation, a dataset of ground truth is provided with each image. The main result metrics of the validation process are the precision and recall. Precision is the percentage of correctly identified crest-lines within the set of candidates. Recall is defined to be the percentage of correctly detected crest-lines from the ground truth. In addition, the validation process compares the results of the dune metrics calculations from the detected crest-lines and the ground truth. The same process of computing the dune metrics is also computed on the ground truth, and compared side-by-side with the detected crest-lines. The process is described in detail in section \ref{subsec:evaluation}.
-
-\subsubsection*{Dominant Orientation} \label{subsec:dominant_orientation}
- 
-Computing the dominant orientation of the dune field is an important step in the process. The dominant orientation is the overall gradient direction of the crest-lines to be detected. This process can help determine the average orientation of the dune field as well. An important point to make is that this process could be optional if the dominant orientation is known \emph{a priori}. Working with a dataset where the values are known improves the overall results of detection and enables skipping of this step. In cases where this information is unknown, or unavailable, automated dominant orientation determination is a potential solution.
- 
-Typically, there exists a gradient peak at the crest-line peak of the dunes (although this may not always be the case for less pronounced dunes). The direction of the gradient should agree with the overall dominant orientation of the dune field. Computing the dominant orientation of the field can be challenging in many cases because dunes typically have two major orientations, which are opposite directions. This phenomenon is clearly illustrated in Figure \ref{fig:computing_dominant_orientation}. The true crest-line peak, where the sunny side meets the shaded side is one gradient (Figure \ref{fig:true_dominant_orientation_image}). At the foot of the dune, where the shaded returns to light, a second gradient will be present, whom has an opposite direction (Figure \ref{fig:false_dominant_orientation_image}).
- 
-Histograms of gradient directions can be used to determine the true orientation. Histograms have been used for many processes and applications including \cite{lowe_sift_paper, dalal_histogram_oriented_gradients_human_detection, hu_gradient_field_descriptor}. Quantizing the space allows us to split edges according to their orientation, where each bin in the histogram represents an edge orientation. Each bin then covers an angle of $\frac{2\pi}{N}$radians, where \emph{N} is the number of bins. Each bin of the histogram is weighed by the magnitude of edges. Once the histogram is constructed, peaks in the magnitude will help determine the dominant orientation ($\varPhi$) of the dune crest-lines. In practice, a larger value for \emph{N} has shown to provide finer grain resolution which improves dominant orientation determination. In Figure \ref{fig:computing_dominant_orientation}, a value of $N=18$ is used (resulting in bins of $20\degree$ width). Often, images may have multiple peaks in the histogram, but only one of the peaks should represent the true dominant orientation of the crest-lines. As noted in \cite{2015_automated_mapping_of_linear_dunefield}, the histograms typically have a strong bimodal distribution, which is very apparent in Figure \ref{fig:dominant_orientation_histogram}. The computed dominant orientation is global to the image, which may not be optimal in cases of complex dune structures. A better solution would be to compute the dominant orientation in a local area of the image, to account for local shifts in orientation.
-  
-One assumption made is that the bin with the largest value represents the orientation of the crest-line edges. Although this assumption holds for many cases, it is not always the case. The Skeleton Coast test image provides a good example of this case in Figure \ref{fig:computing_dominant_orientation}. In this particular case, the are two major peaks in the histogram, where the stronger is not the part of the crest-line edge group, and the weaker one is. Choosing the higher peak will cause invalid crest-lines to be chosen. In order to determine which peak best represents the crest-line edge group, some normalization can be applied. The normalization process begins by computing the mean vector of the gradients from the edge image as follows:
-  
 \begin{equation}
-  \hat{\mu}\left\langle \bar{x},\bar{y}\right\rangle =\left\langle \frac{\sum_{i=0}^{P}\delta_{x_{i}}}{P},\frac{\sum_{i=0}^{P}\delta_{y_{i}}}{P}\right\rangle 
-  \end{equation}
-  
-  where \emph{P} is the total number of detected edges from the Canny edge detector, $\delta_{x_{i}}$ and $\delta_{y_{i}}$ are the \emph{x} and \emph{y} gradient component of the \emph{i}\textsuperscript{th} point. The mean orientation is computed from the mean vector as:
-  
-  \begin{equation}
+\hat{\mu}\left\langle \bar{x},\bar{y}\right\rangle =\left\langle \frac{\sum_{i=0}^{P}\delta_{x_{i}}}{P},\frac{\sum_{i=0}^{P}\delta_{y_{i}}}{P}\right\rangle 
+\end{equation}
+
+where \emph{P} is the total number of detected edges from the Canny edge detector, $\delta_{x_{i}}$ and $\delta_{y_{i}}$ are the \emph{x} and \emph{y} gradient component of the \emph{i}\textsuperscript{th} point. The mean orientation is computed from the mean vector as:
+
+\begin{equation}
 \bar{\theta_{\mu}}=\arctan\left(\frac{\mu_{\bar{y}}}{\mu_{\bar{x}}}\right)
-  \end{equation}
-  
-  The gradients are then normalized by simply subtracting the mean vector from each gradient:
-  
-  \begin{equation}
+\end{equation}
+
+The gradients are then normalized by simply subtracting the mean vector from each gradient:
+
+\begin{equation}
 \dot{\delta}\left(x_{i},y_{i}\right)=\left(\delta_{x_{i}}-\mu_{\bar{x}},\delta_{y_{i}}-\mu_{\bar{y}}\right)
-  \end{equation}
-  
-  The normalized orientation $\dot{\theta_{i}}$ can be computed:
-  
-  \begin{equation}
-  \dot{\theta_{i}}=\arctan\left(\frac{\dot{\delta_{y_{i}}}}{\dot{\delta_{x_{i}}}}\right)
-  \end{equation}
+\end{equation}
 
-  \begin{figure}
-  	\centering
-  	\begin{subfigure}{0.48\textwidth}
-  		\centering
-  		%\includegraphics[width=\linewidth]{figures/dominant_orientation_false}
-  		\caption{Non-Crest-line Edges}
-  		\label{fig:false_dominant_orientation_image}
-  	\end{subfigure}
-  	\begin{subfigure}{0.48\textwidth}
-  		\centering
-  		%\includegraphics[width=\linewidth]{figures/dominant_orientation_true}
-  		\caption{Crest-line Edges}
-  		\label{fig:true_dominant_orientation_image}
-  	\end{subfigure}
-  	\begin{subfigure}{\textwidth}
-  		\centering
-  		%\includegraphics[width=0.8\linewidth]{figures/dominant_orientation_histogram}
-  		\caption{Histogram of Gradient Orientations}
-  		\label{fig:dominant_orientation_histogram}
-  	\end{subfigure}
-  	\caption{Results of unnormalized (red) and normalized (green) histograms of gradients orientations ($N=18$), where each represents a $20\degree$ slice. The histogram contains two major peaks, but the crest-line is the weaker of the two peaks. \subref{fig:false_dominant_orientation_image} Edges which belong to the dominant orientation which are invalid crest-lines. \subref{fig:true_dominant_orientation_image} With normalization, the true crest-lines now have the higher overall magnitude. \subref{fig:dominant_orientation_histogram} The 18 bin histogram of gradients with and without normalization.}
-  	\label{fig:computing_dominant_orientation}
-  \end{figure}
-  
-To determine which bin the \emph{i}\textsuperscript{th} edge point belongs to, we simply calculate $\left\lceil \frac{\dot{\theta_{i}}\centerdot N}{2\pi}-0.5\right\rceil $,	and increment that bin by the magnitude of the normalized gradient	by $\sqrt{\dot{\delta}_{x_{i}}^{2}+\dot{\delta}_{y_{i}}^{2}}$. In essence, this normalization process removes the uneven skew of the gradients in the overall image. Removing this skew allows true crest-line edges to be fairly compared with other stronger edges. As shown in Figure \ref{fig:computing_dominant_orientation}, the normalization process softens the stronger dominant edge and enhances the true crest-line edges. This process enables true crest-lines to be accurately determined in images where the valleys of dunes are sharp and contain strong edges.
-  
-Once the histogram is computed and normalized, the dominant orientation vector $\hat{\theta_{dom}}$ is determined by averaging the gradients belonging to the histogram bin with the highest value. With the dominant orientation knowledge acquired, candidate crest-line dunes can be detected. The dominant orientation will always point from the shaded area of the dune towards the sunlit area. This phenomenon is due to the gradient operator. Subtracting a dark pixel (lower value) from a bright pixel (larger value), results in a positive value, which in terms means that the gradients of darker pixels always point towards brighter pixels.
+The normalized orientation $\dot{\theta_{i}}$ can be computed:
 
-Given this fact, a case can be made for comparing the gradients of each pixel to the dominant orientation vector. All gradient vectors which \emph{agree} with the dominant orientation are then considered to be the shaded sides of a dune, and all gradients which \emph{disagree} with the dominant orientation are therefore part of the sunlit side of a dune. Finally the transition between areas that \emph{agree} and those that \emph{disagree} must be a good potential crest-line candidate.
+\begin{equation}
+\dot{\theta_{i}}=\arctan\left(\frac{\dot{\delta_{y_{i}}}}{\dot{\delta_{x_{i}}}}\right)
+\end{equation}
+
+To determine which bin the \emph{i}\textsuperscript{th} edge point belongs to, we simply calculate $\left\lceil \frac{\dot{\theta_{i}}\centerdot N}{2\pi}-0.5\right\rceil $,	and increment that bin by the magnitude of the normalized gradient	by $\sqrt{\dot{\delta}_{x_{i}}^{2}+\dot{\delta}_{y_{i}}^{2}}$. In essence, this normalization process removes the uneven skew of the gradients in the overall image. Removing this skew allows true crest-line edges to be fairly compared with other stronger edges. The normalization process softens the stronger dominant edge which enables true crest-lines to be accurately determined in images where the valleys of dunes are sharp and contain strong edges.
+
+Once the histogram is computed and normalized, the dominant orientation vector $\hat{\theta_{dom}}$ is determined by averaging the gradients belonging to the histogram bin with the highest value. With the dominant orientation knowledge acquired, candidate crest-line dunes can be detected. The dominant orientation will always point from the shaded area of the dune towards the sunlit area. This phenomenon is due to the gradient operator. Subtracting a dark pixel (lower value) from a bright pixel (larger value), results in a positive value, which in terms means that the gradients of darker pixels always point towards brighter pixels. Given this fact, a case can be made for comparing the gradients of each pixel to the dominant orientation vector. All gradient vectors which \emph{agree} with the dominant orientation are then considered to be the shaded sides of a dune, and all gradients which \emph{disagree} with the dominant orientation are therefore part of the sunlit side of a dune. Finally the transition between areas that \emph{agree} and those that \emph{disagree} must be a good potential crest-line candidate.
 
 The concept of \emph{agreement} can be defined mathematically using a simple dot product. Given an dominant orientation defined as a unit length vector $\hat{\delta_{\mu}}$, and the local unit length gradient vector at (i, j) defined as
 
@@ -186,6 +99,20 @@ D_{ij} = \hat{\delta_{ij}} \bullet \hat{\delta_{\mu}}
 \end{equation}
 
 Since $\hat{\delta_{ij}}$ and $\hat{\delta_{\mu}}$ are both unit-length vectors, the range possible values for $D_{ij}$ is $[-1, 1]$, where positive values represent gradients which \emph{agree} with the dominant orientation, 0 is perpendicular to the dominant orientation, and negative values \emph{disagree} with the dominant orientation. The result of the dot product computed at each pixel is shown in Figure \ref{fig:orientation_based_dot_product}, which we call the gradient direction map.
+
+
+%\subsubsection*{Detecting Crest-Line Candidates}
+The general crest-line candidate detection step extracts candidate segments which are most likely candidates for crest-lines. In this research, many approaches were tried including appearance and gradient based approach along with machine learning-based methods. The final proposed solution is a fusion of the different approaches.
+
+In summary, appearance-based approaches seek to segment bright and dark regions of the image using standard thresholding methods and classify the borders around the regions as crest-lines. The drawback of these kinds of methods is they rely on parameter optimization and fail to make meaningful crest-lines and other bright features. Poor or uneven illumination cause problems for appearance-based approaches. However, gradient-based approaches use the image's gradients to find peaks in magnitude which represent either crest-lines or shadows. Gradients are less sensitive to illumination changes but filtering out gradient edges which are not crest-lines becomes challenging. Machine learning methods can learn the features specific to crest-lines versus other gradients, therefore the filtering of gradients can be achieved using a trained machine learning model.
+
+Once candidate crest-lines have been extracted, some post-processing is often applied to reject some segments which do not fit the criteria of dune crest-lines. Rejected segments are typically filtered by length (too short), shape (too much curvature), weakness of gradients, or other factors. The remaining segments can also be smoothed in order to provide less noisy segments.
+
+%\subsubsection*{Dune Metrics Calculations}
+Once segments have been extracted, metrics can be computed. Computing the dune metrics is the process of extracting the various geomorphological properties of the dune fields from the detected crest-lines. The two main metrics computed in this research are the orientation and inter-dune spacing. The reason these are the main important features is because they actually provide a large amount of information for researchers on the behavior of the dune fields. Additionally, they are fairly trivial to compute once dune crest-line segments have been extracted. Within the framework of this research, they can serve also as a proof of concept and validation of each crest-line detection method. In future work, other metrics, features, and properties could be computed, depending the specific research needs. The process of computing these metrics is discussed in detail in section \ref{subsec:dune-field-metrics}.
+
+Finally, the validation process evaluates the quality of each crest-line detector. In order to perform the validation, a dataset of ground truth is provided with each image. The main result metrics of the validation process are the precision and recall. Precision is the percentage of correctly identified crest-lines within the set of candidates. Recall is defined to be the percentage of correctly detected crest-lines from the ground truth. In addition, the validation process compares the results of the dune metrics calculations from the detected crest-lines and the ground truth. The same process of computing the dune metrics is also computed on the ground truth, and compared side-by-side with the detected crest-lines. The process is described in detail in section \ref{subsec:evaluation}.
+
 
 \begin{figure}
 	\centering
