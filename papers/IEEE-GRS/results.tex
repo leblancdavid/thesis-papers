@@ -166,7 +166,7 @@ To verify the robustness of this approach, the method was also tested on another
 		\label{fig:area15_image}
 	\end{subfigure}
 
-	\caption{Ganges Chasms Mars dataset from \cite{vaz_object_based_dune_analysis} which includes (\ref{fig:ganges_regions}) 16 regions extracted, (\ref{fig:ganges1_image}) sample image from region 1 with corresponding labeled ground truth}
+	\caption{Ganges Chasms Mars dataset from \cite{vaz_object_based_dune_analysis} which includes 14 regions extracted with the ground truth labeled. }
 	\label{fig:mars_ganges_dataset}
 \end{figure*}
 
@@ -192,59 +192,8 @@ Additionally, the terrestrial dataset includes many representative regions with 
 Another dataset evaluated was the Mars dataset from section \ref{subsec:mars_dataset}. Included are the results from the research done in \cite{vaz_object_based_dune_analysis}, which includes the ground truth and results. Our machine learning method was compared side-by-side with the results from \cite{vaz_object_based_dune_analysis} on each of the 16 regions sampled. The 16 regions are split half and half for training and testing respectively, where odd regions were used for training and even regions for testing. 
 
 \subsection{Results} \label{subsec:results-and-discussion}
-To recap, the machine learning approaches require the training of the models using a set of data and the model is then tested on a separate set of data. Therefore, a separate set of data was created to evaluate the performance of the machine learning approach, shown in Figure \ref{fig:terrestrial_test_dataset}.
+The machine learning approaches require the training of the models using a set of data and the model is then tested on a separate set of data. Therefore, a separate set of data was created to evaluate the performance of the machine learning approach, shown in Figure \ref{fig:terrestrial_test_dataset}.
 
-\begin{figure}
-	\centering
-	\begin{subfigure}{\textwidth}
-		\centering
-		%\includegraphics[width=0.45\linewidth]{figures/kalahari_test}
-		%\includegraphics[width=0.45\linewidth]{figures/kalahari_test_gt}
-		\caption{ Kalahari Test }
-		\label{fig:kalahari_test_image}
-	\end{subfigure}
-	\begin{subfigure}{\textwidth}
-		\centering
-		%\includegraphics[width=0.45\linewidth]{figures/namib_test}
-		%\includegraphics[width=0.45\linewidth]{figures/namib_test_gt}
-		\caption{ Namib Test }
-		\label{fig:namib_test_image}
-	\end{subfigure}
-	\begin{subfigure}{\textwidth}
-		\centering
-		%\includegraphics[width=0.45\linewidth]{figures/simpson_test}
-		%\includegraphics[width=0.45\linewidth]{figures/simpson_test_gt}
-		\caption{ Simpson Test }
-		\label{fig:simpson_test_image}
-	\end{subfigure}
-\end{figure}
-\begin{figure}
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{\textwidth}
-		\centering
-		%\includegraphics[width=0.45\linewidth]{figures/skeleton_coast_test}
-		%\includegraphics[width=0.45\linewidth]{figures/skeleton_coast_test_gt}
-		\caption{ Skeleton Coast Test }
-		\label{fig:skeleton_coast_test_image}
-	\end{subfigure}
-	\begin{subfigure}{\textwidth}
-		\centering
-		%\includegraphics[width=0.45\linewidth]{figures/wdc_test}
-		%\includegraphics[width=0.45\linewidth]{figures/wdc_test_gt}
-		\caption{ Winnemucca Dune Complex Test }
-		\label{fig:wdc_test_image}
-	\end{subfigure}
-	\begin{subfigure}{\textwidth}
-		\centering
-		%\includegraphics[width=0.45\linewidth]{figures/whitesands_test}
-		%\includegraphics[width=0.45\linewidth]{figures/whitesands_test_gt}
-		\caption{ White Sands Test }
-		\label{fig:white_sands_test_image}
-	\end{subfigure}
-	\caption{Terrestrial test dataset of six regions with respective labeled ground truth: (\ref{fig:kalahari_test_image}) Kalahari (Namibia), (\ref{fig:namib_test_image}) Namib (Namibia), (\ref{fig:simpson_test_image}) Simpson (Australia), (\ref{fig:skeleton_coast_test_image}) Skeleton Coast (Namibia), (\ref{fig:wdc_test_image}) Winnemucca Dune Complex (USA), and (\ref{fig:white_sands_test_image}) White Sands (USA), used for evaluation of machine learning approaches. Test }
-	\label{fig:terrestrial_test_dataset}
-\end{figure}
 
 The addition of the test images allows us to better evaluate the effectiveness of the various models and methods used to train the machine learning system. To train each model a set of data is collected from the both the training and test sets using the method described in section \ref{subsubsec:dataset_creation}. A set of pixels are randomly selected for each image, preserving a equal count of crest-line pixels and non-crest-line pixels. Crest-line pixels are determined using the provided ground truth. The number of pixels extracted was varied to determine the effectiveness of the model. When fewer data was used, the model could be trained very quickly but the representation of the model achieved poorer results. A larger training set provided a much better representation of crest-lines, at the cost of efficiency. The number of pixels used found to be optimal was in the range of 1000 to 5000.
 
