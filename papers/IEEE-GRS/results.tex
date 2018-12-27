@@ -181,7 +181,7 @@ For each method, a number of metrics were used to evaluate the quality of each d
 
 \emph{Precision} is the ratio of correct detection to overall detection. It measures how precise the detections are. It can be computed from the true positives and false positives by $P=TP/(TP+FP)$. \emph{Recall} Recall is the percentage of crest-lines identified. It can be computed from the true positives and false negatives using $R=TP/(TP+FN)$. \emph{Angular Error} The difference between the dune field average orientation computed from the detected crest-lines, and the average orientation computed from the ground truth crest-lines (in degrees), represented by $\Delta_{\theta}$. Finally, the \emph{Inter-Dune Distance Error} The difference between the dune distance computed from the detected crest-lines and the distance computed from the ground truth crest-lines (in pixels), represented by $\Delta_{d}$.
 
-Additionally, the terrestrial dataset includes many representative regions with various dune types. There are two options for training models, generalized or region-specific models. The generalized model is trained across all datasets to detect any kind of dune, as opposed to a region-specific which trained on a specific region. The generalized model is more flexible but typically produces slightly less accurate results overall than the region specific models.
+Additionally, the terrestrial dataset includes many representative regions with various dune types. There are two options for training models, \emph{generalized} or \emph{region-specific} models. The \emph{generalized} model is trained across all datasets to detect any kind of dune, as opposed to a \emph{region-specific} which trained on a specific region. The generalized model is more flexible but typically produces slightly less accurate results overall than the region specific models.
 
 Another dataset evaluated was the Mars dataset from section \ref{subsec:mars_dataset}. Included are the results from the research done in \cite{vaz_object_based_dune_analysis}, which includes the ground truth and results. Our machine learning method was compared side-by-side with the results from \cite{vaz_object_based_dune_analysis} on each of the 16 regions sampled. The 14 regions are split half and half for training and testing respectively, where odd regions were used for training and even regions for testing. 
 
@@ -269,23 +269,11 @@ The approach requires the training of the models using a set of data and the mod
 	\end{subtable}
 \end{table*}
 
-The next consideration is the type of machine learning classifier to use for the model. There are many classifier options available such as Bayesian, Neural Networks, Support Vector Machines, and Gradient-Boosted Trees. The GBT model, shown in Table \ref{tab:classifier_training_test_results}, proved to provide the best overall performance training results.
+The next consideration is the type of machine learning classifier to use for the model. There are many classifier options available such as Bayesian, Neural Networks, Support Vector Machines, and Gradient-Boosted Trees. The GBT model, shown in Table \ref{tab:classifier_training_test_results}, proved to provide the best overall performance training results. The results of the method for the \emph{region-specific} trained model are found in Table \ref{tab:ml_grad_approach_results}, and the results of the \emph{generalized} model a shown in TableS \ref{tab:cross_region_ml_grad_approach_results}. The results projected onto the images are shown in Figure \ref{fig:mixed_ml_grad_results}. Detection rates on simpler linear dune patterns are good, however the method struggles with more complex challenging dune patterns, especially the White Sands region, shown in Figures \ref{fig:mixed_ml_grad_white_sands_results} and \ref{fig:mixed_ml_grad_white_sands_test_results}, but still offer acceptable performance for higher level applications.
 
-Next, the machine learning method results (using Gradient Boosted Trees on the extracted SIFT descriptors) explained in section \ref{subsec:machine_learning_approach} are discussed. The method was applied in two experiments: 
-
-The results clearly show that the cross-region model struggles at learning the general concept of a dune across many regions. The precision and recall values of the single model per region approach shown in Table \ref{tab:machine_learning_PR} are measurably better than the cross-region approach results shown in Table \ref{tab:cross_region_machine_learning_PR}. The difference is especially large with complex dune structures such as the Winnemucca Dune Complex and the White Sands regions. The dune metrics computed in Tables \ref{tab:machine_learning_metrics_error} and \ref{tab:cross_region_machine_learning_metrics_error} are also much worse, since the calculation of these metrics heavily depends on accurate detection of crest-lines.
-
-The results of the machine learning crest-line detection are shown in Figure \ref{fig:ml_results}. The true positive detections are shown in green, along with the correctly identified ground truth in blue. The false negatives (crest-lines not correctly detected) are shown in yellow, and false positives are shown in red. The results show that the overall performance of this approach is quite good. 
-
-One important point to note is that there are inaccuracies in the ground truth itself. In many cases, some false positives may not actually be false positives because some crest-lines where not labeled in the ground truth. Additionally, some false negatives may be caused by poor localization of the ground truth labels. For the most part, the ground truth is fairly accurate, but a second pass at labeling would increase the overall precision and recall rates results.
-
-\subsubsection*{Mixed Machine Learning and Gradient Orientation Approach Results}
-
-The final results presented are for the mixed machine learning and gradient orientation approach presented in section \ref{subsec:mixed_ml_gradient_approach}. The approach essentially combines the methods from sections \ref{subsec:gradient_orientation_based} and \ref{subsec:machine_learning_approach} to yield improved results. Similarly to the previous method, the machine learning model in this approach can also be trained for each region or across all the regions. The results of these methods are presented in Tables \ref{tab:ml_grad_approach_results} and \ref{tab:cross_region_ml_grad_approach_results}. The results projected onto the images are shown in Figure \ref{fig:mixed_ml_grad_results}.
-
-\begin{table}
+\begin{table*}
 	\centering
-	\caption{Results of the mixed machine learning and gradient-based method presented in section \ref{subsec:mixed_ml_gradient_approach} using the Gradient Boosted Tree classifier and the SIFT features, includes the Precision and Recall (a) and the Dune Metrics error results (b) for both the training and test image sets. }
+	\caption{Results using the Gradient Boosted Tree classifier and the SIFT features for the \emph{region-specific} trained models, includes the Precision and Recall (a) and the Dune Metrics error results (b) for both the training and test image sets. }
 	\label{tab:ml_grad_approach_results}
 	\begin{subtable}{0.98\textwidth}
 		\centering
@@ -325,11 +313,11 @@ The final results presented are for the mixed machine learning and gradient orie
 		\caption{Dune Metrics Results for Angular Error ($\Delta_{\theta}$) and Inter-Dune Distance Error ($\Delta_{d}$) }
 		\label{tab:ml_grad_metrics_error}
 	\end{subtable}
-\end{table}
+\end{table*}
 
-\begin{table}
+\begin{table*}
 	\centering
-	\caption{Results of the mixed machine learning and gradient-based method presented in section \ref{subsec:mixed_ml_gradient_approach} using the Gradient Boosted Tree classifier and the SIFT features trained across all the regions, includes the Precision and Recall \subref{tab:cross_region_ml_grad_PR} and the Dune Metrics error results \subref{tab:cross_region_ml_grad_metrics_error} for both the training and test image sets. }
+	\caption{Results using the Gradient Boosted Tree classifier and the SIFT features for the \emph{generalized} model, includes the Precision and Recall \subref{tab:cross_region_ml_grad_PR} and the Dune Metrics error results \subref{tab:cross_region_ml_grad_metrics_error} for both the training and test image sets. }
 	\label{tab:cross_region_ml_grad_approach_results}
 	\begin{subtable}{0.98\textwidth}
 		\centering
@@ -369,10 +357,10 @@ The final results presented are for the mixed machine learning and gradient orie
 		\caption{Dune Metrics Results for Angular Error ($\Delta_{\theta}$) and Inter-Dune Distance Error ($\Delta_{d}$) }
 		\label{tab:cross_region_ml_grad_metrics_error}
 	\end{subtable}
-\end{table}
+\end{table*}
 
 
-\begin{figure}
+\begin{figure*}
 	\centering
 	\begin{subfigure}{0.48\textwidth}
 		\centering
@@ -410,8 +398,8 @@ The final results presented are for the mixed machine learning and gradient orie
 		\caption{ Simpson Test }
 		\label{fig:mixed_ml_grad_simpson_test_results}
 	\end{subfigure}
-\end{figure}
-\begin{figure}
+\end{figure*}
+\begin{figure*}
 	\ContinuedFloat
 	\centering
 	\begin{subfigure}{0.48\textwidth}
@@ -452,17 +440,13 @@ The final results presented are for the mixed machine learning and gradient orie
 	\end{subfigure}
 	\caption{ The results of the crest-line detection for the mixed machine learning and gradient approach on terrestrial dataset for both the training images \subref{fig:ml_kalahari_results}, \subref{fig:ml_namib_results}, \subref{fig:ml_simpson_results}, \subref{fig:ml_skeleton_coast_results}, \subref{fig:ml_wdc_results}, \subref{fig:ml_white_sands_results}, and the test images \subref{fig:ml_kalahari_test_results}, \subref{fig:ml_namib_test_results}, \subref{fig:ml_simpson_test_results}, \subref{fig:ml_skeleton_coast_test_results}, \subref{fig:ml_wdc_test_results}, \subref{fig:ml_white_sands_test_results} using the GBT classifier and SIFT features. \underline{\textbf{Legend}}: \emph{Green} - True Positives, \emph{Red} - False Positives, \emph{Yellow} - False Negatives, \emph{Blue} - Ground truth correctly detected. }
 	\label{fig:mixed_ml_grad_results}
-\end{figure}
+\end{figure*}
 
-The results shown are an overall improvement on the machine learning method itself, notably an increased precision. Combining the machine learning and gradient orientation approaches results in many less false positives while preserving similar recall rates as shown in Tables \ref{tab:ml_grad_PR} and \ref{tab:cross_region_ml_grad_approach_results}. The metrics measured shown in Tables \ref{tab:ml_grad_metrics_error} and \ref{tab:cross_region_ml_grad_metrics_error} are similar to the standard machine learning approach. Unfortunately, there are no improvements for the cross region machine learning models. The method still struggles with more complex dune patterns, especially the White Sands region, shown in Figures \ref{fig:mixed_ml_grad_white_sands_results} and \ref{fig:mixed_ml_grad_white_sands_test_results}.
+The method was also tested on another dataset. The Mars dataset, described in section \ref{subsec:mars_dataset} was constructed and used in the research presented in \cite{vaz_object_based_dune_analysis}. The results presented in this paper were acquired and the same evaluation methodology was applied on their results. We ran our method on the dataset, therefore we can compare the results side-by-side. The region was sub-sampled into sixteen sub-region for efficient processing. The machine learning method requires a training set, therefore, half of the regions where used for training and the remaining half for testing. For simplicity, odd regions were used for training and even for testing. The precision/recall and dune metrics results for both the Vaz and our method are presented in Tables \ref{tab:ml_grad_mars_results} and \ref{tab:ml_grad_metrics_error}.
 
-The method was also tested on another dataset. The Mars dataset, described in section \ref{subsec:mars_dataset} was constructed and used in the research presented in \cite{vaz_object_based_dune_analysis}. The results presented in this paper were acquired and the same evaluation methodology was applied on their results. We ran our method on the dataset, therefore we can compare the results side-by-side.
-
-The region was sub-sampled into sixteen sub-region for efficient processing. The machine learning method requires a training set, therefore, half of the regions where used for training and the remaining half for testing. For simplicity, odd regions were used for training and even for testing. The precision/recall and dune metrics results for both the Vaz and our method are presented in Tables \ref{tab:ml_grad_mars_results} and \ref{tab:ml_grad_metrics_error}.
-
-\begin{table}
+\begin{table*}
 	\centering
-	\caption{ Precision and Recall results of the mixed machine learning and gradient-based method presented in section \ref{subsec:mixed_ml_gradient_approach} (GBT-SIFT) trained on the Mars dataset presented in \ref{subsec:mars_dataset}, compared to the results in \cite{vaz_object_based_dune_analysis}. Shown are the results of both the training set (odd areas) in (a), and test set (even areas) in (b). }
+	\caption{ Precision and Recall results (GBT-SIFT) trained on the Mars dataset presented in \ref{subsec:mars_dataset}, compared to the results in \cite{vaz_object_based_dune_analysis}. Shown are the results of both the training set (odd areas) in (a), and test set (even areas) in (b). }
 	\label{tab:ml_grad_mars_results}
 	\begin{subtable}{0.98\textwidth}
 		\centering
@@ -504,11 +488,11 @@ The region was sub-sampled into sixteen sub-region for efficient processing. The
 		\caption{Precision Recall Test Region Results: \cite{vaz_object_based_dune_analysis} vs Our Approach }
 		\label{tab:ml_grad_mars_test_results}
 	\end{subtable}
-\end{table}
+\end{table*}
 
-\begin{table}
+\begin{table*}
 	\centering
-	\caption{ Dune metrics results of the mixed machine learning and gradient-based method on the Mars dataset presented in \ref{subsec:mars_dataset}. The dune metrics were comuted on our crest-line detection results, the ground truth, and the crest-lines detected in \cite{vaz_object_based_dune_analysis}. Shown are the results of both the training set (odd areas) in (a), and test set (even areas) in (b). }
+	\caption{ Dune metrics results comparison of our crest-line detection results, the ground truth, and the crest-lines detected in \cite{vaz_object_based_dune_analysis}. Shown are the results of both the training set (odd areas) in (a), and test set (even areas) in (b). }
 	\label{tab:ml_grad_mars_metrics_error}
 	\begin{subtable}{0.98\textwidth}
 		\centering
@@ -550,11 +534,11 @@ The region was sub-sampled into sixteen sub-region for efficient processing. The
 		\caption{Computed Dune Metrics Results (Test Regions): \cite{vaz_object_based_dune_analysis} vs Our Approach }
 		\label{tab:ml_grad_mars_test_metrics_error}
 	\end{subtable}
-\end{table}
+\end{table*}
 
 Clearly, the results show that the performance of our method is superior, mainly in precision. Recall values are roughly equivalent in most areas, but our precision is typically much better. This can be attributed to the improved localization of the crest-lines using the response maps. There are a few cases in which our method fails to deliver high precision and recall. These cases can be easily explained simply by examining the projected results in Figure \ref{fig:mixed_ml_grad_mars_results}.
 
-\begin{figure}
+\begin{figure*}
 	\centering
 	\begin{subfigure}{\textwidth}
 		\centering
@@ -591,8 +575,8 @@ Clearly, the results show that the performance of our method is superior, mainly
 		\caption{ Area 5: Vaz \cite{vaz_object_based_dune_analysis} and Our Results }
 		\label{fig:mixed_ml_grad_area5_results}
 	\end{subfigure}
-\end{figure}
-\begin{figure}
+\end{figure*}
+\begin{figure*}
 	\ContinuedFloat
 	\centering
 	\begin{subfigure}{\textwidth}
@@ -630,8 +614,8 @@ Clearly, the results show that the performance of our method is superior, mainly
 		\caption{ Area 10: Vaz \cite{vaz_object_based_dune_analysis} and Our Results }
 		\label{fig:mixed_ml_grad_area10_results}
 	\end{subfigure}
-\end{figure}
-\begin{figure}
+\end{figure*}
+\begin{figure*}
 	\ContinuedFloat
 	\centering
 	\begin{subfigure}{\textwidth}
@@ -664,11 +648,9 @@ Clearly, the results show that the performance of our method is superior, mainly
 	\end{subfigure}
 	\caption{ Crest-line detection results plotted for all regions used in the Mars dataset. The Vaz \cite{vaz_object_based_dune_analysis} results (on the left) compared to our results (on the right). \underline{\textbf{Legend}}: \emph{Green} - True Positives, \emph{Red} - False Positives, \emph{Yellow} - False Negatives, \emph{Blue} - Ground truth correctly detected. }
 	\label{fig:mixed_ml_grad_mars_results}
-\end{figure}
+\end{figure*}
 
-As with Figure \ref{fig:mixed_ml_grad_results}, the results shown in Figure \ref{fig:mixed_ml_grad_mars_results} display the detected crest-lines overlapped with the ground truth of each area. The color schemes shows green lines as correctly detected crest-lines and red lines as false positives. Blue lines are ground truth crest-lines which have been correctly identified, and yellow lines are unidentified ground truth crest-lines (false negatives). 
-
-The first notable issue with the Vaz results are the noisiness and disjointness of the detections, while our results are much smoother, less noisy, contiguous segments. Also, in many cases, the Vaz results show duplicate parallel detections next to each crest-lines which falsely increase the apparent precision, while our results are more accurate single segments for each crest-lines. This especially noticeable in areas 1, 5, 6, 7 and 10 (Figures \ref{fig:mixed_ml_grad_area1_results}, \ref{fig:mixed_ml_grad_area5_results}, \ref{fig:mixed_ml_grad_area6_results}, \ref{fig:mixed_ml_grad_area7_results} and \ref{fig:mixed_ml_grad_area10_results}).
+As with Figure \ref{fig:mixed_ml_grad_results}, the results shown in Figure \ref{fig:mixed_ml_grad_mars_results} display the detected crest-lines overlapped with the ground truth of each area. The color schemes shows green lines as correctly detected crest-lines and red lines as false positives. Blue lines are ground truth crest-lines which have been correctly identified, and yellow lines are unidentified ground truth crest-lines (false negatives).  The first notable issue with the Vaz results are the noisiness and disjointness of the detections, while our results are much smoother, less noisy, contiguous segments. Also, in many cases, the Vaz results show duplicate parallel detections next to each crest-lines which falsely increase the apparent precision, while our results are more accurate single segments for each crest-lines. This especially noticeable in areas 1, 5, 6, 7 and 10 (Figures \ref{fig:mixed_ml_grad_area1_results}, \ref{fig:mixed_ml_grad_area5_results}, \ref{fig:mixed_ml_grad_area6_results}, \ref{fig:mixed_ml_grad_area7_results} and \ref{fig:mixed_ml_grad_area10_results}).
 
 The final issue is the ground truth itself. The ground truth was labeled by the Vaz researchers and is for the most part accurate, but there are many discrepancies. In many cases, some crest-lines are missing from the ground truth, and often the localization of the ground truth itself is quite poor. Areas 9 and 15 (\ref{fig:mixed_ml_grad_area9_results}, \ref{fig:mixed_ml_grad_area15_results}) are good examples of poor labeling of crest-lines in the ground truth. Many of the detections in those areas should in fact be true positives. Area 6 (\ref{fig:mixed_ml_grad_area6_results}) is a good example of poor localization. Our results show that the actual crest-lines were detected but because the ground truth is offset from the actual crest-lines (by a distance greater than our error threshold $\epsilon$), the detections count as false positives when they really should be true positives. The effect of these issues are reflected in the results generated in Tables \ref{tab:ml_grad_mars_results} and \ref{tab:ml_grad_metrics_error}.
 
@@ -676,15 +658,15 @@ As stated previously, determining true positives was dependent on the selection 
 
 \begin{figure}
 	\centering
-	\begin{subfigure}{0.48\textwidth}
+	\begin{subfigure}{0.5\textwidth}
 		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/area1_pr_epsilon}
+		\includegraphics[width=1.0\linewidth]{figures/area1_pr_epsilon}
 		\caption{ Area 1: PR vs $\epsilon$}
 		\label{fig:precision_recall_vs_epsilon_area1}
 	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
+	\begin{subfigure}{0.5\textwidth}
 		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/area2_pr_epsilon}
+		\includegraphics[width=1.0\linewidth]{figures/area2_pr_epsilon}
 		\caption{ Area 2: PR vs $\epsilon$}
 		\label{fig:precision_recall_vs_epsilon_area2}
 	\end{subfigure}
@@ -692,12 +674,4 @@ As stated previously, determining true positives was dependent on the selection 
 	\label{fig:precision_recall_vs_epsilon}
 \end{figure}
 
-In areas 1 and 2 (Figures \ref{fig:precision_recall_vs_epsilon_area1}, \ref{fig:precision_recall_vs_epsilon_area2}), the recall values stay roughly equivalent for both methods, with our approach slightly leading in area 1 and with the Vaz results having a slight edge in area 2. The reason for this is most likely because the machine learning method was trained on odd areas and tested on even areas, therefore, a lower recall should be expected. The main distinction in the two approaches is the precision results. Our approach offers vastly and consistently better precision than the Vaz approach.
-
-To summarize the results, the machine learning approaches are by far the best methods for detecting the crest-lines. This is easily seen simply in the numbers, shown in Tables \ref{tab:machine_learning_approach_results} to \ref{tab:ml_grad_mars_metrics_error}. Not only are the precision, recall, and metrics results better in almost every case, the quality of the produced crest-lines are much better. The detected crest-lines in the machine learning methods are generally smoother and are more contiguous that the previous methods.
-
-The main benefits of the machine learning is that it is a much simpler approach than other appearance based approach. By simpler, we mean that fewer parameters and optimization are required to achieve good results. In appearance based approaches presented in sections \ref{subsection:appearance_based_approach}, \ref{subsec:edge_based_detection}, \ref{subsec:watershed_transform_segmentation_approach}, \ref{subsec:frequency_domain_approach}, and \ref{subsec:gradient_orientation_based}, many parameters are required in order to tune the performance of crest-line detection. Typically, the parameters also require optimization based on the appearance, scale, and contrast in each region. These factors are solved in machine learning model which simply learns the distinctions of crest-lines versus non-crest-lines.
-
-The benefits of the machine learning method come at a cost. Labeled data is required in order to train the models, which requires the crest-lines in an image region to be manually and accurately traced by an expert. The process of creating the ground truth for training can be tedious and error prone. Also, there seems to be some struggles when training a model across regions of different types of dunes. If the dunes of two different regions are similar, then a single model might be sufficient. However, when training a model on linear dunes for example, the results of using this model on a complex dune structure may not be optimal.
-
-The final section summarizes and discusses the work done in this research, along with offering potential future work methods. 
+In areas 1 and 2 (Figures \ref{fig:precision_recall_vs_epsilon_area1}, \ref{fig:precision_recall_vs_epsilon_area2}), the recall values stay roughly equivalent for both methods, with our approach slightly leading in area 1 and with the Vaz results having a slight edge in area 2. The reason for this is most likely because the machine learning method was trained on odd areas and tested on even areas, therefore, a lower recall should be expected. The main distinction in the two approaches is the precision results. Our approach offers vastly and consistently better precision than the Vaz approach. Not only are the precision, recall, and metrics results better in almost every case, the quality of the produced crest-lines are much better. The detected crest-lines in the machine learning methods are generally smoother and are more contiguous.
