@@ -7,38 +7,38 @@ Understanding the issues with the gradients of the key problem of this research.
 
 \begin{figure*}[htbp]
 	\centering
-	\begin{subfigure}[b]{0.15\textwidth}
+	\begin{subfigure}[b]{0.1\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/kalahari_patch}
 		\caption{}
 		\label{fig:kalahari_patch}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.15\textwidth}
+	\begin{subfigure}[b]{0.1\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/kalahari_patch_arrow}
 		\caption{}
 		\label{fig:kalahari_patch_arrow}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.65\textwidth}
+	\begin{subfigure}[b]{0.6\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/kalahari_patch_plot}
 		\caption{}
 		\label{fig:kalahari_patch_plot}
 	\end{subfigure}
 	
-	\begin{subfigure}[b]{0.15\textwidth}
+	\begin{subfigure}[b]{0.1\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch}
 		\caption{}
 		\label{fig:skeletoncoast_patch}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.15\textwidth}
+	\begin{subfigure}[b]{0.1\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_arrow}
 		\caption{}
 		\label{fig:skeletoncoast_patch_arrow}
 	\end{subfigure}
-	\begin{subfigure}[b]{0.65\textwidth}
+	\begin{subfigure}[b]{0.6\textwidth}
 		\centering
 		\includegraphics[width=\linewidth]{figures/skeletoncoast_patch_plot}
 		\caption{}
@@ -100,79 +100,18 @@ D_{ij} = \hat{\delta_{ij}} \bullet \hat{\delta_{\mu}}
 
 Since $\hat{\delta_{ij}}$ and $\hat{\delta_{\mu}}$ are both unit-length vectors, the range possible values for $D_{ij}$ is $[-1, 1]$, where positive values represent gradients which \emph{agree} with the dominant orientation, 0 is perpendicular to the dominant orientation, and negative values \emph{disagree} with the dominant orientation. The result of the dot product computed at each pixel is shown in Figure \ref{fig:orientation_based_dot_product}, which we call the gradient direction map.
 
-
-%\subsubsection*{Detecting Crest-Line Candidates}
-The general crest-line candidate detection step extracts candidate segments which are most likely candidates for crest-lines. In this research, many approaches were tried including appearance and gradient based approach along with machine learning-based methods. The final proposed solution is a fusion of the different approaches.
-
-In summary, appearance-based approaches seek to segment bright and dark regions of the image using standard thresholding methods and classify the borders around the regions as crest-lines. The drawback of these kinds of methods is they rely on parameter optimization and fail to make meaningful crest-lines and other bright features. Poor or uneven illumination cause problems for appearance-based approaches. However, gradient-based approaches use the image's gradients to find peaks in magnitude which represent either crest-lines or shadows. Gradients are less sensitive to illumination changes but filtering out gradient edges which are not crest-lines becomes challenging. Machine learning methods can learn the features specific to crest-lines versus other gradients, therefore the filtering of gradients can be achieved using a trained machine learning model.
-
-Once candidate crest-lines have been extracted, some post-processing is often applied to reject some segments which do not fit the criteria of dune crest-lines. Rejected segments are typically filtered by length (too short), shape (too much curvature), weakness of gradients, or other factors. The remaining segments can also be smoothed in order to provide less noisy segments.
-
-%\subsubsection*{Dune Metrics Calculations}
-Once segments have been extracted, metrics can be computed. Computing the dune metrics is the process of extracting the various geomorphological properties of the dune fields from the detected crest-lines. The two main metrics computed in this research are the orientation and inter-dune spacing. The reason these are the main important features is because they actually provide a large amount of information for researchers on the behavior of the dune fields. Additionally, they are fairly trivial to compute once dune crest-line segments have been extracted. Within the framework of this research, they can serve also as a proof of concept and validation of each crest-line detection method. In future work, other metrics, features, and properties could be computed, depending the specific research needs. The process of computing these metrics is discussed in detail in section \ref{subsec:dune-field-metrics}.
-
-Finally, the validation process evaluates the quality of each crest-line detector. In order to perform the validation, a dataset of ground truth is provided with each image. The main result metrics of the validation process are the precision and recall. Precision is the percentage of correctly identified crest-lines within the set of candidates. Recall is defined to be the percentage of correctly detected crest-lines from the ground truth. In addition, the validation process compares the results of the dune metrics calculations from the detected crest-lines and the ground truth. The same process of computing the dune metrics is also computed on the ground truth, and compared side-by-side with the detected crest-lines. The process is described in detail in section \ref{subsec:evaluation}.
+The regions produced by the gradient direction map have been shown to be typically smooth and have good continuity in this application. There appears to be a clear separation between regions in \emph{agreement} and other regions. The separation becomes even clearer when the gradient direction map is thresholded based on the dot product values. In Figure \ref{fig:orientation_based_threshold_dot_product}, a binary image of the gradient direction map is computed by thresholding all dot products above 0. Once the gradient direction map has been thresholded, the binary image provides well defined regions which allows the use of contours to determine the crest-lines. The contours extracted provide good continuity of the crest-lines, but also contain many elements which are not part of the crest-line. A drawback of the gradient orientation map is the inherent localization problem due to the computation of the gradient orientation and size of the kernel to compute the gradients. The contours detected will inevitably land on the orientation transition and will almost always be shifted slightly away from the true crest-line. In order to improve localization, the contours must be shifted towards to nearest likely crest-line candidate. Each point on the contour can then be shifted by the computed distance to each crest-line candidate.
 
 
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/wdc}
-		\caption{WDC}
-		\label{fig:orientation_based_wdc}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/dot_product}
-		\caption{\emph{D}}
-		\label{fig:orientation_based_dot_product}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/threshold_dot_product}
-		\caption{$\begin{cases}
-				1 & D_{ij} > 0\\
-				0 & otherwise
-			\end{cases}$}
-		\label{fig:orientation_based_threshold_dot_product}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/method_4_results}
-		\caption{Result}
-		\label{fig:orientation_based_results}
-	\end{subfigure}
-	\caption{The gradient orientation-based approach illustrated: \subref{fig:orientation_based_wdc} The input image WDC, \subref{fig:orientation_based_dot_product} The gradient direction map \emph{D} computed by taking the dot product of the gradients at each pixel with the dominant orientation, \subref{fig:orientation_based_threshold_dot_product} thresholding the gradient direction map for all dot products greater than 0, \subref{fig:orientation_based_results} the results of crest-line detection using the gradient-orientation based method, where green lines are true positives, and red lines are false positives. }
-	\label{fig:orientation_based_process}
-\end{figure}
+\subsection{Detecting Crest-Line Candidates}
 
-The regions produced by the gradient direction map have been shown to be typically smooth and have good continuity in this application. There appears to be a clear separation between regions in \emph{agreement} and other regions. The separation becomes even clearer when the gradient direction map is thresholded based on the dot product values. In Figure \ref{fig:orientation_based_threshold_dot_product}, a binary image of the gradient direction map is computed by thresholding all dot products above 0. Once the gradient direction map has been thresholded, the binary image provides well defined regions which allows the use of contours to determine the crest-lines. The contours extracted provide good continuity of the crest-lines, but also contain many elements which are not part of the crest-line. The assumption is that segments of the contour with larger gradients are most likely crest-line candidates. 
+The detection step seeks to extract candidate segments which are most likely candidates for crest-lines. Candidates for crest-lines can be found using machine learning methods which can learn the features specific to crest-lines versus non-crest-lines, thus the filtering can be accomplished using a trained model. A similar approach was implemented in \cite{2006_automated_classification_landform_elements,2007_Machine_Learning_tools_automatic_mapping_mars,2013_sar_image_automated_detection_dune_area,BandeiraMarques,2011_neural_network_based_dunal_landform_mapping,vaz_object_based_dune_analysis}. The goal is to train a machine learning model using a training data set, then generate the response map which is the response of the model at each pixel in a given image. Ideally, the responses are high at pixels which contain crest-lines, and low everywhere else. To improve the localization, the contours are shifted towards the nearest peak in the response map.
 
-Using the gradient magnitudes provide more accuracy in localizing the desired crest-lines. A drawback of the gradient orientation map is the inherent localization problem do the the computation of the gradient orientation and size of the kernel to compute the gradients. The contours will almost always be shifted slightly away from the true crest-line as shown in Figure \ref{fig:orientation_transition_shift}. Figure \ref{fig:orientation_transition_shift} is the exact same as the plot shown in Figure \ref{fig:kalahari_patch_plot} with the crest-line plotted, and the shift shown. The shift shown is the transition from gradients which \emph{agree} with the dominant orientation ($D_{ij} > 0$) to those which \emph{disagree} with the dominant orientation {$D_{ij} < 0$}. The shift is heavily dependent on the size of the kernel \emph{K} used to compute the gradients.
+Machine learning techniques typically require training data to construct the model in order to reliably solve classification problems. This method of training is called supervised learning (\cite{foundations_machine_learning_book,machine_learning_book}). For crest-line detection, we therefore need to split our data into two classes: crest-lines and non-crest-lines. In this application, our data sets included the ground truth for each image set. The ground truth is essentially a binary image with the labeled crest-lines. From the set of training images, the ground truth images are used to extract locations of crest-lines and non-crest-lines. For each image, pixel positions are chosen randomly, if the ground truth at the position contains a crest-line, the pixel location is added to the crest-line set, otherwise it is added to the non-crest-line set. The sampling is optimized so that \emph{N} samples are chosen for each class. The next step in the process flow is to extract features from each of these samples, which will be used to feed into the model for training and validation.
 
-\begin{figure}
-	\centering
-	%\includegraphics[width=\linewidth]{figures/orientation_transition_shift}
-	\caption{The cause of the shift in localization when computing the gradient direction map. The transition from gradients which \emph{agree} ($D_{ij} > 0$) with the dominant orientation almost always happens after the true crest-line due to the size of the kernel \emph{K}.}
-	\label{fig:orientation_transition_shift}
-\end{figure}
+Features or descriptors are typically vectors of values which describes the local neighborhood around a pixel location (\cite{lowe_sift_paper,1994_good_features_to_track,1998_feature_detection,2007_invariant_features_survey}). Descriptors can range from simple pixel values in an image patch, to gradient information, to more sophisticated descriptors such as HOG (Histogram of Oriented Gradients \cite{2007_hog_human_detection}), LBP (Local Binary Pattern \cite{1994_lbp_paper,1996_lbp_paper}), Haar Features (\cite{2001_viola_jones_paper}), SURF (Speeded Up Robust Features \cite{2006_surf}), SIFT (Scale Invariant Feature Transform \cite{lowe_sift_paper}), and many more. 
 
-The contours detected will inevitably land on the orientation transition. As shown in Figure \ref{fig:effect_k}, the parameter \emph{K} will have a tendency to shift the contour lines towards the dominant orientation. In order to improve localization, the contours must be shifted towards to nearest gradient magnitude peak. Since the shift is simply dependent on the parameter \emph{K}, a fixed shift can be applied in the opposite direction of the dominant orientation. This approach may be adequate if localization is not critical, but results produced are generally less accurate. A better solution is to search in the opposite direction of the dominant orientation for the nearest candidate crest-line. Each point on the contour can then be shifted by the computed distance to each crest-line candidate.
-
-Candidates can be determined using a machine learning model capable of recognizing crest-lines. A similar approach was implemented in \cite{2006_automated_classification_landform_elements,2007_Machine_Learning_tools_automatic_mapping_mars,2013_sar_image_automated_detection_dune_area,BandeiraMarques,2011_neural_network_based_dunal_landform_mapping,vaz_object_based_dune_analysis}. The goal is to train a machine learning model using a training dataset, then generate the response map which is the response of the model at each pixel in a given image. Ideally, the responses are high at pixels which contain crest-lines, and low everywhere else. To improve the localization, the contours are shifted towards the nearest peak in the response map.
-
-The first step of the model training process is to appropriately separate the data into training, validation, and test sets in order accurate report the performance of the classifier. Machine learning techniques typically require training data to construct the model in order to reliably solve classification problems. This method of training is called supervised learning (\cite{foundations_machine_learning_book,machine_learning_book}). For crest-line detection, we therefore need to split our data into two classes: crest-lines and non-crest-lines. In this application, our datasets included the ground truth for each image set. The ground truth is essentially a binary image with the labeled crest-lines. 
-
-To construct an appropriate dataset for the approach, the set of images is first split into the training/validation and test sets. Half of the images are reserved for testing, and the remaining half is used to training and validation. From the set of training images, the ground truth images are used to extract locations of crest-lines and non-crest-lines. For each image, pixel positions are chosen randomly, if the ground truth at the position contains a crest-line, the pixel location is added to the crest-line set, otherwise it is added to the non-crest-line set. The sampling is optimized so that \emph{N} samples are chosen for each class.
-
-The resulting output is that each training image now has \emph{N} samples of crest-lines, and \emph{N} samples of non-crest-lines. The next step in the process flow is to extract features from each of these samples, which will be used to feed into the model for training and validation.
-
-Once sample locations of crest-lines and non-crest-lines have been selected, descriptors need to be extracted from each sample location. A descriptor is typically a vector of values which describes the local neighborhood around a pixel location (\cite{lowe_sift_paper,1994_good_features_to_track,1998_feature_detection,2007_invariant_features_survey}). The range of possible descriptor types is almost limitless. Descriptors can range from simple pixel values in an image patch, to gradient information, to more sophisticated descriptors such as HOG (Histogram of Oriented Gradients \cite{2007_hog_human_detection}), LBP (Local Binary Pattern \cite{1994_lbp_paper,1996_lbp_paper}), Haar Features (\cite{2001_viola_jones_paper}), SURF (Speeded Up Robust Features \cite{2006_surf}), SIFT (Scale Invariant Feature Transform \cite{lowe_sift_paper}), and many more. 
-
-The SIFT descriptor has been shown to provide the best overall results. The descriptor is applied to each pixel on the image, therefore there is no need for point of interest detection. To compute the SIFT descriptor, the scale and orientation of the local feature is needed. The scale in our research is ignored and is replaced by using a fixed-size window around every pixel. However, the orientation is calculated using the gradients at the local pixel location. In future work, there could be some improvements to results by computing the local scale and computing the orientation at the computed scale. After computing the descriptor for each crest-line and non-crest-line training/validation and test samples, the classifier model can then be constructed, optimized, and validated.
-
-There are many different kinds of classifiers in machine learning: Bayesian, decision trees, artificial neural networks, Support Vector Machines, and many more (\cite{book_artificial_intelligence_modern_approach,2003_tackling_poor_assumptions_naive_bayes,1987_simplifying_decision_trees,1943_logical_calculus_ideas_immanent_nervous_activity,book_organization_of_behavior,1975_beyond_regression_prediction_analysis,1995_support_vector_networks,1995_support_vector_clustering}). As part of this research, we studied the various classifiers, notably SVM and Gradient Boosted Trees (\cite{1999_gradient_boosting_machine,1999_stochastic_gradient_boosting}) which provided the best performance with the SIFT features for crest-line recognition. Once trainded, the models are capable of recognizing pixels which contain crest-lines. 
+The SIFT descriptor has been shown to provide the best overall results. The SIFT descriptor is computed over a fixed-size window around every pixel, with the orientation calculated using the gradients at the local pixel location. In future work, there could be some improvements to results by computing the local scale and computing the orientation at the computed scale. After computing the descriptor for each crest-line and non-crest-line training/validation samples, the classifier model can then be trained, optimized, and validated. There are many different kinds of classifiers in machine learning: Bayesian, decision trees, artificial neural networks, Support Vector Machines, and many more (\cite{book_artificial_intelligence_modern_approach,2003_tackling_poor_assumptions_naive_bayes,1987_simplifying_decision_trees,1943_logical_calculus_ideas_immanent_nervous_activity,book_organization_of_behavior,1975_beyond_regression_prediction_analysis,1995_support_vector_networks,1995_support_vector_clustering}). As part of this research, we studied the various classifiers, notably SVM and Gradient Boosted Trees (\cite{1999_gradient_boosting_machine,1999_stochastic_gradient_boosting}) which provided the best performance with the SIFT features for crest-line recognition. Once trained, the models are capable of recognizing pixels which contain crest-lines.
 
 The next step is to construct a response map at each pixel of the images. Response maps are images where each pixel values represent a response to a certain function. In the case of this method, the SIFT descriptor is first computed at each pixel and then used as an input for the trained classifier. Since the classifier was trained to output 1 (for crest-lines) or -1 (for non-crest-lines), the range of response values is then $[-1, 1]$. The resulting image is the response map of candidate crest-line. The response map therefore produces an image where bright regions are likely crest-line candidates, and darker regions can be filtered out using a simple threshold. 
 
@@ -408,6 +347,57 @@ Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly 
 
 The final step is to improve the localization of the crest-lines using the response map, by translating the detected contours towards the nearest peaks in the response map. The shift can be determined by doing a search along the opposite direction of the dominant orientation. Smoothing can be applied in order to ensure that segments remain contiguous after the translation is applied. The results of the shift are shown in Figure \ref{fig:gradient_direction_results_no_filter}. Once the shift has been applied to every contour segments, filtering non-crest-line segments can be done by simply removing all contour segments which fall on weak responses. After all contours have been filtered, the remaining segments can be further filtered by segment length. All segments which are too short are removed from candidate crest-line segments. The output of this process is shown in Figure \ref{fig:gradient_direction_shift_results}. Once all crest-line candidates have been detected, the dune field's morphological properties can be computed.
 
+Once candidate crest-lines have been extracted, some post-processing is often applied to reject some segments which do not fit the criteria of dune crest-lines. Rejected segments are typically filtered by length (too short), shape (too much curvature), weakness of gradients, or other factors. The remaining segments can also be smoothed in order to provide less noisy segments. 
+
+
+
+
+
+
+
+%\subsubsection*{Dune Metrics Calculations}
+Once segments have been extracted, metrics can be computed. Computing the dune metrics is the process of extracting the various geomorphological properties of the dune fields from the detected crest-lines. The two main metrics computed in this research are the orientation and inter-dune spacing. The reason these are the main important features is because they actually provide a large amount of information for researchers on the behavior of the dune fields. Additionally, they are fairly trivial to compute once dune crest-line segments have been extracted. Within the framework of this research, they can serve also as a proof of concept and validation of each crest-line detection method. In future work, other metrics, features, and properties could be computed, depending the specific research needs. The process of computing these metrics is discussed in detail in section \ref{subsec:dune-field-metrics}.
+
+Finally, the validation process evaluates the quality of each crest-line detector. In order to perform the validation, a dataset of ground truth is provided with each image. The main result metrics of the validation process are the precision and recall. Precision is the percentage of correctly identified crest-lines within the set of candidates. Recall is defined to be the percentage of correctly detected crest-lines from the ground truth. In addition, the validation process compares the results of the dune metrics calculations from the detected crest-lines and the ground truth. The same process of computing the dune metrics is also computed on the ground truth, and compared side-by-side with the detected crest-lines. The process is described in detail in section \ref{subsec:evaluation}.
+
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		%\includegraphics[width=\linewidth]{figures/wdc}
+		\caption{WDC}
+		\label{fig:orientation_based_wdc}
+	\end{subfigure}
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		%\includegraphics[width=\linewidth]{figures/dot_product}
+		\caption{\emph{D}}
+		\label{fig:orientation_based_dot_product}
+	\end{subfigure}
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		%\includegraphics[width=\linewidth]{figures/threshold_dot_product}
+		\caption{$\begin{cases}
+				1 & D_{ij} > 0\\
+				0 & otherwise
+			\end{cases}$}
+		\label{fig:orientation_based_threshold_dot_product}
+	\end{subfigure}
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		%\includegraphics[width=\linewidth]{figures/method_4_results}
+		\caption{Result}
+		\label{fig:orientation_based_results}
+	\end{subfigure}
+	\caption{The gradient orientation-based approach illustrated: \subref{fig:orientation_based_wdc} The input image WDC, \subref{fig:orientation_based_dot_product} The gradient direction map \emph{D} computed by taking the dot product of the gradients at each pixel with the dominant orientation, \subref{fig:orientation_based_threshold_dot_product} thresholding the gradient direction map for all dot products greater than 0, \subref{fig:orientation_based_results} the results of crest-line detection using the gradient-orientation based method, where green lines are true positives, and red lines are false positives. }
+	\label{fig:orientation_based_process}
+\end{figure}
+
+
+
+
+ 
 \subsection{Dune Field Morphology Metrics} \label{subsec:dune-field-metrics}
 The final step of the process is to extract meaningful features and metrics for researchers to study from the dune fields. This process requires a good set of detected crest-lines. The output crest-line segments extracted in the previous methods are used as input for computing the features. There are many features metrics of interests to scientists in this field, including dune spacings, orientation, shape, size, length, bifurcations, and many more. These metrics can be used to study and understand the movements of various patterns of dunes over time in a specific area.
 
