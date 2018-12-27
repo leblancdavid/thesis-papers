@@ -177,34 +177,22 @@ The dataset is essentially a CTX mosaic of the Ganges chasma, which spans an are
 
 \subsection{Evaluation}\label{subsec:evaluation}
 
-For each method, a number of metrics were used to evaluate the quality of each dune detector. A true positive (\emph{TP}) is defined as a positively detected crest-lines. A detection is determined to be positive if it contains a ground truth within a radius of $\epsilon$. A false positive (\emph{FP}) is defined to be a detection which is not an actual dune crest-line. A false positive occurs when a detection does not have a ground truth crest-line within a radius of $\epsilon$. A false negative (\emph{FN}) is an actual ground truth crest-line which was no identified. A false negative occurs when no detection is found within a radius of $\epsilon$.
-
-Determining an appropriate value for $\epsilon$ affects the overall results as well. Based on the datasets used in this research, and accounting for error in labeling and image resolution, an appropriate value was chosen to be $\epsilon=10$ (pixels). If the scale of the image is known (meters per pixel), pixels can be converted to a more meaningful metric scale.
+For each method, a number of metrics were used to evaluate the quality of each dune detector. A true positive (\emph{TP}) is defined as a positively detected crest-lines. A detection is determined to be positive if it contains a ground truth within a radius of $\epsilon$. A false positive (\emph{FP}) is defined to be a detection which is not an actual dune crest-line. A false positive occurs when a detection does not have a ground truth crest-line within a radius of $\epsilon$. A false negative (\emph{FN}) is an actual ground truth crest-line which was no identified. A false negative occurs when no detection is found within a radius of $\epsilon$. Determining an appropriate value for $\epsilon$ affects the overall results as well. Based on the datasets used in this research, and accounting for error in labeling and image resolution, an appropriate value was chosen to be $\epsilon=10$ (pixels). If the scale of the image is known (meters per pixel), pixels can be converted to a more meaningful metric scale.
 
 \emph{Precision} is the ratio of correct detection to overall detection. It measures how precise the detections are. It can be computed from the true positives and false positives by $P=TP/(TP+FP)$. \emph{Recall} Recall is the percentage of crest-lines identified. It can be computed from the true positives and false negatives using $R=TP/(TP+FN)$. \emph{Angular Error} The difference between the dune field average orientation computed from the detected crest-lines, and the average orientation computed from the ground truth crest-lines (in degrees), represented by $\Delta_{\theta}$. Finally, the \emph{Inter-Dune Distance Error} The difference between the dune distance computed from the detected crest-lines and the distance computed from the ground truth crest-lines (in pixels), represented by $\Delta_{d}$.
 
-Additionally, the terrestrial dataset includes many representative regions with various dune types. There are two options for training models:
-\begin{description}
-	\item[Unique Model Per Region] In this approach, a machine learning model is trained for each region. The result are more accurate within each regions, but the solution is not as generalized. 
-	\item[Cross-Region Model] In this approach, a single model is trained using all regions. The results produced are typically less accurate than the unique model per region approach, but provides a more generalized solution.
-\end{description}
+Additionally, the terrestrial dataset includes many representative regions with various dune types. There are two options for training models, generalized or region-specific models. The generalized model is trained across all datasets to detect any kind of dune, as opposed to a region-specific which trained on a specific region. The generalized model is more flexible but typically produces slightly less accurate results overall than the region specific models.
 
-Another dataset evaluated was the Mars dataset from section \ref{subsec:mars_dataset}. Included are the results from the research done in \cite{vaz_object_based_dune_analysis}, which includes the ground truth and results. Our machine learning method was compared side-by-side with the results from \cite{vaz_object_based_dune_analysis} on each of the 16 regions sampled. The 16 regions are split half and half for training and testing respectively, where odd regions were used for training and even regions for testing. 
+Another dataset evaluated was the Mars dataset from section \ref{subsec:mars_dataset}. Included are the results from the research done in \cite{vaz_object_based_dune_analysis}, which includes the ground truth and results. Our machine learning method was compared side-by-side with the results from \cite{vaz_object_based_dune_analysis} on each of the 16 regions sampled. The 14 regions are split half and half for training and testing respectively, where odd regions were used for training and even regions for testing. 
 
 \subsection{Results} \label{subsec:results-and-discussion}
-The machine learning approaches require the training of the models using a set of data and the model is then tested on a separate set of data. Therefore, a separate set of data was created to evaluate the performance of the machine learning approach, shown in Figure \ref{fig:terrestrial_test_dataset}.
+The approach requires the training of the models using a set of data and the model is then tested on a separate set of data. Therefore, a separate set of data was created to evaluate the performance. The addition of the test images allows us to better evaluate the effectiveness of the various models and methods used to train the machine learning system. To train each model, a set of data is collected from the both the training and test sets. A set of pixels are randomly selected for each image, preserving a equal count of crest-line pixels and non-crest-line pixels. Crest-line pixels are determined using the provided ground truth. The number of pixels extracted was varied to determine the effectiveness of the model. When fewer data was used, the model could be trained very quickly but the representation of the model achieved poorer results. A larger training set provided a much better representation of crest-lines, at the cost of efficiency. The number of pixels used found to be optimal was in the range of 1000 to 5000. The features were extracted at each sampled pixel. Many feature types were used including BRIEF, ORB, BRISK, SURF, HOG, LBPH, and even using raw pixel values but the SIFT performance was far superior to all others. The traditional 128 bin SIFT descriptor vector was extracted at each pixel as the feature to use for the model.
 
-
-The addition of the test images allows us to better evaluate the effectiveness of the various models and methods used to train the machine learning system. To train each model a set of data is collected from the both the training and test sets using the method described in section \ref{subsubsec:dataset_creation}. A set of pixels are randomly selected for each image, preserving a equal count of crest-line pixels and non-crest-line pixels. Crest-line pixels are determined using the provided ground truth. The number of pixels extracted was varied to determine the effectiveness of the model. When fewer data was used, the model could be trained very quickly but the representation of the model achieved poorer results. A larger training set provided a much better representation of crest-lines, at the cost of efficiency. The number of pixels used found to be optimal was in the range of 1000 to 5000.
-
-As described in section \ref{subsubsec:feature_descriptor_extraction}, the features were extracted at each sampled pixel. Many feature types were used including BRIEF, ORB, BRISK, SURF, HOG, LBPH, and even using raw pixel values but the SIFT performance was far superior to all others. The traditional 128 bin SIFT descriptor vector was extracted at each pixel as the feature to use for the model.
-
-The next consideration is the type of machine learning classifier to use for the model. Again, as described in section \ref{subsubsec:supervised_learning_classifiers}, there are many classifier options available such as Bayesian, Neural Networks, Decision Trees, Support Vector Machines.
 
 \begin{table*}
 	\centering
 	\caption{True positive and false positive rates results of the training process to build the crest-line GBT classifier model using the SIFT descriptors, for building response maps }
-%	\label{tab:classifier_training_test_results}
+	\label{tab:classifier_training_test_results}
 %	\begin{subtable}{0.98\textwidth}
 %		\centering
 %		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
@@ -278,191 +266,14 @@ The next consideration is the type of machine learning classifier to use for the
 			White Sands & 0.9351 & 0.1129 & 0.7677 & 0.1636 \\
 			\hline
 		\end{tabu}
-		\caption{Gradient Boosted Trees Results}
-		\label{tab:boosted_trees_training_test_results}
 	\end{subtable}
 \end{table*}
 
-In Table \ref{tab:classifier_training_test_results} shows the results of the training process. The results show that SVM and the decision trees perform the best. The Normal Bayes classifier has a tendency to over-fit the training data. This is evident by the fact that it learns the training data very well but has poor performance on the test set. Overall, the Gradient Boosted Tree results shown in Table \ref{tab:boosted_trees_training_test_results} has the best results.
+The next consideration is the type of machine learning classifier to use for the model. There are many classifier options available such as Bayesian, Neural Networks, Support Vector Machines, and Gradient-Boosted Trees. The GBT model, shown in Table \ref{tab:classifier_training_test_results}, proved to provide the best overall performance training results.
 
 Next, the machine learning method results (using Gradient Boosted Trees on the extracted SIFT descriptors) explained in section \ref{subsec:machine_learning_approach} are discussed. The method was applied in two experiments: 
 
-\begin{enumerate}
-	\item Training one model for each region: For each region, training data and test data was collected, and a single model is created and trained for that specific region. The results of this approach are shown in Table \ref{tab:machine_learning_approach_results}.
-	\item Cross-Region model: A single model is used for all the regions. The training data was collected from all regions, the model was trained using the features from all the regions. The results of this approach are shown in Table \ref{tab:cross_region_machine_learning_approach_results}
-\end{enumerate}
-
-\begin{table}
-	\centering
-	\caption{Results of the machine learning method presented in section \ref{subsec:machine_learning_approach} using a single Gradient Boosted Tree classifier and the SIFT features trained across all the regions, inludes the Precision and Recall (a) and the Dune Metrics error results (b) for both the training and test image sets. }
-	\label{tab:cross_region_machine_learning_approach_results}
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{Datasets}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{Precision} & \textbf{Recall} & \textbf{Precision} & \textbf{Recall} \\
-			\hline
-			Kalahari & 0.9379 & 0.9726 & 0.7694 & 0.9232 \\
-			Namib & 0.8491 & 0.9676 & 0.7867 & 0.8778 \\
-			Simpson & 0.9084 & 0.9249 & 0.7658 & 0.8398 \\
-			Skeleton Coast & 0.7632 & 0.9536 & 0.7938 & 0.9393 \\
-			WDC & 0.8981 & 0.8554 & 0.7558 & 0.8559 \\
-			White Sands & 0.9370 & 0.8784 & 0.8695 & 0.8001 \\
-			\hline
-		\end{tabu}
-		\caption{Machine Learning Precision and Recall Results (GBT-SIFT)}
-		\label{tab:machine_learning_PR}
-	\end{subtable}
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{Datasets}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{$\Delta_{\theta}$} & \textbf{$\Delta_{d}$ (Pixels)} & \textbf{$\Delta_{\theta}$} & \textbf{$\Delta_{d}$ (Pixels)} \\
-			\hline
-			Kalahari & 0.2437\textdegree & 3.9228 & 1.5047\textdegree & 7.6993 \\
-			Namib & 8.0655\textdegree & 13.2756 & 2.8757\textdegree & 4.0135 \\
-			Simpson & 13.0593\textdegree & 8.3083 & 0.7329\textdegree & 2.4516 \\
-			Skeleton Coast & 0.0434\textdegree & 9.5747 & 1.4801\textdegree & 1.5155 \\
-			WDC & 1.9937\textdegree & 1.9692 & 2.1001\textdegree & 1.7801 \\
-			White Sands & 10.6052\textdegree & 4.3457 & 2.5835\textdegree & 7.8096 \\
-			\hline
-		\end{tabu}
-		\caption{Dune Metrics Results for Angular Error ($\Delta_{\theta}$) and Inter-Dune Distance Error ($\Delta_{d}$) }
-		\label{tab:machine_learning_metrics_error}
-	\end{subtable}
-	\caption{Results of the machine learning method presented in section \ref{subsec:machine_learning_approach} using the Gradient Boosted Tree classifier and the SIFT features, includes the Precision and Recall (a) and the Dune Metrics error results (b) for both the training and test image sets. }
-	\label{tab:machine_learning_approach_results}
-\end{table}
-
-\begin{table}
-	\centering
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{Datasets}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{Precision} & \textbf{Recall} & \textbf{Precision} & \textbf{Recall} \\
-			\hline
-			Kalahari & 0.9258 & 0.9254 & 0.7300 & 0.8444 \\
-			Namib & 0.7942 & 0.9590 & 0.6637 & 0.8634 \\
-			Simpson & 0.8491 & 0.7854 & 0.7375 & 0.7579 \\
-			Skeleton Coast & 0.5768 & 0.9096 & 0.6135 & 0.8967 \\
-			WDC & 0.9315 & 0.6155 & 0.8585 & 0.5771 \\
-			White Sands & 0.9374 & 0.6431 & 0.7909 & 0.3973 \\
-			\hline
-		\end{tabu}
-		\caption{Machine Learning Precision and Recall Cross-Region Results (GBT-SIFT)}
-		\label{tab:cross_region_machine_learning_PR}
-	\end{subtable}
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{Datasets}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{$\Delta_{\theta}$} & \textbf{$\Delta_{d}$ (Pixels)} & \textbf{$\Delta_{\theta}$} & \textbf{$\Delta_{d}$ (Pixels)} \\
-			\hline
-			Kalahari & 0.4803\textdegree & 5.0142 & 1.0343\textdegree & 5.9187 \\
-			Namib & 2.8976\textdegree & 16.7863 & 9.5319\textdegree & 2.4645 \\
-			Simpson & 13.938\textdegree & 9.0225 & 0.2434\textdegree & 2.7176 \\
-			Skeleton Coast & 10.4224\textdegree & 18.6251 & 7.7421\textdegree & 8.3473 \\
-			WDC & 12.7138\textdegree & 11.1957 & 15.8434\textdegree & 21.4145 \\
-			White Sands & 11.0979\textdegree & 15.9853 & 1.2744\textdegree & 53.3311 \\
-			\hline
-		\end{tabu}
-		\caption{Dune Metrics Results for Angular Error ($\Delta_{\theta}$) and Inter-Dune Distance Error ($\Delta_{d}$) for Cross-Region}
-		\label{tab:cross_region_machine_learning_metrics_error}
-	\end{subtable}
-\end{table}
-
-The results clearly show that the cross-region model struggles at learning the general concept of a dune across many regions. The precision and recall values of the single model per region approach shown in Table \ref{tab:machine_learning_PR} are measurably better than the cross-region approach results shown in Table \ref{tab:cross_region_machine_learning_PR}. The difference is especially large with complex dune structures such as the Winnemucca Dune Complex and the White Sands regions. The dune metrics computed in Tables \ref{tab:machine_learning_metrics_error} and \ref{tab:cross_region_machine_learning_metrics_error} are also much worse, since the calculation of these metrics heavily depends on accurate detection of crest-lines.  
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_kalahari_results}
-		\caption{ Kalahari Training }
-		\label{fig:ml_kalahari_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_kalahari_test_results}
-		\caption{ Kalahari Test }
-		\label{fig:ml_kalahari_test_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_namib_results}
-		\caption{ Namib Training }
-		\label{fig:ml_namib_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_namib_test_results}
-		\caption{ Namib Test }
-		\label{fig:ml_namib_test_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_simpson_results}
-		\caption{ Simpson Training }
-		\label{fig:ml_simpson_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_simpson_test_results}
-		\caption{ Simpson Test }
-		\label{fig:ml_simpson_test_results}
-	\end{subfigure}
-\end{figure}
-\begin{figure}
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_skeleton_coast_results}
-		\caption{ Skeleton Coast Training }
-		\label{fig:ml_skeleton_coast_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_skeleton_coast_test_results}
-		\caption{ Skeleton Coast Test }
-		\label{fig:ml_skeleton_coast_test_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_wdc_results}
-		\caption{ WDC Training }
-		\label{fig:ml_wdc_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_wdc_test_results}
-		\caption{ WDC Test }
-		\label{fig:ml_wdc_test_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_white_sands_results}
-		\caption{ White Sands Training }
-		\label{fig:ml_white_sands_results}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=1.0\linewidth]{figures/ml_white_sands_test_results}
-		\caption{ White Sands Test }
-		\label{fig:ml_white_sands_test_results}
-	\end{subfigure}
-	\caption{ The results of the  crest-line detection for the machine learning approach on terrestrial dataset for both the training images \subref{fig:ml_kalahari_results}, \subref{fig:ml_namib_results}, \subref{fig:ml_simpson_results}, \subref{fig:ml_skeleton_coast_results}, \subref{fig:ml_wdc_results}, \subref{fig:ml_white_sands_results}, and the test images \subref{fig:ml_kalahari_test_results}, \subref{fig:ml_namib_test_results}, \subref{fig:ml_simpson_test_results}, \subref{fig:ml_skeleton_coast_test_results}, \subref{fig:ml_wdc_test_results}, \subref{fig:ml_white_sands_test_results} using the GBT classifier and SIFT features. \underline{\textbf{Legend}}: \emph{Green} - True Positives, \emph{Red} - False Positives, \emph{Yellow} - False Negatives, \emph{Blue} - Ground truth correctly detected.  }
-	\label{fig:ml_results}
-\end{figure}
+The results clearly show that the cross-region model struggles at learning the general concept of a dune across many regions. The precision and recall values of the single model per region approach shown in Table \ref{tab:machine_learning_PR} are measurably better than the cross-region approach results shown in Table \ref{tab:cross_region_machine_learning_PR}. The difference is especially large with complex dune structures such as the Winnemucca Dune Complex and the White Sands regions. The dune metrics computed in Tables \ref{tab:machine_learning_metrics_error} and \ref{tab:cross_region_machine_learning_metrics_error} are also much worse, since the calculation of these metrics heavily depends on accurate detection of crest-lines.
 
 The results of the machine learning crest-line detection are shown in Figure \ref{fig:ml_results}. The true positive detections are shown in green, along with the correctly identified ground truth in blue. The false negatives (crest-lines not correctly detected) are shown in yellow, and false positives are shown in red. The results show that the overall performance of this approach is quite good. 
 
