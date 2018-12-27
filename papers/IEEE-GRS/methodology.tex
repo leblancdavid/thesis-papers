@@ -45,7 +45,7 @@ Understanding the issues with the gradients of the key problem of this research.
 		\label{fig:skeletoncoast_patch_plot}
 	\end{subfigure}
 	
-	\caption{Illustration of the intensity, gradient magnitudes, and gradient orientations, plotted along a path crossing a dune crest-line: \subref{fig:kalahari_patch}, \subref{fig:skeletoncoast_patch} a sample image patch from Kalahari and Skeleton Coast, \subref{fig:kalahari_patch_arrow} and \subref{fig:skeletoncoast_patch_arrow} the direction of the pixel samples plotted in \subref{fig:kalahari_patch_plot} and \subref{fig:skeletoncoast_patch_plot} containing the intensity, gradient magnitude and orientations values along the sampled direction. }
+	\caption{Illustration of the intensity, gradient magnitudes, and gradient orientations, plotted along a path crossing a dune crest-line: (\subref{fig:kalahari_patch}), (\subref{fig:skeletoncoast_patch}) a sample image patch from Kalahari and Skeleton Coast, (\subref{fig:kalahari_patch_arrow}) and (\subref{fig:skeletoncoast_patch_arrow}) the direction of the pixel samples plotted in (\subref{fig:kalahari_patch_plot}) and (\subref{fig:skeletoncoast_patch_plot}) containing the intensity, gradient magnitude and orientations values along the sampled direction. }
 	\label{fig:patches}
 \end{figure*}
 
@@ -113,336 +113,53 @@ Features or descriptors are typically vectors of values which describes the loca
 
 The SIFT descriptor has been shown to provide the best overall results. The SIFT descriptor is computed over a fixed-size window around every pixel, with the orientation calculated using the gradients at the local pixel location. In future work, there could be some improvements to results by computing the local scale and computing the orientation at the computed scale. After computing the descriptor for each crest-line and non-crest-line training/validation samples, the classifier model can then be trained, optimized, and validated. There are many different kinds of classifiers in machine learning: Bayesian, decision trees, artificial neural networks, Support Vector Machines, and many more (\cite{book_artificial_intelligence_modern_approach,2003_tackling_poor_assumptions_naive_bayes,1987_simplifying_decision_trees,1943_logical_calculus_ideas_immanent_nervous_activity,book_organization_of_behavior,1975_beyond_regression_prediction_analysis,1995_support_vector_networks,1995_support_vector_clustering}). As part of this research, we studied the various classifiers, notably SVM and Gradient Boosted Trees (\cite{1999_gradient_boosting_machine,1999_stochastic_gradient_boosting}) which provided the best performance with the SIFT features for crest-line recognition. Once trained, the models are capable of recognizing pixels which contain crest-lines.
 
-The next step is to construct a response map at each pixel of the images. Response maps are images where each pixel values represent a response to a certain function. In the case of this method, the SIFT descriptor is first computed at each pixel and then used as an input for the trained classifier. Since the classifier was trained to output 1 (for crest-lines) or -1 (for non-crest-lines), the range of response values is then $[-1, 1]$. The resulting image is the response map of candidate crest-line. The response map therefore produces an image where bright regions are likely crest-line candidates, and darker regions can be filtered out using a simple threshold. 
+The next step is to construct a response map at each pixel of the images. Since the classifier was trained to output 1 (for crest-lines) or -1 (for non-crest-lines), the range of response values is then $[-1, 1]$. The resulting image is the response map of candidate crest-line. The response map therefore produces an image where bright regions are likely crest-line candidates. Gradient Boosted Trees classifiers seems to produce the best results. The results of the Gradient Boosted Trees classifier training are shown in Table \ref{tab:boosted_trees_training_test_results}. In Figure \ref{fig:kalahari_response}, an example of a response map produced by the GBT classifier on the Kalahari image is shown.
 
-The results of the SVM classifier are shown in Figure \ref{fig:SVM_response_results}. On the left are shown the response maps for the SVM classifier (defined as \emph{R}), and on the right are the thresholded results overlapped on top of the image. This is accomplished by simply thresholding the response map \emph{R} for all pixels $(i,j)$ which are $R_{i,j} > 0$. 
+The final step is to improve the localization of the crest-lines using the response map, by translating the detected contours towards the nearest peaks in the response map. The shift can be determined by doing a search along the opposite direction of the dominant orientation. Smoothing can be applied in order to ensure that segments remain contiguous after the translation is applied. Once the shift has been applied to every contour segments, filtering non-crest-line segments can be done by simply removing all contour segments which fall on weak responses. After all contours have been filtered, the remaining segments can be further filtered by segment length. All segments which are too short are removed from candidate crest-line segments. The overall output of this process is shown in Figure \ref{fig:kalahari_results}. Once all crest-line candidates have been detected, the dune field's morphological properties can be computed.
 
-The results shown are acceptable but have a tendency to be a bit noisier. There are noticeable breaks in the results, which are especially visible in Figures \ref{fig:kalahari_SVM_response_overlay} and \ref{fig:SkeletonCoast_SVM_response_overlay}. Additionally, as shown in the results Table \ref{tab:svm_training_test_results}, the SVM classifier seems to over fit the training data slightly. 
-\begin{figure}[H]
+
+\begin{figure*}[htbp]
 	\centering
-	\begin{subfigure}{0.48\textwidth}
+	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/KalahariSVMResponse}
-		\caption{Kalahari Response Map (SVM)}
-		\label{fig:kalahari_SVM_response}
+		\includegraphics[width=\linewidth]{figures/kalahari}
+		\caption{Kalahari}
+		\label{fig:orientation_based_kalahari}
 	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
+	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/KalahariSVMResults1}
-		\caption{ Kalahari $R_{i,j} > 0$}
-		\label{fig:kalahari_SVM_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/NamibSVMResponse}
-		\caption{Namib Response Map (SVM)}
-		\label{fig:namib_SVM_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/NamibSVMResults1}
-		\caption{ Namib $R_{i,j} > 0$}
-		\label{fig:namib_SVM_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SimpsonSVMResponse}
-		\caption{Simpson Response Map (SVM)}
-		\label{fig:simpson_SVM_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SimpsonSVMResults1}
-		\caption{ Simpson $R_{i,j} > 0$}
-		\label{fig:simpson_SVM_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SkeletonCoastSVMResponse}
-		\caption{Skeleton Coast Response Map (SVM)}
-		\label{fig:SkeletonCoast_SVM_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SkeletonCoastSVMResults1}
-		\caption{ Skeleton Coast $R_{i,j} > 0$}
-		\label{fig:SkeletonCoast_SVM_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WDCSVMResponse}
-		\caption{WDC Response Map (SVM)}
-		\label{fig:WDC_SVM_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WDCSVMResults1}
-		\caption{ WDC $R_{i,j} > 0$}
-		\label{fig:WDC_SVM_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WhiteSandsSVMResponse}
-		\caption{White Sands Response Map (SVM)}
-		\label{fig:WhiteSands_SVM_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WhiteSandsSVMResults1}
-		\caption{ White Sands $R_{i,j} > 0$}
-		\label{fig:WhiteSands_SVM_response_overlay}
-	\end{subfigure}
-	\caption{Results of the Support Vector Machine classifier training for crest-line identification for the Terrestrial dataset shown in Figure \ref{fig:terrestrial_dataset}. On the left is the response map (the output response of the SVM classifier using the SIFT features at each pixel). On the right, the thresholded the crest-line responses ($R_{i,j} > 0$) of the response map are overlapped on the original image. }
-	\label{fig:SVM_response_results}
-\end{figure}
-
-Alternatively, the Gradient Boosted Trees classifiers seems to produce slightly smoother results. The results of the Gradient Boosted Trees classifier training are shown in Table \ref{tab:boosted_trees_training_test_results}. In Figure \ref{fig:gbt_response_results}, the response maps produced by the GBT classifier are shown, similar to Figure \ref{fig:SVM_response_results}. It is clear that the resulting response maps are generally better than the SVM model.
-
-\begin{figure}[H]
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/KalahariGBTResponse}
-		\caption{Kalahari Response Map (GBT)}
-		\label{fig:kalahari_gbt_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/KalahariGBTResults1}
-		\caption{ Kalahari $R_{i,j} > 0$}
-		\label{fig:kalahari_gbt_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/NamibGBTResponse}
-		\caption{Namib Response Map (GBT)}
-		\label{fig:namib_gbt_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/NamibGBTResults1}
-		\caption{ Namib $R_{i,j} > 0$}
-		\label{fig:namib_gbt_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SimpsonGBTResponse}
-		\caption{Simpson Response Map (GBT)}
-		\label{fig:simpson_gbt_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SimpsonGBTResults1}
-		\caption{ Simpson $R_{i,j} > 0$}
-		\label{fig:simpson_gbt_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SkeletonCoastGBTResponse}
-		\caption{Skeleton Coast Response Map (GBT)}
-		\label{fig:SkeletonCoast_gbt_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SkeletonCoastGBTResults1}
-		\caption{ Skeleton Coast $R_{i,j} > 0$}
-		\label{fig:SkeletonCoast_gbt_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WDCGBTResponse}
-		\caption{WDC Response Map (GBT)}
-		\label{fig:WDC_gbt_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WDCGBTResults1}
-		\caption{ WDC $R_{i,j} > 0$}
-		\label{fig:WDC_gbt_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WhiteSandsGBTResponse}
-		\caption{White Sands Response Map (GBT)}
-		\label{fig:WhiteSands_gbt_response}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/WhiteSandsGBTResults1}
-		\caption{ White Sands $R_{i,j} > 0$}
-		\label{fig:WhiteSands_gbt_response_overlay}
-	\end{subfigure}
-\end{figure}
-\begin{figure}[H]
-	\ContinuedFloat
-	\centering
-	\caption{Results of the Gradient Boosted Tree classifier training for crest-line identification for the Terrestrial dataset shown in Figure \ref{fig:terrestrial_dataset}. On the left is the response map (the output response of the GBT classifier using the SIFT features at each pixel). On the right, the thresholded the crest-line responses ($R_{i,j} > 0$) of the response map are overlapped on the original image. }
-	\label{fig:gbt_response_results}
-\end{figure}
-
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/kalahari}
-		\caption{Kalahari Image}
-		\label{fig:gradient_orientation_kalahari_input}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/gradient_direction_image}
-		\caption{ Gradient Orientation Map ($D_{i,j}$) }
-		\label{fig:gradient_orientation_map_kalahari}
-	\end{subfigure}
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/gradient_direction_thresholded_image}
-		\caption{ Threshold for $D_{ij} > 0$ }
-		\label{fig:threshold_gradient_orientation_map_kalahari}
-	\end{subfigure}
-	\caption{ Computing the Gradient Orientation Map \subref{fig:gradient_orientation_map_kalahari} ($D_{i,j}$) for the Kalahari image \subref{fig:gradient_orientation_kalahari_input}. The map is thresholded for all gradients which agree with the dominant orientation ($D_{ij} > 0$) in \subref{fig:threshold_gradient_orientation_map_kalahari}. The result produces smooth contiguous regions which contain candidate crest-lines. }
-	\label{fig:gradient_orientation_map}
-\end{figure}
-
-The final step is to improve the localization of the crest-lines using the response map, by translating the detected contours towards the nearest peaks in the response map. The shift can be determined by doing a search along the opposite direction of the dominant orientation. Smoothing can be applied in order to ensure that segments remain contiguous after the translation is applied. The results of the shift are shown in Figure \ref{fig:gradient_direction_results_no_filter}. Once the shift has been applied to every contour segments, filtering non-crest-line segments can be done by simply removing all contour segments which fall on weak responses. After all contours have been filtered, the remaining segments can be further filtered by segment length. All segments which are too short are removed from candidate crest-line segments. The output of this process is shown in Figure \ref{fig:gradient_direction_shift_results}. Once all crest-line candidates have been detected, the dune field's morphological properties can be computed.
-
-Once candidate crest-lines have been extracted, some post-processing is often applied to reject some segments which do not fit the criteria of dune crest-lines. Rejected segments are typically filtered by length (too short), shape (too much curvature), weakness of gradients, or other factors. The remaining segments can also be smoothed in order to provide less noisy segments. 
-
-
-
-
-
-
-
-%\subsubsection*{Dune Metrics Calculations}
-Once segments have been extracted, metrics can be computed. Computing the dune metrics is the process of extracting the various geomorphological properties of the dune fields from the detected crest-lines. The two main metrics computed in this research are the orientation and inter-dune spacing. The reason these are the main important features is because they actually provide a large amount of information for researchers on the behavior of the dune fields. Additionally, they are fairly trivial to compute once dune crest-line segments have been extracted. Within the framework of this research, they can serve also as a proof of concept and validation of each crest-line detection method. In future work, other metrics, features, and properties could be computed, depending the specific research needs. The process of computing these metrics is discussed in detail in section \ref{subsec:dune-field-metrics}.
-
-Finally, the validation process evaluates the quality of each crest-line detector. In order to perform the validation, a dataset of ground truth is provided with each image. The main result metrics of the validation process are the precision and recall. Precision is the percentage of correctly identified crest-lines within the set of candidates. Recall is defined to be the percentage of correctly detected crest-lines from the ground truth. In addition, the validation process compares the results of the dune metrics calculations from the detected crest-lines and the ground truth. The same process of computing the dune metrics is also computed on the ground truth, and compared side-by-side with the detected crest-lines. The process is described in detail in section \ref{subsec:evaluation}.
-
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/wdc}
-		\caption{WDC}
-		\label{fig:orientation_based_wdc}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/dot_product}
-		\caption{\emph{D}}
+		\includegraphics[width=\linewidth]{figures/gradient_direction_image}
+		\caption{Gradient direction map \emph{D}}
 		\label{fig:orientation_based_dot_product}
 	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
+	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/threshold_dot_product}
-		\caption{$\begin{cases}
-				1 & D_{ij} > 0\\
-				0 & otherwise
-			\end{cases}$}
+		\includegraphics[width=\linewidth]{figures/gradient_direction_thresholded_image}
+		\caption{$D_{ij} > 0$}
 		\label{fig:orientation_based_threshold_dot_product}
 	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
+	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
-		%\includegraphics[width=\linewidth]{figures/method_4_results}
-		\caption{Result}
-		\label{fig:orientation_based_results}
+		\includegraphics[width=\linewidth]{figures/kalahari_response}
+		\caption{Response Map (GBT)}
+		\label{fig:kalahari_response}
 	\end{subfigure}
-	\caption{The gradient orientation-based approach illustrated: \subref{fig:orientation_based_wdc} The input image WDC, \subref{fig:orientation_based_dot_product} The gradient direction map \emph{D} computed by taking the dot product of the gradients at each pixel with the dominant orientation, \subref{fig:orientation_based_threshold_dot_product} thresholding the gradient direction map for all dot products greater than 0, \subref{fig:orientation_based_results} the results of crest-line detection using the gradient-orientation based method, where green lines are true positives, and red lines are false positives. }
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{figures/kalahari_results}
+		\caption{Crest-line Detection}
+		\label{fig:kalahari_results}
+	\end{subfigure}
+	\caption{The approach illustrated: (\subref{fig:orientation_based_kalahari}) The input image from the Kalahari, (\subref{fig:orientation_based_dot_product}) The gradient direction map \emph{D} computed by taking the dot product of the gradients at each pixel with the dominant orientation, (\subref{fig:orientation_based_threshold_dot_product}) thresholding the gradient direction map for all dot products greater than 0, (\subref{fig:kalahari_response}) the response map computed using Gradient-Boosted Trees, (\subref{fig:kalahari_results}) the results of crest-line detection after contour shifting and filtering, where green lines are true positives, red lines are false positives. yellow is false negative, and blue is the ground truth. }
 	\label{fig:orientation_based_process}
-\end{figure}
+\end{figure*}
 
 
-
-
- 
-\subsection{Dune Field Morphology Metrics} \label{subsec:dune-field-metrics}
+\subsection{Dune Metrics Calculations} \label{subsec:dune-field-metrics}
 The final step of the process is to extract meaningful features and metrics for researchers to study from the dune fields. This process requires a good set of detected crest-lines. The output crest-line segments extracted in the previous methods are used as input for computing the features. There are many features metrics of interests to scientists in this field, including dune spacings, orientation, shape, size, length, bifurcations, and many more. These metrics can be used to study and understand the movements of various patterns of dunes over time in a specific area.
 
-As part of this research, we focused mainly on orientation and spacing of dunes, and used those metrics as validations for the effectiveness of the dune detection methods. Although these metrics are not a complete evaluation of the dune field, they are sufficiently complex to provide valuable feedback for scientists. One may argue that the orientation of the dune field could be simply computed in the same manner as explained in section \ref{subsec:edge_based_detection}. However, a more generalized approach is preferred which computes the metrics from any set of two dimensional points, regardless of the input image. 
+As part of this research, we focused mainly on orientation and spacing of dunes, and used those metrics as validations for the effectiveness of the dune detection methods. Although these metrics are not a complete evaluation of the dune field, they are sufficiently complex to provide valuable feedback for scientists. In order to compute the average dune field orientation from the detected points, the data must be formatted appropriately. The detected crest-lines are typically a set of two dimensional points on the image. These points form lines and segments of various shapes and lengths. The simplest way to compute the orientation is to fit lines to each segments and compute the average orientation of the lines. There are many commonly used methods to fit lines to segments. One popular method is the Hough Transform initially proposed in \cite{hough-1959-paper,hough-1962-patent,hough-duda-1972-paper}, which searches a space of parameters voting for segments which contribute to the line. The Hough transform can be generalized to many shapes suchs as circles and ellipses, but the parameter space gets much larger for complex shapes. The main drawback of the Hough transform is the computational cost of search a large parameter space.
 
-In order to compute the average dune field orientation from the detected points, the data must be formated appropriately. The detected crest-lines are typically a set of two dimensional points on the image. These points form lines and segments of various shapes and lengths. The simplest way to compute the orientation is to fit lines to each segments and compute the average orientation of the lines.
+An alternative method is the Ramer-Douglas-Peucker algorithm, proposed in \cite{ramer-1972-paper,douglas-peucker-1973-paper,douglas-hershberger-snoeyink-1992-paper}, with the implementation provided within the OpenCV (\cite{opencv_library}) framework. The method is used for simplifying or approximating any given curve to a subset of points. Thus, the dune segments can be reduced to subset of lines. The only parameter required is the allowable error in the approximation. Larger values allow more deviation, producing longer coarse approximations of the segments, while smaller values approximate the curve more closely, producing short segments which are sensitive to noise. The parameter is chosen to produce optimal results for the application. As explained in \cite{computing-average-orientation-of-vectors}, computing the average orientation of vectors is not as trivial as simply averaging the orientations. To illustrate the problem, the average of an angle of $350^{\circ}$ and $10^{\circ}$ would be $180^{\circ}$, when in fact a more appropriate average should be $0^{\circ}$. Averaging may produce an adequate approximation, but the von Mises distribution based method proposed in \cite{computing-average-orientation-of-vectors} typically produces much more accurate results. Therefore, this technique is used to compute the average orientation of the lines.
 
-There are many commonly used methods to fit lines to segments. One popular method is the Hough Transform initially proposed in \cite{hough-1959-paper,hough-1962-patent,hough-duda-1972-paper}, which searches a space of parameters voting for segments which contribute to the line. The Hough transform can be generalized to many shapes suchs as circles and ellipses, but the parameter space gets much larger for complex shapes. The main drawback of the Hough transform is the computational cost of search a large parameter space.
-
-An alternative method is the Ramer-Douglas-Peucker algorithm, proposed in \cite{ramer-1972-paper,douglas-peucker-1973-paper,douglas-hershberger-snoeyink-1992-paper}, with the implementation provided within the OpenCV (\cite{opencv_library}) framework. The method is used for simplifying or approximating any given curve to a subset of points. Thus, the dune segments can be reduced to subset of lines. The only parameter required is the allowable error in the approximation. Larger values allow more deviation, producing longer coarse approximations of the segments, while smaller values approximate the curve more closely, producing short segments which are sensitive to noise. The parameter is chosen to produce optimal results for the application.
-
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SegmentationTestImage}
-		\caption{Sample Test Image}
-		\label{fig:connected_component_test_image}
-	\end{subfigure}
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		%\includegraphics[width=\linewidth]{figures/SegmentationTestResult}
-		\caption{Connected Components Labeling}
-		\label{fig:connected_component_test_results}
-	\end{subfigure}
-	
-	\caption{ The connected component algorithm applied a sample test image \subref{fig:connected_component_test_image}. The results \subref{fig:connected_component_test_results} show that segments can be extracted correctly. }
-	\label{fig:connected_component_test}
-\end{figure}
-
-Another critical requirement for this algorithm to work is the fact that each segment must be a single contiguous line or curve. This means that any segments extracted from the connected components algorithm (\cite{connected-components-samet-tamminen-1988-paper,connected-components-dillencourt-1992-paper}) must be sorted and organized in a list to ensure contiguous segments of points. All forks and bifurcations are detected and split into separate segments. The labeling of segment is demonstrated on a test image shown in Figure \ref{fig:connected_component_test}. The results in Figure \ref{fig:connected_component_test_results} show that these segments can be extracted and split into many single line segments. Although the algorithm may not produce optimal results, the output is sufficient for this application.
-
-Once the segments have been extracted and sorted, the line fitting algorithm presented in \cite{ramer-1972-paper} can be applied. The result is a set of lines, which can be represented as vectors contain the position and orientation of each line. The orientation components are used to compute the average orientation of the dune field.
-
-As explained in \cite{computing-average-orientation-of-vectors}, computing the average orientation of vectors is not as trivial as simply averaging the orientations. To illustrate the problem, the average of an angle of $350^{\circ}$ and $10^{\circ}$ would be $180^{\circ}$, when in fact a more appropriate average should be $0^{\circ}$. Averaging may produce an adequate approximation, but the von Mises distribution based method proposed in \cite{computing-average-orientation-of-vectors} typically produces much more accurate results. Therefore, this technique is used to compute the average orientation of the lines.
-
-With the orientation of the dune field computed, the average dune distance can then be computed. Computing the distance between crest-lines is a feature interesting to many researchers in the field. For simplicity, the inter-dune spacing is computed for the entire dune field image. The resulting measurement is in pixels in our case, but, if the scale of the satellite image is known (meters per pixels), then the measurement can be easily converted to a real world measurement. There are many ways to compute the inter-dune distance, but in this approach the simplest way was used, shown in Figure \ref{fig:inter-dune-distance-computation}. 
-
-\begin{figure}
-	\centering
-	%\includegraphics[width=\linewidth]{figures/DuneMetrics}
-	\caption{ Computing the inter-dune distance using the average orientation. Once the average orientation has been computed, the inter-dune distance can be computed by measuring the distance between segments along an orthogonal axis to the average orientation.}
-	\label{fig:inter-dune-distance-computation}
-\end{figure}
-
-Using the binary image of the extracted dune crest-lines, and the average orientation computed, an iterative approach is used to measure the distance between the dunes. A search is done at each pixel along an orthogonal axis from the average orientation. When a crest-line is hit, the number of pixels traveled are counted until another dune is found. The process is repeated for the entire binary image. The lengths are averaged resulting in the average dune spacing for the entire dune field.
-
-The results produced may not be optimal and accurate but can be used as an indicator to evaluate the effectiveness of the dune crest-line detections. The results and metrics are presented in section \ref{subsec:results-and-discussion}.
+With the orientation of the dune field computed, the average dune distance can then be computed. Computing the distance between crest-lines is a feature interesting to many researchers in the field. For simplicity, the inter-dune spacing is computed for the entire dune field image. The resulting measurement is in pixels in our case, but, if the scale of the satellite image is known (meters per pixels), then the measurement can be easily converted to a real world measurement. Using the binary image of the extracted dune crest-lines, and the average orientation computed, an iterative approach is used to measure the distance between the dunes. A search is done at each pixel along an orthogonal axis from the average orientation. When a crest-line is hit, the number of pixels traveled are counted until another dune is found. The process is repeated for the entire binary image. The lengths are averaged resulting in the average dune spacing for the entire dune field. The results produced may not be optimal and accurate but can be used as an indicator to evaluate the effectiveness of the dune crest-line detection. The results and metrics are presented in section \ref{subsec:results-and-discussion}.
