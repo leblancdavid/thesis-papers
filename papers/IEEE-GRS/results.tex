@@ -7,7 +7,7 @@ In this section, the experiments and results are presented. First, the datasets 
 	\item[Mars Dataset] The dataset from the Ganges Crater area on Mars, defined by \cite{vaz_object_based_dune_analysis}.
 \end{description}
 
-The next section discusses the evaluation used for measuring the quality of each dune crest-line detector method. The main metrics used are the Precision, Recall, and dune features presented in section \ref{subsec:dune-field-metrics}. Finally, section \ref{subsec:results-and-discussion} presents the results along with a short discussion of the methods. 
+The next section discusses the evaluation used for measuring the quality of each dune crest-line detector method. The main metrics used are the Precision, Recall, and dune features presented in section \ref{subsec:dune_field_metrics}. Finally, section \ref{subsec:results-and-discussion} presents the results along with a short discussion of the methods. 
 
 \subsection{Study Areas} \label{subsec:study-areas}
 
@@ -203,75 +203,70 @@ The next consideration is the type of machine learning classifier to use for the
 
 \begin{table*}
 	\centering
-	\caption{True positive and false positive rates results of the training process to build the crest-line classifier models using the SIFT descriptors for various classifiers (a) Support Vector Machines, (b) Normal Bayes, (c) Random Trees, (d) Gradient Boosted Trees }
-	\label{tab:classifier_training_test_results}
+	\caption{True positive and false positive rates results of the training process to build the crest-line GBT classifier model using the SIFT descriptors, for building response maps }
+%	\label{tab:classifier_training_test_results}
+%	\begin{subtable}{0.98\textwidth}
+%		\centering
+%		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
+%			\hline
+%			\multirow{2}{*}{\textbf{SVM Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
+%			\cline{2-5}
+%			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
+%			\hline
+%			Kalahari & 0.9939 & 0.0151 & 0.8703 & 0.1383 \\
+%			Namib & 0.9896 & 0.0183 & 0.9054 & 0.1300 \\
+%			Simpson & 0.9959 & 0.0078 & 0.7950 & 0.1584 \\
+%			Skeleton Coast & 0.9917 & 0.0195 & 0.8031 & 0.1393 \\
+%			WDC & 1.0000 & 0.0018 & 0.6421 & 0.1874 \\
+%			White Sands & 0.9913 & 0.0099 & 0.7081 & 0.1495 \\
+%			\hline
+%		\end{tabu}
+%		\caption{Support Vector Machine Results}
+%		\label{tab:svm_training_test_results}
+%	\end{subtable}
+%	\begin{subtable}{0.98\textwidth}
+%		\centering
+%		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
+%			\hline
+%			\multirow{2}{*}{\textbf{Normal Bayes Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
+%			\cline{2-5}
+%			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
+%			\hline
+%			Kalahari & 1.0000 & 0.0491 & 0.4440 & 0.0468 \\
+%			Namib & 0.9913 & 0.0754 & 0.6359 & 0.1081 \\
+%			Simpson & 0.9937 & 0.0428 & 0.6015 & 0.0823 \\
+%			Skeleton Coast & 0.9959 & 0.1074 & 0.5714 & 0.1045 \\
+%			WDC & 0.9950 & 0.0499 & 0.8511 & 0.1624 \\
+%			White Sands & 0.9978 & 0.0812 & 0.5483 & 0.1111 \\
+%			\hline
+%		\end{tabu}
+%		\caption{Normal Bayes Classifier Results}
+%		\label{tab:bayes_training_test_results}
+%	\end{subtable}
+%	\begin{subtable}{0.98\textwidth}
+%		\centering
+%		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
+%			\hline
+%			\multirow{2}{*}{\textbf{Random Tree Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
+%			\cline{2-5}
+%			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
+%			\hline
+%			Kalahari & 0.9837 & 0.0981 & 0.9037 & 0.1277 \\
+%			Namib & 0.9809 & 0.1181 & 0.9504 & 0.1493 \\
+%			Simpson & 0.9586 & 0.0895 & 0.8317 & 0.2078 \\
+%			Skeleton Coast & 0.9793 & 0.1191 & 0.8764 & 0.1844 \\
+%			WDC & 0.8856 & 0.0942 & 0.7107 & 0.2048 \\
+%			White Sands & 0.9524 & 0.0990 & 0.7955 & 0.1960 \\
+%			\hline
+%		\end{tabu}
+%		\caption{Random Trees Classifier Results}
+%		\label{tab:random_trees_training_test_results}
+%	\end{subtable}
 	\begin{subtable}{0.98\textwidth}
 		\centering
 		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
 			\hline
-			\multirow{2}{*}{\textbf{SVM Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
-			\hline
-			Kalahari & 0.9939 & 0.0151 & 0.8703 & 0.1383 \\
-			Namib & 0.9896 & 0.0183 & 0.9054 & 0.1300 \\
-			Simpson & 0.9959 & 0.0078 & 0.7950 & 0.1584 \\
-			Skeleton Coast & 0.9917 & 0.0195 & 0.8031 & 0.1393 \\
-			WDC & 1.0000 & 0.0018 & 0.6421 & 0.1874 \\
-			White Sands & 0.9913 & 0.0099 & 0.7081 & 0.1495 \\
-			\hline
-		\end{tabu}
-		\caption{Support Vector Machine Results}
-		\label{tab:svm_training_test_results}
-	\end{subtable}
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{Normal Bayes Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
-			\hline
-			Kalahari & 1.0000 & 0.0491 & 0.4440 & 0.0468 \\
-			Namib & 0.9913 & 0.0754 & 0.6359 & 0.1081 \\
-			Simpson & 0.9937 & 0.0428 & 0.6015 & 0.0823 \\
-			Skeleton Coast & 0.9959 & 0.1074 & 0.5714 & 0.1045 \\
-			WDC & 0.9950 & 0.0499 & 0.8511 & 0.1624 \\
-			White Sands & 0.9978 & 0.0812 & 0.5483 & 0.1111 \\
-			\hline
-		\end{tabu}
-		\caption{Normal Bayes Classifier Results}
-		\label{tab:bayes_training_test_results}
-	\end{subtable}
-\end{table*}
-
-\begin{table*}
-	\ContinuedFloat
-	\centering
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{Random Tree Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
-			\cline{2-5}
-			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
-			\hline
-			Kalahari & 0.9837 & 0.0981 & 0.9037 & 0.1277 \\
-			Namib & 0.9809 & 0.1181 & 0.9504 & 0.1493 \\
-			Simpson & 0.9586 & 0.0895 & 0.8317 & 0.2078 \\
-			Skeleton Coast & 0.9793 & 0.1191 & 0.8764 & 0.1844 \\
-			WDC & 0.8856 & 0.0942 & 0.7107 & 0.2048 \\
-			White Sands & 0.9524 & 0.0990 & 0.7955 & 0.1960 \\
-			\hline
-		\end{tabu}
-		\caption{Random Trees Classifier Results}
-		\label{tab:random_trees_training_test_results}
-	\end{subtable}
-	\begin{subtable}{0.98\textwidth}
-		\centering
-		\begin{tabu} to 0.9\textwidth { | X[2,c] || X[1,c] | X[1,c] || X[1,c] | X[1,c] | }
-			\hline
-			\multirow{2}{*}{\textbf{GBT Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
+			\multirow{2}{*}{\textbf{GBT Model Results}} & \multicolumn{2}{c||}{\textbf{Training Set}} &  \multicolumn{2}{c|}{\textbf{Test Set}} \\
 			\cline{2-5}
 			& \textbf{TPR} & \textbf{FPR} & \textbf{TPR} & \textbf{FPR} \\
 			\hline
